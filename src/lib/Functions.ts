@@ -2,7 +2,7 @@
  * @summary Utility file for Bang et al. RDK task.
  *
  * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/rdk/src/core/util.ts
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
 /**

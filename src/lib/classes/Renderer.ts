@@ -1,9 +1,6 @@
 // Core modules
 import {Dot} from '../Runtime';
 
-// API modules
-import {Stimuli} from '../API';
-
 // Configuration
 import {Configuration} from '../../Configuration';
 
@@ -21,7 +18,6 @@ export class Renderer {
   private height: any;
   private renderLayer: any;
   private elements: any[];
-  private imageCollection: { [x: string]: any; };
 
   /**
    * Default constructor for Renderer
@@ -38,10 +34,6 @@ export class Renderer {
     this.height = parameters.height;
     this.renderLayer = null;
     this.elements = [];
-
-    // Get the ImageCollection
-    const _imageLoader = new Stimuli();
-    this.imageCollection = _imageLoader.get();
   }
 
   /**
@@ -157,9 +149,9 @@ export class Renderer {
       // Create the left image container and the left image
       const leftImage = document.createElement('img');
       if (Configuration.keys === 'desktop') {
-        leftImage.src = this.imageCollection['F.png'];
+        leftImage.src = Configuration.stimuli['F.png'];
       } else {
-        leftImage.src = this.imageCollection['2.png'];
+        leftImage.src = Configuration.stimuli['2.png'];
       }
       leftImage.style.height = '20vh';
       leftImage.style.position = 'absolute';
@@ -175,9 +167,9 @@ export class Renderer {
       // Create the right image container and the right image
       const rightImage = document.createElement('img');
       if (Configuration.keys === 'desktop') {
-        rightImage.src = this.imageCollection['J.png'];
+        rightImage.src = Configuration.stimuli['J.png'];
       } else {
-        rightImage.src = this.imageCollection['3.png'];
+        rightImage.src = Configuration.stimuli['3.png'];
       }
       rightImage.style.height = '20vh';
       rightImage.style.position = 'absolute';

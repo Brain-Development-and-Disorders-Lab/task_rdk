@@ -2,7 +2,7 @@
  * @summary Unit tests for Bang et al. task.
  *
  * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/bang_2018_decision_confidence/test/classes.test.js
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
 // Package dependencies

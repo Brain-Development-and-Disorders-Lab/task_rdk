@@ -5,24 +5,56 @@
  * contains the number of trials and different key layouts.
  *
  * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/rdk/src/config.ts
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
-
-// List of targets
-enum Targets {
-  GORILLA = 'gorilla',
-  DESKTOP = 'desktop',
-  SPECTROMETER = 'spectrometer',
-}
-
-// Specify the build target here
-const TARGET = Targets.DESKTOP;
-
 export const Configuration = {
   name: 'Moving dots',
-  studyName: 'bang_2018_decision_confidence',
-  localisation: 'en-AU',
-  target: TARGET,
+  studyName: 'dot-game',
+
+  manipulations: {
+    numTutorialTrials: 10,
+    numPracticeTrials: 10,
+    numCalibrationOneTrials: 120,
+    numMainTrials: 200,
+  },
+
+  stimuli: {
+    'ControlsConfidenceDesktop.png': 'img/ControlsConfidenceDesktop.png',
+    'ControlsConfidenceSpectrometer.png':
+        'img/ControlsConfidenceSpectrometer.png',
+    'ControlsReferenceDesktop.png': 'img/ControlsReferenceDesktop.png',
+    'ControlsReferenceSpectrometer.png':
+        'img/ControlsReferenceSpectrometer.png',
+    'ControlsReferenceDesktopReverse.png':
+        'img/ControlsReferenceDesktopReverse.png',
+    'ControlsReferenceSpectrometerReverse.png':
+        'img/ControlsReferenceSpectrometerReverse.png',
+    'ControlsNavigationDesktop.png':
+        'img/ControlsNavigationDesktop.png',
+    'ControlsNavigationSpectrometer.png':
+        'img/ControlsNavigationSpectrometer.png',
+    'ControlsQuestionDesktop.png':
+        'img/ControlsQuestionDesktop.png',
+    'ControlsQuestionSpectrometer.png':
+        'img/ControlsQuestionSpectrometer.png',
+    'InstructionsConfidence.png': 'img/InstructionsConfidence.png',
+    'InstructionsReference.png': 'img/InstructionsReference.png',
+    'InstructionsDots.png': 'img/InstructionsDots.png',
+    'InstructionsMovingDots.gif': 'img/InstructionsMovingDots.gif',
+    '1.png': 'img/1.png',
+    '2.png': 'img/2.png',
+    '3.png': 'img/3.png',
+    '4.png': 'img/4.png',
+    'D.png': 'img/D.png',
+    'F.png': 'img/F.png',
+    'J.png': 'img/J.png',
+    'K.png': 'img/K.png',
+  },
+
+  allowParticipantContact: false,
+  contact: 'henry.burgess@wustl.edu',
+
+  seed: 0.144,
 
   // -------------------- Scaling --------------------
   scalingDefault: 1.0,
@@ -56,53 +88,6 @@ export const Configuration = {
     },
   },
   keys: 'desktop',
-
-  // -------------------- Other constants --------------------
-  trials: {
-    numTutorialTrials: 10,
-    numPracticeTrials: 10,
-    numCalibrationOneTrials: 120,
-    numMainTrials: 200,
-  },
-
-  seed: TARGET,
-
-  // -------------------- Images --------------------
-  images: {
-    desktop: {
-      'ControlsConfidenceDesktop.png': 'img/ControlsConfidenceDesktop.png',
-      'ControlsConfidenceSpectrometer.png':
-          'img/ControlsConfidenceSpectrometer.png',
-      'ControlsReferenceDesktop.png': 'img/ControlsReferenceDesktop.png',
-      'ControlsReferenceSpectrometer.png':
-          'img/ControlsReferenceSpectrometer.png',
-      'ControlsReferenceDesktopReverse.png':
-          'img/ControlsReferenceDesktopReverse.png',
-      'ControlsReferenceSpectrometerReverse.png':
-          'img/ControlsReferenceSpectrometerReverse.png',
-      'ControlsNavigationDesktop.png':
-          'img/ControlsNavigationDesktop.png',
-      'ControlsNavigationSpectrometer.png':
-          'img/ControlsNavigationSpectrometer.png',
-      'ControlsQuestionDesktop.png':
-          'img/ControlsQuestionDesktop.png',
-      'ControlsQuestionSpectrometer.png':
-          'img/ControlsQuestionSpectrometer.png',
-      'InstructionsConfidence.png': 'img/InstructionsConfidence.png',
-      'InstructionsReference.png': 'img/InstructionsReference.png',
-      'InstructionsDots.png': 'img/InstructionsDots.png',
-      'InstructionsMovingDots.gif': 'img/InstructionsMovingDots.gif',
-      '1.png': 'img/1.png',
-      '2.png': 'img/2.png',
-      '3.png': 'img/3.png',
-      '4.png': 'img/4.png',
-      'D.png': 'img/D.png',
-      'F.png': 'img/F.png',
-      'J.png': 'img/J.png',
-      'K.png': 'img/K.png',
-    },
-    gorilla: {}
-  },
 
   // -------------------- User testing --------------------
   testing: false,
