@@ -7,107 +7,107 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
 */
 
 .graphics-container {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 20px;
-    left: 0px;
-    height: 90%;
-    width: 100%;
-    align-items: center;
-    justify-content: center
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 20px;
+  left: 0px;
+  height: 90%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 .video-container {
-    width: 60vw;
-    height: 30vw;
-    margin: auto;
+  width: 60vw;
+  height: 30vw;
+  margin: auto;
 }
 
 .confidence-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 2.5rem;
-    height: 75px;
-    border-radius: 5px;
-    background: grey;
-    cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 2.5rem;
+  height: 75px;
+  border-radius: 5px;
+  background: grey;
+  cursor: pointer;
 }
 
 .confidence-slider::-moz-range-thumb {
-    width: 5rem;
-    height: 100px;
-    border-radius: 5px;
-    background: grey;
-    cursor: pointer;
+  width: 5rem;
+  height: 100px;
+  border-radius: 5px;
+  background: grey;
+  cursor: pointer;
 }
 
 .confidence-slider {
-    -webkit-appearance: none;
-    margin-top: 10px;
-    width: 100%;
-    height: 15px;
-    border-radius: 5px;
-    background: #000000;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
+  -webkit-appearance: none;
+  margin-top: 10px;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #000000;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
 }
 
 .confidence-slider-hidden::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 10px;
-    height: 75px;
-    border-radius: 5px;
-    background: grey;
-    cursor: pointer;
-    visibility: hidden;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 75px;
+  border-radius: 5px;
+  background: grey;
+  cursor: pointer;
+  visibility: hidden;
 }
 
 .confidence-slider-hidden::-moz-range-thumb {
-    width: 25px;
-    height: 100px;
-    border-radius: 5px;
-    background: grey;
-    cursor: pointer;
-    visibility: hidden;
+  width: 25px;
+  height: 100px;
+  border-radius: 5px;
+  background: grey;
+  cursor: pointer;
+  visibility: hidden;
 }
 
 .confidence-slider-hidden {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 15px;
-    border-radius: 5px;
-    background: #000000;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #000000;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
 }
 
 .reference-instructions-container {
-    padding: 0;
+  padding: 0;
 }
 
 .reference-instructions-container table {
-    margin-left: auto;
-    margin-right: auto;
-    border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  border-collapse: collapse;
 }
 
 .reference-instructions-container td {
-    padding: 0rem 2.5rem 0rem 2.5rem;
-    text-align: center;
+  padding: 0rem 2.5rem 0rem 2.5rem;
+  text-align: center;
 }
 
 #mistake-button-container {
-    width: 60vw;
+  width: 60vw;
 }
 
 #mistake-button-container button {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 24px 0px 0px;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 24px 0px 0px;
 }

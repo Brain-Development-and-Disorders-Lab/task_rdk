@@ -1,4 +1,4 @@
-import Experiment from 'jspsych-wrapper';
+import { Experiment } from "neurocog";
 
 // Add Experiment to the global Window interface
 declare global {

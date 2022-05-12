@@ -1,4 +1,4 @@
-import {Graphics} from './Graphics';
+import { Graphics } from "src/lib/classes/Graphics";
 
 /**
  * Stimulus abstraction
@@ -50,7 +50,10 @@ export class Stimulus {
       // Bind keys
       for (const binding in this.keybindings) {
         if (this.keybindings[binding]) {
-          document.addEventListener('keydown', this.keybindings[binding].handler);
+          document.addEventListener(
+            "keydown",
+            this.keybindings[binding].handler
+          );
         }
       }
     }
@@ -63,7 +66,10 @@ export class Stimulus {
     // Unbind keys
     for (const binding in this.keybindings) {
       if (this.keybindings[binding]) {
-        document.removeEventListener('keydown', this.keybindings[binding].handler);
+        document.removeEventListener(
+          "keydown",
+          this.keybindings[binding].handler
+        );
       }
     }
   }
@@ -122,38 +128,40 @@ export class Stimulus {
 
     for (let c = 0; c < parameters.components.length; c++) {
       const component = parameters.components[c];
-      if (component === 'outline') {
+      if (component === "outline") {
         graphics.addOutline();
-      } else if (component === 'fixation') {
+      } else if (component === "fixation") {
         graphics.addFixation();
-      } else if (component === 'dots') {
+      } else if (component === "dots") {
         graphics.addDots();
-      } else if (component === 'ccw_arc') {
+      } else if (component === "ccw_arc") {
         graphics.addCounterclockwiseArc();
-      } else if (component === 'cw_arc') {
+      } else if (component === "cw_arc") {
         graphics.addClockwiseArc();
-      } else if (component === 'left_arc') {
+      } else if (component === "left_arc") {
         graphics.addLeftArc();
-      } else if (component === 'right_arc') {
+      } else if (component === "right_arc") {
         graphics.addRightArc();
-      } else if (component === 'indicator') {
+      } else if (component === "indicator") {
         graphics.addReferenceIndicator();
-      } else if (component === 'confidence') {
+      } else if (component === "confidence") {
         graphics.addConfidence(parameters);
-      } else if (component === 'left') {
+      } else if (component === "left") {
         graphics.addLeftKey();
-      } else if (component === 'right') {
+      } else if (component === "right") {
         graphics.addRightKey();
       } else {
         console.warn(`Unknown component: '${component}'`);
       }
     }
 
-    two.bind('update', function(frameCount) {
-      for (let d = 0; d < renderer.getElements().length; d++) {
-        const element = renderer.getElements()[d];
-        element.step(frameCount);
-      }
-    }).play();
+    two
+      .bind("update", function (frameCount) {
+        for (let d = 0; d < renderer.getElements().length; d++) {
+          const element = renderer.getElements()[d];
+          element.step(frameCount);
+        }
+      })
+      .play();
   }
 }

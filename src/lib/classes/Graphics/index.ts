@@ -1,8 +1,9 @@
 // Configuration
-import {Configuration} from '../../Configuration';
+import { Configuration } from "src/configuration";
 
 // Core modules
-import {Dot, Renderer} from '../Runtime';
+import { Dot } from "src/lib/classes/Dot";
+import { Renderer } from "src/lib/classes/Renderer";
 
 /**
  * Graphics class used to interface with the plugin and the renderer class
@@ -26,12 +27,12 @@ export class Graphics {
    * @param {boolean} _visible the status of cursor visibility
    */
   cursorVisibility(_visible = true): void {
-    const _target = document.getElementById('jspsych-content');
+    const _target = document.getElementById("jspsych-content");
     if (_target) {
       if (_visible) {
-        _target.style.cursor = 'auto';
+        _target.style.cursor = "auto";
       } else {
-        _target.style.cursor = 'none';
+        _target.style.cursor = "none";
       }
     }
   }
@@ -40,21 +41,32 @@ export class Graphics {
    * Setup outlines
    */
   addOutline(): void {
-    const viewCircle = this.renderer.createCircle(0, 0,
-        this.renderer.getViewRadius(), false);
-    const dotLayer = this.renderer.createRectangle(0, 0,
-        this.renderer.getWidth(),
-        this.renderer.getHeight(),
-        false);
-    viewCircle.fill = 'white';
-    dotLayer.fill = 'white';
+    const viewCircle = this.renderer.createCircle(
+      0,
+      0,
+      this.renderer.getViewRadius(),
+      false
+    );
+    const dotLayer = this.renderer.createRectangle(
+      0,
+      0,
+      this.renderer.getWidth(),
+      this.renderer.getHeight(),
+      false
+    );
+    viewCircle.fill = "white";
+    dotLayer.fill = "white";
     this.renderer.setRenderLayer(this.renderer.getTarget().makeGroup(dotLayer));
     this.renderer.getRenderLayer().mask = viewCircle;
 
-    const viewCircleOutline = this.renderer.createCircle(0, 0,
-        this.renderer.getViewRadius(), false);
+    const viewCircleOutline = this.renderer.createCircle(
+      0,
+      0,
+      this.renderer.getViewRadius(),
+      false
+    );
     viewCircleOutline.noFill();
-    viewCircleOutline.stroke = 'black';
+    viewCircleOutline.stroke = "black";
     viewCircleOutline.linewidth = 5;
   }
 
@@ -62,18 +74,27 @@ export class Graphics {
    * Create a fixation cross
    */
   addFixation(): void {
-    const fixationDiameter = Math.ceil(Math.abs(
-        this.renderer.getDistanceFromScreen() * Math.tan(0.4)));
-    if (this.trial.showFeedback === true &&
-      this.trial.data.referenceSelection !== '') {
+    const fixationDiameter = Math.ceil(
+      Math.abs(this.renderer.getDistanceFromScreen() * Math.tan(0.4))
+    );
+    if (
+      this.trial.showFeedback === true &&
+      this.trial.data.referenceSelection !== ""
+    ) {
       if (this.trial.data.correct === 1) {
-        this.renderer.createFixation(0, 0, fixationDiameter, false, 'green');
+        this.renderer.createFixation(0, 0, fixationDiameter, false, "green");
       } else {
-        this.renderer.createFixation(0, 0, fixationDiameter, false, 'red');
+        this.renderer.createFixation(0, 0, fixationDiameter, false, "red");
       }
     } else {
-      this.renderer.createCircle(0, 0, fixationDiameter * 0.8,
-          false, 'white', 'white');
+      this.renderer.createCircle(
+        0,
+        0,
+        fixationDiameter * 0.8,
+        false,
+        "white",
+        "white"
+      );
       this.renderer.createFixation(0, 0, fixationDiameter, false);
     }
   }
@@ -84,8 +105,8 @@ export class Graphics {
   addClockwiseArc(): void {
     const startAngle = 2 * Math.PI - this.trial.dotDirection;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, 'white');
-    this.renderer.createArc(startAngle, endAngle, '#d78000');
+    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, "white");
+    this.renderer.createArc(startAngle, endAngle, "#d78000");
   }
 
   /**
@@ -94,7 +115,7 @@ export class Graphics {
   addLeftArc(): void {
     const startAngle = Math.PI / 2;
     const endAngle = 2 * Math.PI - Math.PI / 2;
-    this.renderer.createArc(startAngle, endAngle, '#d78000');
+    this.renderer.createArc(startAngle, endAngle, "#d78000");
   }
 
   /**
@@ -104,31 +125,31 @@ export class Graphics {
     const reference = 2 * Math.PI - this.trial.dotDirection;
     const startAngle = reference - Math.PI / 4;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, 'white');
-    this.renderer.createArc(startAngle, endAngle, '#3ea3a3');
+    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, "white");
+    this.renderer.createArc(startAngle, endAngle, "#3ea3a3");
   }
 
   /**
    * Create the blue right arc
    */
   addRightArc(): void {
-    const startAngle = - Math.PI / 2;
+    const startAngle = -Math.PI / 2;
     const endAngle = Math.PI / 2;
-    this.renderer.createArc(startAngle, endAngle, '#3ea3a3');
+    this.renderer.createArc(startAngle, endAngle, "#3ea3a3");
   }
 
   /**
    * Append the left button image to the graphics area
    */
   addLeftKey(): void {
-    this.renderer.addImage('left');
+    this.renderer.addImage("left");
   }
 
   /**
    * Append the right button image to the graphics area
    */
   addRightKey(): void {
-    this.renderer.addImage('right');
+    this.renderer.addImage("right");
   }
 
   /**
@@ -139,9 +160,9 @@ export class Graphics {
     const length = Math.ceil(Math.abs(Math.tan(0.8))) * 6;
     const width = Math.ceil(Math.abs(Math.tan(0.08))) * 6;
     const x1 =
-        (this.renderer.getViewRadius() - length / 2) * Math.cos(reference);
+      (this.renderer.getViewRadius() - length / 2) * Math.cos(reference);
     const y1 =
-        (this.renderer.getViewRadius() - length / 2) * Math.sin(reference);
+      (this.renderer.getViewRadius() - length / 2) * Math.sin(reference);
     const x2 = (this.renderer.getViewRadius() + length) * Math.cos(reference);
     const y2 = (this.renderer.getViewRadius() + length) * Math.sin(reference);
     this.renderer.createLine(x1, y1, x2, y2, width);
@@ -153,7 +174,7 @@ export class Graphics {
   addDots(): void {
     // Initial parameters.
     const referenceDotParameters = {
-      type: 'reference',
+      type: "reference",
       width: this.renderer.getWidth(),
       height: this.renderer.getHeight(),
       viewRadius: this.renderer.getViewRadius(),
@@ -163,7 +184,7 @@ export class Graphics {
     };
 
     const randomDotParameters = {
-      type: 'random',
+      type: "random",
       width: this.renderer.getWidth(),
       height: this.renderer.getHeight(),
       viewRadius: this.renderer.getViewRadius(),
@@ -179,10 +200,12 @@ export class Graphics {
     for (let i = -dotRowCount / 2; i < dotRowCount / 2; i++) {
       for (let j = -dotRowCount / 2; j < dotRowCount / 2; j++) {
         const delta = Math.random();
-        const x = i * this.renderer.getWidth() / dotRowCount + delta *
-          this.renderer.getWidth() / dotRowCount;
-        const y = j * this.renderer.getHeight() / dotRowCount + delta *
-          this.renderer.getHeight() / dotRowCount;
+        const x =
+          (i * this.renderer.getWidth()) / dotRowCount +
+          (delta * this.renderer.getWidth()) / dotRowCount;
+        const y =
+          (j * this.renderer.getHeight()) / dotRowCount +
+          (delta * this.renderer.getHeight()) / dotRowCount;
 
         if (delta > this.trial.data.coherence) {
           // Non-dynamic dot that is just moving in random paths
@@ -201,59 +224,61 @@ export class Graphics {
    */
   addConfidence(parameters: any): void {
     // Confidence instructions
-    let html = '';
+    let html = "";
 
     // Key images for target
-    if (Configuration.keys === 'spectrometer') {
-      html += `<div><img src="` +
-            `${Configuration.stimuli['ControlsConfidenceSpectrometer.png']}" ` +
-                `style="${Configuration.style.controls}"></div>`;
+    if (Configuration.keys === "spectrometer") {
+      html +=
+        `<div><img src="` +
+        `${Configuration.stimuli["ControlsConfidenceSpectrometer.png"]}" ` +
+        `style="${Configuration.style.controls}"></div>`;
     } else {
-      html += `<div><img src="` +
-            `${Configuration.stimuli['ControlsConfidenceDesktop.png']}" ` +
-                `style="${Configuration.style.controls}"></div>`;
+      html +=
+        `<div><img src="` +
+        `${Configuration.stimuli["ControlsConfidenceDesktop.png"]}" ` +
+        `style="${Configuration.style.controls}"></div>`;
     }
 
     // Confidence slider
-    const labels = ['50%', '60%', '70%', '80%', '90%', '100%'];
+    const labels = ["50%", "60%", "70%", "80%", "90%", "100%"];
     html += `<div>`;
+    html += `<div style="margin: 50px 0px; ` + `width: 100%;">`;
     html +=
-        `<div style="margin: 50px 0px; ` +
-              `width: 100%;">`;
-    html +=
-          `<div style="position: relative; width: 60vw;">` +
-              `<input type="range" value="70" min="50" max="100" ` +
-                    `step="10" style="width: 100%;" ` +
-                    `class="confidence-slider-hidden"` +
-                    `id="confidence-slider">` +
-              `</input>`;
+      `<div style="position: relative; width: 60vw;">` +
+      `<input type="range" value="70" min="50" max="100" ` +
+      `step="10" style="width: 100%;" ` +
+      `class="confidence-slider-hidden"` +
+      `id="confidence-slider">` +
+      `</input>`;
     html += `<div>`;
     // Add labels
     for (let i = 0; i < labels.length; i++) {
       const width = 100 / (labels.length - 1);
       const offset = i * width - width / 2;
       html +=
-          `<div style="display: inline-block; position: absolute; ` +
-                `left:${offset}%; text-align: center; ` +
-                `margin-top: 4vh; width: ${width}%;">`;
+        `<div style="display: inline-block; position: absolute; ` +
+        `left:${offset}%; text-align: center; ` +
+        `margin-top: 4vh; width: ${width}%;">`;
       html +=
-          `<span style="text-align: center; ` +
-                `font-size: 1.5em;">${labels[i]}</span>`;
+        `<span style="text-align: center; ` +
+        `font-size: 1.5em;">${labels[i]}</span>`;
       html += `</div>`;
     }
     html += `</div></div></div></div><br><hr>`;
 
     // Button to notify of a mistake
     html += `<div id="mistake-button-container">`;
-    html += `<button type="button" id="mistake-button" ` +
-                `class="jspsych-btn">`;
+    html +=
+      `<button type="button" id="mistake-button" ` + `class="jspsych-btn">`;
     html += `I made a mistake`;
     html += `</button>`;
-    if (Configuration.keys === 'spectrometer') {
-      html += `<img src="${Configuration.stimuli['1.png']}" ` +
+    if (Configuration.keys === "spectrometer") {
+      html +=
+        `<img src="${Configuration.stimuli["1.png"]}" ` +
         `style="${Configuration.style.keyboard}">`;
     } else {
-      html += `<img src="${Configuration.stimuli['D.png']}" ` +
+      html +=
+        `<img src="${Configuration.stimuli["D.png"]}" ` +
         `style="${Configuration.style.keyboard}">`;
     }
     html += `</div>`;
@@ -261,17 +286,19 @@ export class Graphics {
     this.renderer.getDisplayElement().parentNode.innerHTML = html;
 
     // Try to hide the thumb?
-    document.getElementById('confidence-slider')
-        .addEventListener('click', function() {
-          const slider = document.getElementById('confidence-slider');
-          slider.className ='confidence-slider';
-        });
+    document
+      .getElementById("confidence-slider")
+      .addEventListener("click", function () {
+        const slider = document.getElementById("confidence-slider");
+        slider.className = "confidence-slider";
+      });
 
     // Bind appropriate event listeners to actions
-    document.addEventListener('keydown', parameters.eventHandler);
-    if (Configuration.keys === 'desktop') {
-      document.getElementById('mistake-button')
-          .addEventListener('click', parameters.eventHandler);
+    document.addEventListener("keydown", parameters.eventHandler);
+    if (Configuration.keys === "desktop") {
+      document
+        .getElementById("mistake-button")
+        .addEventListener("click", parameters.eventHandler);
     }
   }
 

@@ -6,6 +6,7 @@
     "dev": "webpack serve --config webpack.development.js",
     "watch": "webpack --watch",
     "build": "webpack --config webpack.production.js",
+    "lint": "prettier --write .",
     "style": "gulp style",
     "clean": "gulp clean",
     "test": "jest"
@@ -23,7 +24,7 @@
   "dependencies": {
     "jspsych": "^6.0.0",
     "jspsych-attention-check": "^1.4.0",
-    "jspsych-wrapper": "file:packages/jspsych-wrapper-v0.2.3.tgz",
+    "neurocog": "^0.3.4",
     "two.js": "^0.7.8"
   },
   "devDependencies": {
@@ -46,6 +47,7 @@
     "del": "^6.0.0",
     "eslint": "^7.31.0",
     "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
     "gulp": "^4.0.2",
     "gulp-eslint": "^6.0.0",
     "gulp-rename": "^2.0.0",
@@ -54,6 +56,7 @@
     "html-webpack-plugin": "^5.3.2",
     "jest": "^27.0.6",
     "jquery": "^3.6.0",
+    "prettier": "2.6.2",
     "style-loader": "^3.3.1",
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",

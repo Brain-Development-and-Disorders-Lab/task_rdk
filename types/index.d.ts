@@ -1,2 +1,2 @@
 // Module declaration
-declare module 'rdk-task' {};
+declare module "rdk-task" {}
