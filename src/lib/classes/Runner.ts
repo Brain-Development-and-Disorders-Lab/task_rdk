@@ -1,5 +1,5 @@
 // Core modules
-import { Stimulus } from "src/lib/classes/Stimulus";
+import {Stimulus} from '../Runtime';
 
 /**
  * Driver class that operates trials, showing stimuli
@@ -18,11 +18,9 @@ export class Runner {
    * @param {Stimulus} stimulus stimulus to display
    */
   static pre(stimulus: Stimulus): void {
-    stimulus.setTimer(
-      window.setTimeout(function () {
-        Runner.run(stimulus);
-      }, stimulus.getParameters().timing.pre)
-    );
+    stimulus.setTimer(window.setTimeout(function() {
+      Runner.run(stimulus);
+    }, stimulus.getParameters().timing.pre));
   }
 
   /**
@@ -34,11 +32,9 @@ export class Runner {
     Stimulus.run(stimulus.getParameters());
     window.clearTimeout(stimulus.getTimer());
     if (stimulus.getParameters().timing.run >= 0) {
-      stimulus.setTimer(
-        window.setTimeout(function () {
-          Runner.post(stimulus);
-        }, stimulus.getParameters().timing.run)
-      );
+      stimulus.setTimer(window.setTimeout(function() {
+        Runner.post(stimulus);
+      }, stimulus.getParameters().timing.run));
     }
   }
 
@@ -49,11 +45,9 @@ export class Runner {
   static post(stimulus: Stimulus): void {
     stimulus.removeKeybindings();
     window.clearTimeout(stimulus.getTimer());
-    stimulus.setTimer(
-      window.setTimeout(function () {
-        Runner.finish(stimulus);
-      }, stimulus.getParameters().timing.post)
-    );
+    stimulus.setTimer(window.setTimeout(function() {
+      Runner.finish(stimulus);
+    }, stimulus.getParameters().timing.post));
   }
 
   /**

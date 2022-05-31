@@ -1,8 +1,8 @@
 // Core modules
-import { Dot } from "src/lib/classes/Dot";
+import {Dot} from '../Runtime';
 
 // Configuration
-import { Configuration } from "src/configuration";
+import {Configuration} from '../../Configuration';
 
 /**
  * Renderer abstraction that interfaces directly with the
@@ -46,14 +46,7 @@ export class Renderer {
    * @param {string} stroke the colour of the stroke
    * @return {any} a Two.js circle object
    */
-  createCircle(
-    x: number,
-    y: number,
-    r: number,
-    update: boolean,
-    fill = "black",
-    stroke = "black"
-  ): any {
+  createCircle(x: number, y: number, r: number, update: boolean, fill = 'black', stroke = 'black'): any {
     const coordinates = Renderer.translate(x, y, this.width, this.height);
     const circle = this.target.makeCircle(coordinates[0], coordinates[1], r);
     circle.fill = fill;
@@ -72,21 +65,10 @@ export class Renderer {
    * @param {string} fill the colour of the rectangle
    * @return {any} a Two.js rectangle object
    */
-  createRectangle(
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    update: boolean,
-    fill = "black"
-  ): any {
+  createRectangle(x: number, y: number, w: number, h: number, update: boolean, fill = 'black'): any {
     const coordinates = Renderer.translate(x, y, w, h);
-    const rectangle = this.target.makeRectangle(
-      coordinates[0],
-      coordinates[1],
-      w,
-      h
-    );
+    const rectangle = this.target.makeRectangle(coordinates[0],
+        coordinates[1], w, h);
     rectangle.fill = fill;
     if (update) this.addElement(rectangle);
     return rectangle;
@@ -101,20 +83,12 @@ export class Renderer {
    * @param {string} fill the colour of the fixation cross
    * @return {Array} array containing two Two.Rectangle objects
    */
-  createFixation(x, y, d, update, fill = "black"): any[] {
+  createFixation(x, y, d, update, fill = 'black'): any[] {
     const coordinates = Renderer.translate(x, y, this.width, this.height);
-    const rectangleHorizontal = this.target.makeRectangle(
-      coordinates[0],
-      coordinates[1],
-      d,
-      d / 4
-    );
-    const rectangleVertical = this.target.makeRectangle(
-      coordinates[0],
-      coordinates[1],
-      d / 4,
-      d
-    );
+    const rectangleHorizontal = this.target.makeRectangle(coordinates[0],
+        coordinates[1], d, d / 4);
+    const rectangleVertical = this.target.makeRectangle(coordinates[0],
+        coordinates[1], d / 4, d);
     rectangleHorizontal.fill = fill;
     rectangleVertical.fill = fill;
     rectangleHorizontal.noStroke();
@@ -133,18 +107,11 @@ export class Renderer {
    * @param {string} fill the colour of the Dot
    * @return {any} Two.Circle instance
    */
-  createDot(dot: Dot, update: boolean, fill = "black"): any {
-    const coordinates = Renderer.translate(
-      dot.getX(),
-      dot.getY(),
-      this.width,
-      this.height
-    );
-    const circle = this.target.makeCircle(
-      coordinates[0],
-      coordinates[1],
-      this.dotRadius
-    );
+  createDot(dot: Dot, update: boolean, fill = 'black'): any {
+    const coordinates = Renderer.translate(dot.getX(), dot.getY(),
+        this.width, this.height);
+    const circle = this.target.makeCircle(coordinates[0], coordinates[1],
+        this.dotRadius);
     circle.fill = fill;
     dot.setDot(circle);
     this.renderLayer.add(circle);
@@ -159,16 +126,10 @@ export class Renderer {
    * @param {string} fill the colour of the arc
    * @return {any} arc object
    */
-  createArc(startAngle: number, endAngle: number, fill = "red"): any {
+  createArc(startAngle: number, endAngle: number, fill = 'red'): any {
     const coordinates = Renderer.translate(0, 0, this.width, this.height);
-    const arc = this.target.makeArcSegment(
-      coordinates[0],
-      coordinates[1],
-      this.viewRadius,
-      this.viewRadius,
-      startAngle,
-      endAngle
-    );
+    const arc = this.target.makeArcSegment(coordinates[0], coordinates[1],
+        this.viewRadius, this.viewRadius, startAngle, endAngle);
     arc.stroke = fill;
     arc.linewidth = 10;
     this.target.add(arc);
@@ -180,39 +141,39 @@ export class Renderer {
    * @param {string} imageType the type of image to add
    */
   addImage(imageType: string): void {
-    if (imageType === "left") {
+    if (imageType === 'left') {
       // Access the graphics container
       const graphicsCanvasDiv =
-        document.getElementsByClassName("graphics-container")[0];
+          document.getElementsByClassName('graphics-container')[0];
 
       // Create the left image container and the left image
-      const leftImage = document.createElement("img");
-      if (Configuration.keys === "desktop") {
-        leftImage.src = Configuration.stimuli["F.png"];
+      const leftImage = document.createElement('img');
+      if (Configuration.keys === 'desktop') {
+        leftImage.src = Configuration.stimuli['F.png'];
       } else {
-        leftImage.src = Configuration.stimuli["2.png"];
+        leftImage.src = Configuration.stimuli['2.png'];
       }
-      leftImage.style.height = "20vh";
-      leftImage.style.position = "absolute";
-      leftImage.style.paddingRight = "70%";
+      leftImage.style.height = '20vh';
+      leftImage.style.position = 'absolute';
+      leftImage.style.paddingRight = '70%';
 
       // Prepend the left image container to the graphics container
       graphicsCanvasDiv.prepend(leftImage);
-    } else if (imageType === "right") {
+    } else if (imageType === 'right') {
       // Access the graphics container
       const graphicsCanvasDiv =
-        document.getElementsByClassName("graphics-container")[0];
+          document.getElementsByClassName('graphics-container')[0];
 
       // Create the right image container and the right image
-      const rightImage = document.createElement("img");
-      if (Configuration.keys === "desktop") {
-        rightImage.src = Configuration.stimuli["J.png"];
+      const rightImage = document.createElement('img');
+      if (Configuration.keys === 'desktop') {
+        rightImage.src = Configuration.stimuli['J.png'];
       } else {
-        rightImage.src = Configuration.stimuli["3.png"];
+        rightImage.src = Configuration.stimuli['3.png'];
       }
-      rightImage.style.height = "20vh";
-      rightImage.style.position = "absolute";
-      rightImage.style.paddingLeft = "70%";
+      rightImage.style.height = '20vh';
+      rightImage.style.position = 'absolute';
+      rightImage.style.paddingLeft = '70%';
 
       // Prepend the right image container to the graphics container
       graphicsCanvasDiv.append(rightImage);
@@ -232,27 +193,12 @@ export class Renderer {
    * @param {string} fill the colour of the line
    * @return {Two.Line} line object
    */
-  createLine(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    width: number,
-    fill = "black"
-  ): any {
-    const startCoordinates = Renderer.translate(
-      x1,
-      y1,
-      this.width,
-      this.height
-    );
+  createLine(x1: number, y1: number, x2: number, y2: number, width: number, fill = 'black'): any {
+    const startCoordinates = Renderer.translate(x1, y1,
+        this.width, this.height);
     const endCoordinates = Renderer.translate(x2, y2, this.width, this.height);
-    const line = this.target.makeLine(
-      startCoordinates[0],
-      startCoordinates[1],
-      endCoordinates[0],
-      endCoordinates[1]
-    );
+    const line = this.target.makeLine(startCoordinates[0], startCoordinates[1],
+        endCoordinates[0], endCoordinates[1]);
     line.stroke = fill;
     line.linewidth = width;
     this.target.add(line);
@@ -368,14 +314,9 @@ export class Renderer {
    * @param {number} height height of the view
    * @return {number[]} translated x and y coordinates
    */
-  static translate(
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ): number[] {
+  static translate(x: number, y: number, width: number, height: number): number[] {
     x += width / 2;
-    y = height / 2 - y;
+    y = (height / 2) - y;
     return [x, y];
   }
 
@@ -387,7 +328,7 @@ export class Renderer {
    * @return {boolean}
    */
   static visible(x: number, y: number, radius: number): boolean {
-    const distance = Math.sqrt(x ** 2 + y ** 2);
+    const distance = Math.sqrt(((x) ** 2) + ((y) ** 2));
     return distance < radius;
   }
 

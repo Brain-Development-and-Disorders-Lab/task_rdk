@@ -1,5 +1,5 @@
 // Core modules
-import { Renderer } from "src/lib/classes/Renderer";
+import {Renderer} from '../Runtime';
 
 /**
  * Dot class used to abstract the positioning of moving dots.
@@ -78,7 +78,7 @@ export class Dot {
     let x = this.x;
     let y = this.y;
 
-    if (this.type === "reference") {
+    if (this.type === 'reference') {
       // Check if the dot is currently visible within the circle.
       if (Math.sqrt(x ** 2 + y ** 2) < this.viewRadius) {
         this.shown = true;
@@ -90,13 +90,13 @@ export class Dot {
         y = y - 2 * this.viewRadius * Math.sin(this.direction);
         this.shown = false;
       }
-    } else if (this.type === "random") {
+    } else if (this.type === 'random') {
       if (frameCount % 6 === 0) {
         const delta = Math.random();
         if (delta > 0.5) {
-          this.direction -= (Math.PI / 8) * delta;
+          this.direction -= Math.PI / 8 * delta;
         } else {
-          this.direction += (Math.PI / 8) * delta;
+          this.direction += Math.PI / 8 * delta;
         }
       }
 
@@ -114,20 +114,10 @@ export class Dot {
     this.y = y;
 
     // Perform coordinate translate for renderer, only if dot is within the view
-    const coordinates = Renderer.translate(
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
-    if (
-      Renderer.renderable(
-        coordinates[0],
-        coordinates[1],
-        this.width,
-        this.height
-      )
-    ) {
+    const coordinates = Renderer.translate(this.x, this.y,
+        this.width, this.height);
+    if (Renderer.renderable(coordinates[0], coordinates[1],
+        this.width, this.height)) {
       this.dot.translation.x = coordinates[0];
       this.dot.translation.y = coordinates[1];
     }

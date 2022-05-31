@@ -1,22 +1,23 @@
 module.exports = {
   root: true,
-  parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  parser: '@typescript-eslint/parser',
+  plugins: [
+    '@typescript-eslint',
+  ],
   ignorePatterns: [
-    ".eslintrc.js",
-    "gulpfile.js",
-    "jest.config.js",
-    "webpack.*.js",
-    "node_modules/",
-    "*.d.ts",
+    '.eslintrc.js',
+    'gulpfile.js',
+    'jest.config.js',
+    'webpack.*.js',
+    'node_modules/',
+    '*.d.ts',
   ],
   extends: [
-    "eslint:recommended",
-    "google",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
+    'eslint:recommended',
+    'google',
+    'plugin:@typescript-eslint/recommended',
   ],
   rules: {
-    "@typescript-eslint/no-namespace": "off",
+    '@typescript-eslint/no-namespace': 'off',
   },
 };
