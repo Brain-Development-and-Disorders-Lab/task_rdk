@@ -42,6 +42,5 @@ function package(cb) {
 
 exports.build = build;
 exports.clean = clean;
-exports.style = style;
 exports.package = package;
-exports.default = style;
+exports.default = build;
