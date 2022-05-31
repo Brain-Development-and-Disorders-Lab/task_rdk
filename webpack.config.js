@@ -2,31 +2,32 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  name: 'development',
   mode: 'development',
   entry: {
-    index: './src/Timeline.ts',
+    Timeline: './src/lib/Timeline.ts',
   },
   devtool: 'inline-source-map',
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/index.html',
+      title: 'RDK Game',
     }),
   ],
   devServer: {
-    hot: true,
-    static: [
-      {
-        directory: path.join(__dirname, 'src/img'),
-        publicPath: '/img',
-      },
+    contentBase: [
+      // Output path
+      path.join(__dirname, './built'),
+      // Assets path
+      path.join(__dirname, './src/img'),
     ],
+    // Required public path for assets
+    contentBasePublicPath: '/img',
+    hot: true,
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'babel-loader',
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
@@ -34,15 +35,7 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.html$/,
-        loader: 'html-loader',
-      },
-      {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
       },
     ],
@@ -51,7 +44,8 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, './built'),
+    filename: '[name].bundle.js',
     clean: true,
   },
 };

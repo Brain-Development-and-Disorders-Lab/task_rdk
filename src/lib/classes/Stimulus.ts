@@ -1,4 +1,4 @@
-import {Graphics} from './Graphics';
+import { Graphics } from "./Graphics";
 
 /**
  * Stimulus abstraction
@@ -30,7 +30,7 @@ export class Stimulus {
     this.trial = parameters.trial;
     this.postTrialHandler = parameters.postTrialHandler;
     this.rendererParameters = parameters.rendererParameters;
-    this.timer = -1;
+    this.timer = null;
   }
 
   /**

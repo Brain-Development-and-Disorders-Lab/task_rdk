@@ -2,8 +2,12 @@
  * @summary Main jsPsych plugin file for Bang et al. RDK task.
  *
  * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/rdk/src/core/plugin.ts
- * @author Henry Burgess <henry.burgess@wustl.edu>
+ * @author Henry Burgess <s4481993@student.uq.edu.au>
  */
+
+// Import and declare jsPsych and jsPsych plugins
+declare const jsPsych: any;
+
 // Stylesheets
 import 'jspsych/css/jspsych.css';
 import './css/styles.css';
@@ -299,7 +303,7 @@ jsPsych.plugins['dot-game'] = (function() {
     };
 
     // Construct a list of the stimuli.
-    const stimuli: Stimulus[] = [];
+    const stimuli = [];
     stimuli.push(
         new Stimulus(initial),
         new Stimulus(motion),
@@ -313,7 +317,7 @@ jsPsych.plugins['dot-game'] = (function() {
       stimuli.push(new Stimulus(confidence));
     }
 
-    let currentStimulus: Stimulus;
+    let currentStimulus = null;
     trial.data.trialStartTime = Date.now();
 
     nextStimulus();
@@ -403,8 +407,7 @@ jsPsych.plugins['dot-game'] = (function() {
         } else if (currentStimulus.getParameters().name === 'confidence' &&
           keycode !== keyLayout.submit) {
           // Show the thumb
-          const slider = <HTMLInputElement>
-              document.getElementById('confidence-slider');
+          const slider = <HTMLInputElement>document.getElementById('confidence-slider');
           slider.className ='confidence-slider';
 
           // Handle the key that was pressed
@@ -434,8 +437,7 @@ jsPsych.plugins['dot-game'] = (function() {
             }
           } else if (currentStimulus.getParameters().name === 'confidence') {
             // Calculate and store confidence data
-            const slider = <HTMLInputElement>
-                document.getElementById('confidence-slider');
+            const slider = <HTMLInputElement>document.getElementById('confidence-slider');
             trial.data.confidenceEndTime = Date.now();
             trial.data.confidenceTotalTime = trial.data.confidenceEndTime -
               trial.data.confidenceStartTime;
@@ -446,12 +448,10 @@ jsPsych.plugins['dot-game'] = (function() {
           Runner.post(currentStimulus);
         }
       } else if (currentStimulus.getParameters().name === 'confidence') {
-        if (Configuration.keys === 'spectrometer' &&
-            keycode === keyLayout.alt) {
+        if (Configuration.keys === 'spectrometer' && keycode === keyLayout.alt) {
           // If the mistake button has been triggered in the spectrometer,
           // note the mistake and timing accordingly
-          const slider = <HTMLInputElement>
-              document.getElementById('confidence-slider');
+          const slider = <HTMLInputElement>document.getElementById('confidence-slider');
           trial.data.confidenceSelection = slider.value;
           trial.data.confidenceMistake = true;
           trial.data.confidenceEndTime = Date.now();
@@ -470,8 +470,7 @@ jsPsych.plugins['dot-game'] = (function() {
             (event.type === 'click' || keycode === keyLayout.alt)) {
           // If the mistake button has been triggered on a desktop,
           // note the mistake and timing accordingly
-          const slider = <HTMLInputElement>
-              document.getElementById('confidence-slider');
+          const slider = <HTMLInputElement>document.getElementById('confidence-slider');
           trial.data.confidenceSelection = slider.value;
           trial.data.confidenceMistake = true;
           trial.data.confidenceEndTime = Date.now();
@@ -524,6 +523,8 @@ jsPsych.plugins['dot-game'] = (function() {
     function endTrial() {
       // Clean up renderer and graphics
       renderer.clearElements();
+      renderer = null;
+      graphics = null;
       Two.Instances.pop();
       displayElement.innerHTML = '';
 

@@ -1,8 +1,11 @@
 // Configuration
-import {Configuration} from '../../Configuration';
+import { Configuration } from "../../Configuration";
+
+// API modules
+import { Stimuli } from "../API";
 
 // Core modules
-import {Dot, Renderer} from '../Runtime';
+import { Dot, Renderer } from "../Runtime";
 
 /**
  * Graphics class used to interface with the plugin and the renderer class
@@ -10,6 +13,7 @@ import {Dot, Renderer} from '../Runtime';
 export class Graphics {
   private trial: any;
   private renderer: Renderer;
+  private imageCollection: { [x: string]: any; };
 
   /**
    * Graphics constructor
@@ -19,6 +23,10 @@ export class Graphics {
   constructor(trial: any, renderer: Renderer) {
     this.trial = trial;
     this.renderer = renderer;
+
+    // Get the ImageCollection
+    const _imageLoader = new Stimuli();
+    this.imageCollection = _imageLoader.get();
   }
 
   /**
@@ -27,12 +35,10 @@ export class Graphics {
    */
   cursorVisibility(_visible = true): void {
     const _target = document.getElementById('jspsych-content');
-    if (_target) {
-      if (_visible) {
-        _target.style.cursor = 'auto';
-      } else {
-        _target.style.cursor = 'none';
-      }
+    if (_visible) {
+      _target.style.cursor = 'auto';
+    } else {
+      _target.style.cursor = 'none';
     }
   }
 
@@ -138,10 +144,8 @@ export class Graphics {
     const reference = this.trial.dotDirection;
     const length = Math.ceil(Math.abs(Math.tan(0.8))) * 6;
     const width = Math.ceil(Math.abs(Math.tan(0.08))) * 6;
-    const x1 =
-        (this.renderer.getViewRadius() - length / 2) * Math.cos(reference);
-    const y1 =
-        (this.renderer.getViewRadius() - length / 2) * Math.sin(reference);
+    const x1 = (this.renderer.getViewRadius() - length / 2) * Math.cos(reference);
+    const y1 = (this.renderer.getViewRadius() - length / 2) * Math.sin(reference);
     const x2 = (this.renderer.getViewRadius() + length) * Math.cos(reference);
     const y2 = (this.renderer.getViewRadius() + length) * Math.sin(reference);
     this.renderer.createLine(x1, y1, x2, y2, width);
@@ -206,11 +210,11 @@ export class Graphics {
     // Key images for target
     if (Configuration.keys === 'spectrometer') {
       html += `<div><img src="` +
-            `${Configuration.stimuli['ControlsConfidenceSpectrometer.png']}" ` +
+            `${this.imageCollection['ControlsConfidenceSpectrometer.png']}" ` +
                 `style="${Configuration.style.controls}"></div>`;
     } else {
       html += `<div><img src="` +
-            `${Configuration.stimuli['ControlsConfidenceDesktop.png']}" ` +
+            `${this.imageCollection['ControlsConfidenceDesktop.png']}" ` +
                 `style="${Configuration.style.controls}"></div>`;
     }
 
@@ -250,10 +254,10 @@ export class Graphics {
     html += `I made a mistake`;
     html += `</button>`;
     if (Configuration.keys === 'spectrometer') {
-      html += `<img src="${Configuration.stimuli['1.png']}" ` +
+      html += `<img src="${this.imageCollection['1.png']}" ` +
         `style="${Configuration.style.keyboard}">`;
     } else {
-      html += `<img src="${Configuration.stimuli['D.png']}" ` +
+      html += `<img src="${this.imageCollection['D.png']}" ` +
         `style="${Configuration.style.keyboard}">`;
     }
     html += `</div>`;
