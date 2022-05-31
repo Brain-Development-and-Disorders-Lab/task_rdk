@@ -35,4 +35,3 @@ All stimuli are stored in this directory as `.png` or `.svg` files.
 ### /trials (optional)
 
 Contains a Python script used to generate the trials prior to running the experiment. The script output `trials.json` which can be imported by `util.ts` prior to running the trials in the browser.
-

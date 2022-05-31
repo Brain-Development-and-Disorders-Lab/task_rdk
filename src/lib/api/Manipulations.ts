@@ -9,7 +9,7 @@ export class Manipulations {
   private _manipulations: string[];
 
   /**
-   * 
+   *
    * @param {any} _target target object containing the manipulations
    * @param {string[]} _manipulations list of manipulation keys
    */
@@ -24,8 +24,8 @@ export class Manipulations {
    * to the Gorilla Manipulations API.
    */
   private _connect() {
-    const _gorilla: any = window['gorilla'];
-    this._manipulations.forEach(_manipulationKey => {
+    const _gorilla: any = window["gorilla"];
+    this._manipulations.forEach((_manipulationKey) => {
       this._target[_manipulationKey] = _gorilla.manipulation(_manipulationKey);
     });
   }

@@ -6,7 +6,7 @@
     "dev": "webpack serve",
     "watch": "webpack --watch",
     "build": "gulp build",
-    "style": "gulp style",
+    "style": "yarn prettier --write .",
     "clean": "gulp clean",
     "package": "gulp package",
     "test": "jest"
@@ -47,6 +47,7 @@
     "html-webpack-plugin": "^5.3.2",
     "jest": "^27.0.6",
     "jquery": "^3.6.0",
+    "prettier": "2.6.2",
     "style-loader": "^3.0.0",
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
