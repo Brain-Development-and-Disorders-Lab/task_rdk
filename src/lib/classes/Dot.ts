@@ -1,5 +1,5 @@
 // Core modules
-import { Renderer } from "../Runtime";
+import { Renderer } from "./Renderer";
 
 /**
  * Dot class used to abstract the positioning of moving dots.

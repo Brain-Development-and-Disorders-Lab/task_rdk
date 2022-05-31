@@ -1,11 +1,10 @@
 // Configuration
+import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
 import { Configuration } from "../../Configuration";
 
-// API modules
-import { Stimuli } from "../API";
-
 // Core modules
-import { Dot, Renderer } from "../Runtime";
+import { Dot } from "./Dot";
+import { Renderer } from "./Renderer";
 
 /**
  * Graphics class used to interface with the plugin and the renderer class
@@ -13,7 +12,7 @@ import { Dot, Renderer } from "../Runtime";
 export class Graphics {
   private trial: any;
   private renderer: Renderer;
-  private imageCollection: { [x: string]: any };
+  private imageCollection: Stimuli;
 
   /**
    * Graphics constructor
@@ -25,8 +24,7 @@ export class Graphics {
     this.renderer = renderer;
 
     // Get the ImageCollection
-    const _imageLoader = new Stimuli();
-    this.imageCollection = _imageLoader.get();
+    this.imageCollection = window.Experiment.getStimuli();
   }
 
   /**
@@ -235,12 +233,14 @@ export class Graphics {
     if (Configuration.keys === "spectrometer") {
       html +=
         `<div><img src="` +
-        `${this.imageCollection["ControlsConfidenceSpectrometer.png"]}" ` +
+        `${this.imageCollection.getImage(
+          "ControlsConfidenceSpectrometer.png"
+        )}" ` +
         `style="${Configuration.style.controls}"></div>`;
     } else {
       html +=
         `<div><img src="` +
-        `${this.imageCollection["ControlsConfidenceDesktop.png"]}" ` +
+        `${this.imageCollection.getImage("ControlsConfidenceDesktop.png")}" ` +
         `style="${Configuration.style.controls}"></div>`;
     }
 
@@ -279,11 +279,11 @@ export class Graphics {
     html += `</button>`;
     if (Configuration.keys === "spectrometer") {
       html +=
-        `<img src="${this.imageCollection["1.png"]}" ` +
+        `<img src="${this.imageCollection.getImage("1.png")}" ` +
         `style="${Configuration.style.keyboard}">`;
     } else {
       html +=
-        `<img src="${this.imageCollection["D.png"]}" ` +
+        `<img src="${this.imageCollection.getImage("D.png")}" ` +
         `style="${Configuration.style.keyboard}">`;
     }
     html += `</div>`;

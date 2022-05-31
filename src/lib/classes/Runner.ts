@@ -1,5 +1,5 @@
 // Core modules
-import { Stimulus } from "../Runtime";
+import { Stimulus } from "./Stimulus";
 
 /**
  * Driver class that operates trials, showing stimuli

@@ -1,15 +1,13 @@
 // Core modules
-import { Dot } from "../Runtime";
-
-// API modules
-import { Stimuli } from "../API";
+import { Dot } from "./Dot";
 
 // Configuration
 import { Configuration } from "../../Configuration";
+import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
 
 /**
  * Renderer abstraction that interfaces directly with the
- * Two.js grpahics library
+ * Two.js graphics library
  */
 export class Renderer {
   private target: any;
@@ -21,7 +19,7 @@ export class Renderer {
   private height: any;
   private renderLayer: any;
   private elements: any[];
-  private imageCollection: { [x: string]: any };
+  private imageCollection: Stimuli;
 
   /**
    * Default constructor for Renderer
@@ -40,8 +38,7 @@ export class Renderer {
     this.elements = [];
 
     // Get the ImageCollection
-    const _imageLoader = new Stimuli();
-    this.imageCollection = _imageLoader.get();
+    this.imageCollection = window.Experiment.getStimuli();
   }
 
   /**
@@ -196,9 +193,9 @@ export class Renderer {
       // Create the left image container and the left image
       const leftImage = document.createElement("img");
       if (Configuration.keys === "desktop") {
-        leftImage.src = this.imageCollection["F.png"];
+        leftImage.src = this.imageCollection.getImage("F.png");
       } else {
-        leftImage.src = this.imageCollection["2.png"];
+        leftImage.src = this.imageCollection.getImage("2.png");
       }
       leftImage.style.height = "20vh";
       leftImage.style.position = "absolute";
@@ -214,9 +211,9 @@ export class Renderer {
       // Create the right image container and the right image
       const rightImage = document.createElement("img");
       if (Configuration.keys === "desktop") {
-        rightImage.src = this.imageCollection["J.png"];
+        rightImage.src = this.imageCollection.getImage("J.png");
       } else {
-        rightImage.src = this.imageCollection["3.png"];
+        rightImage.src = this.imageCollection.getImage("3.png");
       }
       rightImage.style.height = "20vh";
       rightImage.style.position = "absolute";

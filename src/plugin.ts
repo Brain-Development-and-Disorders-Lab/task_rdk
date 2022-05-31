@@ -5,9 +5,6 @@
  * @author Henry Burgess <s4481993@student.uq.edu.au>
  */
 
-// Import and declare jsPsych and jsPsych plugins
-declare const jsPsych: any;
-
 // Stylesheets
 import "jspsych/css/jspsych.css";
 import "./css/styles.css";
@@ -17,7 +14,10 @@ import "./css/buttons.css";
 import { scaling } from "./lib/Functions";
 
 // Core modules
-import { Graphics, Renderer, Stimulus, Runner } from "./lib/Runtime";
+import { Graphics } from "./lib/classes/Graphics";
+import { Renderer } from "./lib/classes/Renderer";
+import { Stimulus } from "./lib/classes/Stimulus";
+import { Runner } from "./lib/classes/Runner";
 
 // Configuration
 import { Configuration } from "./Configuration";
