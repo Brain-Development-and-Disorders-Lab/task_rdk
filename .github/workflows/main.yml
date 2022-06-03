@@ -1,6 +1,6 @@
 name: Task build, test, style
 
-on: 
+on:
   push:
     branches:
       - main
@@ -12,42 +12,42 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout 🛎️
-      uses: actions/checkout@v2
-    - name: Setup Node ⚙️
-      uses: actions/setup-node@v2
-      with:
-        node-version: '12.x'
-    - name: Install 🚦
-      run: yarn
-    - name: Build 🔨
-      run: yarn build
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      - name: Setup Node ⚙️
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+      - name: Install 🚦
+        run: yarn
+      - name: Build 🔨
+        run: yarn build
 
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout 🛎️
-      uses: actions/checkout@v2
-    - name: Setup Node ⚙️
-      uses: actions/setup-node@v2
-      with:
-        node-version: '12.x'
-    - name: Install 🚦
-      run: yarn
-    - name: Test 🧪
-      run: yarn test
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      - name: Setup Node ⚙️
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+      - name: Install 🚦
+        run: yarn
+      - name: Test 🧪
+        run: yarn test
 
   style:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout 🛎️
-      uses: actions/checkout@v2
-    - name: Setup Node ⚙️
-      uses: actions/setup-node@v2
-      with:
-        node-version: '12.x'
-    - name: Install 🚦
-      run: yarn
-    - name: Style 💅
-      run: yarn style
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      - name: Setup Node ⚙️
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+      - name: Install 🚦
+        run: yarn
+      - name: Style 💅
+        run: yarn style
