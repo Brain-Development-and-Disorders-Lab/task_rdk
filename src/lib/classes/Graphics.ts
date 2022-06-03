@@ -1,6 +1,8 @@
 // Configuration
+import { configuration } from "../../configuration";
+
+// 'Stimuli' type
 import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
-import { Configuration } from "../../Configuration";
 
 // Core modules
 import { Dot } from "./Dot";
@@ -230,18 +232,18 @@ export class Graphics {
     let html = "";
 
     // Key images for target
-    if (Configuration.keys === "spectrometer") {
+    if (configuration.keys === "spectrometer") {
       html +=
         `<div><img src="` +
         `${this.imageCollection.getImage(
           "ControlsConfidenceSpectrometer.png"
         )}" ` +
-        `style="${Configuration.style.controls}"></div>`;
+        `style="${configuration.style.controls}"></div>`;
     } else {
       html +=
         `<div><img src="` +
         `${this.imageCollection.getImage("ControlsConfidenceDesktop.png")}" ` +
-        `style="${Configuration.style.controls}"></div>`;
+        `style="${configuration.style.controls}"></div>`;
     }
 
     // Confidence slider
@@ -277,14 +279,14 @@ export class Graphics {
       `<button type="button" id="mistake-button" ` + `class="jspsych-btn">`;
     html += `I made a mistake`;
     html += `</button>`;
-    if (Configuration.keys === "spectrometer") {
+    if (configuration.keys === "spectrometer") {
       html +=
         `<img src="${this.imageCollection.getImage("1.png")}" ` +
-        `style="${Configuration.style.keyboard}">`;
+        `style="${configuration.style.keyboard}">`;
     } else {
       html +=
         `<img src="${this.imageCollection.getImage("D.png")}" ` +
-        `style="${Configuration.style.keyboard}">`;
+        `style="${configuration.style.keyboard}">`;
     }
     html += `</div>`;
 
@@ -300,7 +302,7 @@ export class Graphics {
 
     // Bind appropriate event listeners to actions
     document.addEventListener("keyup", parameters.eventHandler);
-    if (Configuration.keys === "desktop") {
+    if (configuration.keys === "desktop") {
       document
         .getElementById("mistake-button")
         .addEventListener("click", parameters.eventHandler);

@@ -2,7 +2,9 @@
 import { Dot } from "./Dot";
 
 // Configuration
-import { Configuration } from "../../Configuration";
+import { configuration } from "../../configuration";
+
+// 'Stimuli' type
 import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
 
 /**
@@ -192,7 +194,7 @@ export class Renderer {
 
       // Create the left image container and the left image
       const leftImage = document.createElement("img");
-      if (Configuration.keys === "desktop") {
+      if (configuration.keys === "desktop") {
         leftImage.src = this.imageCollection.getImage("F.png");
       } else {
         leftImage.src = this.imageCollection.getImage("2.png");
@@ -210,7 +212,7 @@ export class Renderer {
 
       // Create the right image container and the right image
       const rightImage = document.createElement("img");
-      if (Configuration.keys === "desktop") {
+      if (configuration.keys === "desktop") {
         rightImage.src = this.imageCollection.getImage("J.png");
       } else {
         rightImage.src = this.imageCollection.getImage("3.png");

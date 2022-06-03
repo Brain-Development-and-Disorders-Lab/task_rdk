@@ -19,18 +19,18 @@ import "jspsych-attention-check";
 // Import the plugin before adding it to the timeline
 import "./Plugin";
 
-// Configuration
-import { Configuration } from "./Configuration";
+// configuration
+import { configuration } from "./configuration";
 
 // Additional functions
 import { scaling } from "./lib/Functions";
 
-const experiment = new Experiment(Configuration);
+const experiment = new Experiment(configuration);
 
 const timeline = [];
 
 const duration = calculateDuration();
-const keyLayout = Configuration.layouts[Configuration.keys];
+const keyLayout = configuration.layouts[configuration.keys];
 
 // Tutorial trial properties
 const tutorialDuration = [1, 5];
@@ -55,7 +55,7 @@ if (keyLayout.name === "spectrometer") {
     `<img src="${experiment
       .getStimuli()
       .getImage("ControlsNavigationSpectrometer.png")}" ` +
-    `style="${Configuration.style.controls}">` +
+    `style="${configuration.style.controls}">` +
     `</div>`;
 } else {
   instructionContinueText =
@@ -65,7 +65,7 @@ if (keyLayout.name === "spectrometer") {
     `<img src="${experiment
       .getStimuli()
       .getImage("ControlsNavigationDesktop.png")}" ` +
-    `style="${Configuration.style.controls}">` +
+    `style="${configuration.style.controls}">` +
     `</div>`;
 }
 
@@ -76,27 +76,27 @@ let submitControlImage: string;
 if (keyLayout.name === "spectrometer") {
   leftControlImage =
     `<img src="${experiment.getStimuli().getImage("2.png")}" ` +
-    `style="${Configuration.style.keyboard}"> `;
+    `style="${configuration.style.keyboard}"> `;
   rightControlImage =
     `<img src="${experiment.getStimuli().getImage("3.png")}" ` +
-    `style="${Configuration.style.keyboard}"> `;
+    `style="${configuration.style.keyboard}"> `;
   submitControlImage =
     `<img src="${experiment.getStimuli().getImage("4.png")}" ` +
-    `style="${Configuration.style.keyboard}"> `;
+    `style="${configuration.style.keyboard}"> `;
 } else {
   leftControlImage =
     `<img src="${experiment.getStimuli().getImage("F.png")}" ` +
-    `style="${Configuration.style.keyboard}"> `;
+    `style="${configuration.style.keyboard}"> `;
   rightControlImage =
     `<img src="${experiment.getStimuli().getImage("J.png")}" ` +
-    `style="${Configuration.style.keyboard}"> `;
+    `style="${configuration.style.keyboard}"> `;
   submitControlImage =
     `<img src="${experiment.getStimuli().getImage("K.png")}" ` +
-    `style="${Configuration.style.keyboard}"> `;
+    `style="${configuration.style.keyboard}"> `;
 }
 
 const description = [
-  `<h1>${Configuration.name} game</h1>` +
+  `<h1>${configuration.name} game</h1>` +
     `<p><b>Approximate duration:</b> ${duration} minutes</p>` +
     `<h2>Instructions</h2>` +
     `<p>In each game, you will be briefly shown dots moving inside a ` +
@@ -106,13 +106,13 @@ const description = [
     `<img src="${experiment
       .getStimuli()
       .getImage("InstructionsMovingDots.gif")}" ` +
-    `style="${Configuration.style.image}">` +
+    `style="${configuration.style.image}">` +
     `<p>When watching the dots, focus on the cross (<b>+</b>) at ` +
     `the center of the circular area. It will make it easier to notice ` +
     `the motion of the dots.</p>` +
     instructionContinueText,
 
-  `<h1>${Configuration.name} game</h1>` +
+  `<h1>${configuration.name} game</h1>` +
     `<h2>Instructions</h2>` +
     `<p>After watching the dots, a blue section and an orange section ` +
     `will appear on the perimeter of the circle.</p>` +
@@ -120,7 +120,7 @@ const description = [
     `<img src="${experiment
       .getStimuli()
       .getImage("InstructionsReference.png")}" ` +
-    `style="${Configuration.style.image}"/>` +
+    `style="${configuration.style.image}"/>` +
     `<p><b>Your task:</b> Determine whether there was movement of dots ` +
     `towards the blue or the orange section.</p>` +
     `<p>Press ${leftControlImage} ` +
@@ -130,7 +130,7 @@ const description = [
     `<span style="color: #d78000;">orange</span>.</p>` +
     instructionContinueText,
 
-  `<h1>${Configuration.name} game</h1>` +
+  `<h1>${configuration.name} game</h1>` +
     `<h2>Instructions</h2>` +
     `<p>After deciding the direction the dots were moving, ` +
     `you will rate how confident you were in making your decision.</p>` +
@@ -138,7 +138,7 @@ const description = [
     `<img src="${experiment
       .getStimuli()
       .getImage("InstructionsConfidence.png")}" ` +
-    `style="${Configuration.style.image}"/>` +
+    `style="${configuration.style.image}"/>` +
     `<p>Press ${leftControlImage} ` +
     `on your keyboard to decrease your confidence, ` +
     `or press ${rightControlImage} ` +
@@ -151,7 +151,7 @@ const description = [
     `the previous trial.</p>` +
     instructionContinueText,
 ];
-if (Configuration.showInstructions === true) {
+if (configuration.showInstructions === true) {
   timeline.push({
     type: "instructions",
     pages: description,
@@ -166,7 +166,7 @@ if (Configuration.showInstructions === true) {
   timeline.push({
     type: "instructions",
     pages: [
-      `<h1>${Configuration.name} Game</h1>` +
+      `<h1>${configuration.name} Game</h1>` +
         `<h2>Instructions - Video</h2>` +
         `<div class="video-container">` +
         `<iframe style="width: 100%; height: 100%;" src="https://www.youtube.com/embed/NIJ9DBcr_qI?&autoplay=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>` +
@@ -222,7 +222,7 @@ if (keyLayout.name !== "spectrometer") {
 // -------------------- Tutorial games --------------------
 // Spectrometer start
 const tutorialGames = [
-  `<h1>${Configuration.name} game</h1>` +
+  `<h1>${configuration.name} game</h1>` +
     `<h2>Practice Games</h2>` +
     `<p>Play a few games now and practice watching the dots while ` +
     `observing the appearance of the game.</p>` +
@@ -240,7 +240,7 @@ timeline.push({
   show_clickable_nav: keyLayout.showButtons,
 });
 
-for (let t = 0; t < Configuration.manipulations.numTutorialTrials; t++) {
+for (let t = 0; t < configuration.manipulations.numTutorialTrials; t++) {
   const trialName = "tutorial";
   const d = parseFloat(
     (
@@ -279,9 +279,9 @@ for (let t = 0; t < Configuration.manipulations.numTutorialTrials; t++) {
 
 // -------------------- Practice games --------------------
 const practice = [
-  `<h1>${Configuration.name} game</h1>` +
+  `<h1>${configuration.name} game</h1>` +
     `<h2>Practice Games</h2>` +
-    `<p>You will now play another ${Configuration.manipulations.numPracticeTrials} ` +
+    `<p>You will now play another ${configuration.manipulations.numPracticeTrials} ` +
     `practice games. ` +
     `You won't have to rate your confidence after each game, ` +
     `but you will be shown if your answer was correct or not.</p>` +
@@ -339,7 +339,7 @@ if (keyLayout.name !== "spectrometer") {
   });
 }
 
-for (let t = 0; t < Configuration.manipulations.numPracticeTrials; t++) {
+for (let t = 0; t < configuration.manipulations.numPracticeTrials; t++) {
   const trialName = "practice";
   let r = Math.random() > 0.5 ? 0 : Math.PI;
   r = parseFloat(r.toFixed(3));
@@ -372,13 +372,13 @@ for (let t = 0; t < Configuration.manipulations.numPracticeTrials; t++) {
 
 // -------------------- Calibration games --------------------
 const main = [
-  `<h1>${Configuration.name} game</h1>` +
+  `<h1>${configuration.name} game</h1>` +
     `<p>That concludes all the practice games.</p>` +
     `<p>Take a short break now.</p>` +
     `<p>When you are ready to continue, you will play ` +
     `${
-      Configuration.manipulations.numCalibrationOneTrials +
-      Configuration.manipulations.numMainTrials
+      configuration.manipulations.numCalibrationOneTrials +
+      configuration.manipulations.numMainTrials
     } ` +
     `games.</p>` +
     `<p>You will not be shown if you have correctly ` +
@@ -434,7 +434,7 @@ if (keyLayout.name !== "spectrometer") {
 // Else, use the standard pre-game screen.
 if (keyLayout.name === "spectrometer") {
   const spectrometer = [
-    `<h1>${Configuration.name} game</h1>` +
+    `<h1>${configuration.name} game</h1>` +
       `<h2>Please Wait...</h2>` +
       `<p>You have now completed all of the practice games.</p>` +
       `<p>Waiting for spectrometer to be ready.</p>` +
@@ -462,7 +462,7 @@ if (keyLayout.name === "spectrometer") {
 }
 
 // -------------------- Phase one calibration games --------------------
-for (let t = 0; t < Configuration.manipulations.numCalibrationOneTrials; t++) {
+for (let t = 0; t < configuration.manipulations.numCalibrationOneTrials; t++) {
   let trialName = "calibration";
   if (t === 0 || t === 1) trialName = "calibration-constant";
 
@@ -535,7 +535,7 @@ if (keyLayout.name !== "spectrometer") {
 }
 
 // -------------------- Main games --------------------
-for (let t = 0; t < Configuration.manipulations.numMainTrials; t++) {
+for (let t = 0; t < configuration.manipulations.numMainTrials; t++) {
   const trialName = "main";
   const k = 0.2;
   let r = Math.random() > 0.5 ? 0 : Math.PI;
@@ -575,10 +575,10 @@ for (let t = 0; t < Configuration.manipulations.numMainTrials; t++) {
 function calculateDuration() {
   // Total number of seconds
   let total =
-    Configuration.manipulations.numTutorialTrials +
-    Configuration.manipulations.numPracticeTrials +
-    Configuration.manipulations.numCalibrationOneTrials +
-    Configuration.manipulations.numMainTrials;
+    configuration.manipulations.numTutorialTrials +
+    configuration.manipulations.numPracticeTrials +
+    configuration.manipulations.numCalibrationOneTrials +
+    configuration.manipulations.numMainTrials;
   total *= 0.75 + 1 + 2 + 0.25 + 4;
 
   total /= 60;

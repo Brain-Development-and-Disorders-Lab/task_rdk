@@ -18,7 +18,7 @@ enum Targets {
 // Specify the build target here
 const TARGET = Targets.DESKTOP;
 
-export const Configuration = {
+export const configuration = {
   name: "Moving dots",
   studyName: "bang_2018_decision_confidence",
   localisation: "en-AU",

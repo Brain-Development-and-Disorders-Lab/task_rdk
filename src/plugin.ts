@@ -20,7 +20,7 @@ import { Stimulus } from "./lib/classes/Stimulus";
 import { Runner } from "./lib/classes/Runner";
 
 // Configuration
-import { Configuration } from "./Configuration";
+import { configuration } from "./configuration";
 
 // External libraries
 import Two from "two.js";
@@ -58,7 +58,7 @@ jsPsych.plugins["dot-game"] = (function () {
     let height = viewRadius * 2 + 10;
 
     // Apply scaling
-    if (height > window.innerHeight * Configuration.scalingDefault) {
+    if (height > window.innerHeight * configuration.scalingDefault) {
       height *= scaling();
       width *= scaling();
       viewRadius *= scaling();
@@ -360,8 +360,8 @@ jsPsych.plugins["dot-game"] = (function () {
 
         // Download a copy of the current data
         if (
-          Configuration.target === "desktop" ||
-          Configuration.keys === "spectrometer"
+          configuration.target === "desktop" ||
+          configuration.keys === "spectrometer"
         ) {
           jsPsych.data.get().localSave(`csv`, `dots_part_${Date.now()}.csv`);
         }
