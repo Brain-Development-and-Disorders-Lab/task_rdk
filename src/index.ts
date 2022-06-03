@@ -187,9 +187,22 @@ if (keyLayout.name !== "spectrometer") {
     type: "attention-check",
     prompt: "What is the purpose of this task?",
     responses: [
-      {value: "(1) Try and decide whether I like orange or blue more", key: keyLayout.alt, correct: false},
-      {value: "(2) Guess the direction of the moving dots", key: keyLayout.left, correct: true},
-      {value: "(3) Try and stop other participants from guessing the direction of the dots", key: keyLayout.right, correct: false},
+      {
+        value: "(1) Try and decide whether I like orange or blue more",
+        key: keyLayout.alt,
+        correct: false,
+      },
+      {
+        value: "(2) Guess the direction of the moving dots",
+        key: keyLayout.left,
+        correct: true,
+      },
+      {
+        value:
+          "(3) Try and stop other participants from guessing the direction of the dots",
+        key: keyLayout.right,
+        correct: false,
+      },
     ],
     style: "radio",
     continue: {
@@ -198,9 +211,11 @@ if (keyLayout.name !== "spectrometer") {
     },
     input_timeout: 1500,
     feedback: {
-      correct: "Correct! You will have to guess the direction of the moving dots.",
-      incorrect: "Incorrect. You will have to guess the direction of the moving dots.",
-    }
+      correct:
+        "Correct! You will have to guess the direction of the moving dots.",
+      incorrect:
+        "Incorrect. You will have to guess the direction of the moving dots.",
+    },
   });
 }
 
@@ -295,9 +310,21 @@ if (keyLayout.name !== "spectrometer") {
       "How will you know if you have correctly guessed the " +
       "direction of the dots in the next practice games?",
     responses: [
-      {value:"(1) I will never be told the answer", key: keyLayout.alt, correct: false},
-      {value:"(2) The fixation cross in the circle will go green", key: keyLayout.left, correct: true},
-      {value:"(3) The fixation cross in the circle will go red", key: keyLayout.right, correct: false},
+      {
+        value: "(1) I will never be told the answer",
+        key: keyLayout.alt,
+        correct: false,
+      },
+      {
+        value: "(2) The fixation cross in the circle will go green",
+        key: keyLayout.left,
+        correct: true,
+      },
+      {
+        value: "(3) The fixation cross in the circle will go red",
+        key: keyLayout.right,
+        correct: false,
+      },
     ],
     style: "radio",
     continue: {
@@ -372,9 +399,21 @@ if (keyLayout.name !== "spectrometer") {
     type: "attention-check",
     prompt: "What is the best way to detect the motion of the moving dots?",
     responses: [
-      {value: "(1) Look at the corner of the screen", key: keyLayout.alt, correct: false},
-      {value: "(2) Focus on the fixation cross in the circle", key: keyLayout.left, correct: true},
-      {value: "(3) Track them with your finger", key: keyLayout.right, correct: false},
+      {
+        value: "(1) Look at the corner of the screen",
+        key: keyLayout.alt,
+        correct: false,
+      },
+      {
+        value: "(2) Focus on the fixation cross in the circle",
+        key: keyLayout.left,
+        correct: true,
+      },
+      {
+        value: "(3) Track them with your finger",
+        key: keyLayout.right,
+        correct: false,
+      },
     ],
     style: "radio",
     continue: {
@@ -384,7 +423,8 @@ if (keyLayout.name !== "spectrometer") {
     input_timeout: 1500,
     feedback: {
       correct: "Correct! You should focus on the fixation cross in the circle.",
-      incorrect: "Incorrect. You should focus on the fixation cross in the circle",
+      incorrect:
+        "Incorrect. You should focus on the fixation cross in the circle",
     },
   });
 }
@@ -462,9 +502,22 @@ if (keyLayout.name !== "spectrometer") {
     type: "attention-check",
     prompt: "What is the objective of this task?",
     responses: [
-      {value: "(1) Try and decide whether I like orange or blue more", key: keyLayout.alt, correct: false},
-      {value: "(2) Guess the direction of the moving dots", key: keyLayout.left, correct: true},
-      {value: "(3) Try and stop other participants from guessing the direction of the dots", key: keyLayout.right, correct: false},
+      {
+        value: "(1) Try and decide whether I like orange or blue more",
+        key: keyLayout.alt,
+        correct: false,
+      },
+      {
+        value: "(2) Guess the direction of the moving dots",
+        key: keyLayout.left,
+        correct: true,
+      },
+      {
+        value:
+          "(3) Try and stop other participants from guessing the direction of the dots",
+        key: keyLayout.right,
+        correct: false,
+      },
     ],
     style: "radio",
     continue: {
@@ -473,8 +526,10 @@ if (keyLayout.name !== "spectrometer") {
     },
     input_timeout: 1500,
     feedback: {
-      correct: "Correct! You will have to guess the direction of the moving dots.",
-      incorrect: "Incorrect. You will have to guess the direction of the moving dots.",
+      correct:
+        "Correct! You will have to guess the direction of the moving dots.",
+      incorrect:
+        "Incorrect. You will have to guess the direction of the moving dots.",
     },
   });
 }

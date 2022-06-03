@@ -294,7 +294,7 @@ jsPsych.plugins["dot-game"] = (function () {
         [keyLayout.alt]: {
           choice: "mistake",
           handler: decisionHandler,
-        }
+        },
       },
       target: displayElement,
       trial: trial,
@@ -397,11 +397,17 @@ jsPsych.plugins["dot-game"] = (function () {
       // Record the keycode to process the event
       const keycode = event.key;
 
-      if (Object.keys(currentStimulus.getParameters().keybindings).includes(keycode)) {
+      if (
+        Object.keys(currentStimulus.getParameters().keybindings).includes(
+          keycode
+        )
+      ) {
         // Handle the decision if a valid key has been pressed for this stage
         if (currentStimulus.getParameters().name === "confidence") {
           // Handle 'confidence' stimuli
-          const slider = document.getElementById("confidence-slider") as HTMLInputElement;
+          const slider = document.getElementById(
+            "confidence-slider"
+          ) as HTMLInputElement;
           if (slider) {
             // Show the thumb if it is currently hidden when adjusting confidence
             if (
@@ -410,7 +416,6 @@ jsPsych.plugins["dot-game"] = (function () {
             ) {
               slider.className = "confidence-slider";
             }
-              
 
             // Handle incrementing and decrementing slider
             if (keycode === keyLayout.left) {
@@ -426,7 +431,8 @@ jsPsych.plugins["dot-game"] = (function () {
 
               // Calculate and store confidence data
               trial.data.confidenceEndTime = Date.now();
-              trial.data.confidenceTotalTime = trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+              trial.data.confidenceTotalTime =
+                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
               trial.data.confidenceSelection = slider.value;
 
               // Continue to the next Stimulus
@@ -435,10 +441,14 @@ jsPsych.plugins["dot-game"] = (function () {
             }
 
             // Finally, we ignore any submissions if the slider is hidden, only submit if slider is visible
-            if (keycode === keyLayout.submit && slider.className === "confidence-slider") {
+            if (
+              keycode === keyLayout.submit &&
+              slider.className === "confidence-slider"
+            ) {
               // Calculate and store confidence data
               trial.data.confidenceEndTime = Date.now();
-              trial.data.confidenceTotalTime = trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+              trial.data.confidenceTotalTime =
+                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
               trial.data.confidenceSelection = slider.value;
 
               // Continue to the next Stimulus
@@ -449,12 +459,14 @@ jsPsych.plugins["dot-game"] = (function () {
           }
         } else if (currentStimulus.getParameters().name === "reference") {
           // Handle 'reference' stimuli
-          selection = currentStimulus.getParameters().keybindings[keycode].choice;
+          selection =
+            currentStimulus.getParameters().keybindings[keycode].choice;
           currentStimulus.removeKeybindings();
 
           // Calculate and store reference data
           trial.data.referenceEndTime = Date.now();
-          trial.data.referenceTotalTime = trial.data.referenceEndTime - trial.data.referenceStartTime;
+          trial.data.referenceTotalTime =
+            trial.data.referenceEndTime - trial.data.referenceStartTime;
 
           // Normalize selection data
           trial.data.referenceSelection = selection === "left" ? 1 : 2;
@@ -463,13 +475,18 @@ jsPsych.plugins["dot-game"] = (function () {
           trial.data.correct = selection === trial.data.deviation ? 1 : 0;
 
           // Increment score if correct
-          if (trial.data.correct === 1 && trial.name === "main") trial.data.score++;
+          if (trial.data.correct === 1 && trial.name === "main")
+            trial.data.score++;
 
           // Continue to the next Stimulus
           Runner.post(currentStimulus);
         }
       } else {
-        console.warn(`Invalid key "${keycode}" for stimulus type "${currentStimulus.getParameters().name}"`);
+        console.warn(
+          `Invalid key "${keycode}" for stimulus type "${
+            currentStimulus.getParameters().name
+          }"`
+        );
       }
     }
 
