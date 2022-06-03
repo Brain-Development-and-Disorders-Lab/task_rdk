@@ -14,7 +14,7 @@ import "jspsych/jspsych";
 import "jspsych/plugins/jspsych-instructions";
 import "jspsych/plugins/jspsych-fullscreen";
 import "jspsych/plugins/jspsych-preload";
-import "jspsych-attention-check/src/jspsych-attention-check";
+import "jspsych-attention-check";
 
 // Import the plugin before adding it to the timeline
 import "./Plugin";
@@ -93,26 +93,6 @@ if (keyLayout.name === "spectrometer") {
   submitControlImage =
     `<img src="${experiment.getStimuli().getImage("K.png")}" ` +
     `style="${Configuration.style.keyboard}"> `;
-}
-
-// Instructions to interact with the control questions
-let controlInstructions: string;
-if (keyLayout.name === "spectrometer") {
-  controlInstructions =
-    `<div>` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage("ControlsQuestionSpectrometer.png")}" ` +
-    `style="${Configuration.style.controls}">` +
-    `</div>`;
-} else {
-  controlInstructions =
-    `<div>` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage("ControlsQuestionDesktop.png")}" ` +
-    `style="${Configuration.style.controls}">` +
-    `</div>`;
 }
 
 const description = [
@@ -201,29 +181,26 @@ if (Configuration.showInstructions === true) {
   });
 }
 
+// Attention-check question
 if (keyLayout.name !== "spectrometer") {
   timeline.push({
     type: "attention-check",
-    question: "What is the purpose of this task?",
-    options: [
-      "(1) Try and decide whether I like orange or blue more",
-      "(2) Guess the direction of the moving dots",
-      "(3) Try and stop other participants from guessing the direction of " +
-        "the dots",
+    prompt: "What is the purpose of this task?",
+    responses: [
+      {value: "(1) Try and decide whether I like orange or blue more", key: keyLayout.alt, correct: false},
+      {value: "(2) Guess the direction of the moving dots", key: keyLayout.left, correct: true},
+      {value: "(3) Try and stop other participants from guessing the direction of the dots", key: keyLayout.right, correct: false},
     ],
-    option_correct: 1,
-    option_keys: [keyLayout.alt, keyLayout.left, keyLayout.right],
-    confirmation: true,
+    style: "radio",
+    continue: {
+      confirm: true,
+      key: keyLayout.submit,
+    },
     input_timeout: 1500,
-    options_radio: true,
-    button_text: "Submit Answer",
-    button_key: keyLayout.submit,
-    feedback_correct:
-      "Correct! You will have to guess the " + "direction of the moving dots.",
-    feedback_incorrect:
-      "Incorrect. You will have to guess the " +
-      "direction of the moving dots.",
-    instructions: controlInstructions,
+    feedback: {
+      correct: "Correct! You will have to guess the direction of the moving dots.",
+      incorrect: "Incorrect. You will have to guess the direction of the moving dots.",
+    }
   });
 }
 
@@ -314,26 +291,24 @@ timeline.push({
 if (keyLayout.name !== "spectrometer") {
   timeline.push({
     type: "attention-check",
-    question:
+    prompt:
       "How will you know if you have correctly guessed the " +
       "direction of the dots in the next practice games?",
-    options: [
-      "(1) I will never be told the answer",
-      "(2) The fixation cross in the circle will go green",
-      "(3) The fixation cross in the circle will go red",
+    responses: [
+      {value:"(1) I will never be told the answer", key: keyLayout.alt, correct: false},
+      {value:"(2) The fixation cross in the circle will go green", key: keyLayout.left, correct: true},
+      {value:"(3) The fixation cross in the circle will go red", key: keyLayout.right, correct: false},
     ],
-    option_correct: 1,
-    option_keys: [keyLayout.alt, keyLayout.left, keyLayout.right],
-    options_radio: true,
-    confirmation: true,
+    style: "radio",
+    continue: {
+      confirm: true,
+      key: keyLayout.submit,
+    },
     input_timeout: 1500,
-    button_key: keyLayout.submit,
-    button_text: "Submit Answer",
-    feedback_correct:
-      "Correct! The fixation cross in the circle " + "will go green.",
-    feedback_incorrect:
-      "Incorrect. The fixation cross in the " + "circle will go green",
-    instructions: controlInstructions,
+    feedback: {
+      correct: "Correct! The fixation cross in the circle will go green.",
+      incorrect: "Incorrect. The fixation cross in the circle will go green",
+    },
   });
 }
 
@@ -368,48 +343,6 @@ for (let t = 0; t < Configuration.manipulations.numPracticeTrials; t++) {
   });
 }
 
-// -------------------- User Testing --------------------
-if (Configuration.testing === true) {
-  const likertScale = [
-    "Strongly Disagree",
-    "Disagree",
-    "Neutral",
-    "Agree",
-    "Strongly Agree",
-  ];
-
-  timeline.push({
-    type: "survey-likert-rich",
-    preamble:
-      `Please answer the following questions relating to the ` +
-      `instructions you just read before continuing ` +
-      `to the main games.`,
-    questions: [
-      {
-        prompt: `The instructions made sense to me.`,
-        name: "Question 1",
-        labels: likertScale,
-        required: true,
-      },
-      {
-        prompt: `The instructions helped me play the games.`,
-        name: "Question 2",
-        labels: likertScale,
-        required: true,
-      },
-      {
-        prompt:
-          `I did not encounter anything unexpected while playing the ` +
-          `games.`,
-        name: "Question 3",
-        labels: likertScale,
-        required: true,
-      },
-    ],
-    feedback_placeholder: "Please enter additional feedback here.",
-  });
-}
-
 // -------------------- Calibration games --------------------
 const main = [
   `<h1>${Configuration.name} game</h1>` +
@@ -437,24 +370,22 @@ const main = [
 if (keyLayout.name !== "spectrometer") {
   timeline.push({
     type: "attention-check",
-    question: "What is the best way to detect the motion of the moving dots?",
-    options: [
-      "(1) Look at the corner of the screen",
-      "(2) Focus on the fixation cross in the circle",
-      "(3) Track them with your finger",
+    prompt: "What is the best way to detect the motion of the moving dots?",
+    responses: [
+      {value: "(1) Look at the corner of the screen", key: keyLayout.alt, correct: false},
+      {value: "(2) Focus on the fixation cross in the circle", key: keyLayout.left, correct: true},
+      {value: "(3) Track them with your finger", key: keyLayout.right, correct: false},
     ],
-    option_keys: [keyLayout.alt, keyLayout.left, keyLayout.right],
-    option_correct: 1,
-    options_radio: true,
-    confirmation: true,
+    style: "radio",
+    continue: {
+      confirm: true,
+      key: keyLayout.submit,
+    },
     input_timeout: 1500,
-    button_key: keyLayout.submit,
-    button_text: "Submit Answer",
-    feedback_correct:
-      "Correct! You should focus on the fixation " + "cross in the circle.",
-    feedback_incorrect:
-      "Incorrect. You should focus on the " + "fixation cross in the circle",
-    instructions: controlInstructions,
+    feedback: {
+      correct: "Correct! You should focus on the fixation cross in the circle.",
+      incorrect: "Incorrect. You should focus on the fixation cross in the circle",
+    },
   });
 }
 
@@ -529,26 +460,22 @@ for (let t = 0; t < Configuration.manipulations.numCalibrationOneTrials; t++) {
 if (keyLayout.name !== "spectrometer") {
   timeline.push({
     type: "attention-check",
-    question: "What is the objective of this task?",
-    options: [
-      "(1) Try and decide whether I like orange or blue more",
-      "(2) Guess the direction of the moving dots",
-      "(3) Try and stop other participants from guessing the direction " +
-        "of the dots",
+    prompt: "What is the objective of this task?",
+    responses: [
+      {value: "(1) Try and decide whether I like orange or blue more", key: keyLayout.alt, correct: false},
+      {value: "(2) Guess the direction of the moving dots", key: keyLayout.left, correct: true},
+      {value: "(3) Try and stop other participants from guessing the direction of the dots", key: keyLayout.right, correct: false},
     ],
-    option_correct: 1,
-    option_keys: [keyLayout.alt, keyLayout.left, keyLayout.right],
-    options_radio: true,
-    confirmation: true,
+    style: "radio",
+    continue: {
+      confirm: true,
+      key: keyLayout.submit,
+    },
     input_timeout: 1500,
-    button_key: keyLayout.submit,
-    button_text: "Submit Answer",
-    feedback_correct:
-      "Correct! You will have to guess the " + "direction of the moving dots.",
-    feedback_incorrect:
-      "Incorrect. You will have to guess the " +
-      "direction of the moving dots.",
-    instructions: controlInstructions,
+    feedback: {
+      correct: "Correct! You will have to guess the direction of the moving dots.",
+      incorrect: "Incorrect. You will have to guess the direction of the moving dots.",
+    },
   });
 }
 
