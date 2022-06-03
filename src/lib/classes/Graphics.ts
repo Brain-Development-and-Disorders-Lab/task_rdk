@@ -299,7 +299,7 @@ export class Graphics {
       });
 
     // Bind appropriate event listeners to actions
-    document.addEventListener("keydown", parameters.eventHandler);
+    document.addEventListener("keyup", parameters.eventHandler);
     if (Configuration.keys === "desktop") {
       document
         .getElementById("mistake-button")

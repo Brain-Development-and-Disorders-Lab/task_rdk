@@ -291,6 +291,10 @@ jsPsych.plugins["dot-game"] = (function () {
           choice: "increase",
           handler: decisionHandler,
         },
+        [keyLayout.alt]: {
+          choice: "mistake",
+          handler: decisionHandler,
+        }
       },
       target: displayElement,
       trial: trial,
@@ -389,119 +393,83 @@ jsPsych.plugins["dot-game"] = (function () {
      * An event handler for decision made during a trial
      * @param {Event} event the particular event or keypress
      */
-    function decisionHandler(event: KeyboardEvent) {
+    function decisionHandler(event) {
       // Record the keycode to process the event
       const keycode = event.key;
 
-      if (
-        keycode === keyLayout.left ||
-        keycode === keyLayout.right ||
-        keycode === keyLayout.submit
-      ) {
-        // Prevent participant from proceeding if they haven't selected a
-        // confidence value.
-        if (
-          currentStimulus.getParameters().name === "confidence" &&
-          keycode === keyLayout.submit &&
-          document.getElementById("confidence-slider").className ===
-            "confidence-slider-hidden"
-        ) {
-          // Console warning
-          console.warn(`No confidence selected!`);
-        } else if (
-          currentStimulus.getParameters().name === "confidence" &&
-          keycode !== keyLayout.submit
-        ) {
-          // Show the thumb
-          const slider = <HTMLInputElement>(
-            document.getElementById("confidence-slider")
-          );
-          slider.className = "confidence-slider";
+      if (Object.keys(currentStimulus.getParameters().keybindings).includes(keycode)) {
+        // Handle the decision if a valid key has been pressed for this stage
+        if (currentStimulus.getParameters().name === "confidence") {
+          // Handle 'confidence' stimuli
+          const slider = document.getElementById("confidence-slider") as HTMLInputElement;
+          if (slider) {
+            // Show the thumb if it is currently hidden when adjusting confidence
+            if (
+              slider.className === "confidence-slider-hidden" &&
+              (keycode === keyLayout.left || keycode === keyLayout.right)
+            ) {
+              slider.className = "confidence-slider";
+            }
+              
 
-          // Handle the key that was pressed
-          if (keycode === keyLayout.left) {
-            // Decrease the confidence
-            slider.stepDown(1);
-          } else if (keycode === keyLayout.right) {
-            // Increase the confidence
-            slider.stepUp(1);
+            // Handle incrementing and decrementing slider
+            if (keycode === keyLayout.left) {
+              slider.stepDown(1);
+            } else if (keycode === keyLayout.right) {
+              slider.stepUp(1);
+            }
+
+            // Ensure we handle a mistake notification
+            if (keycode === keyLayout.alt || event.type === "click") {
+              // Store mistake boolean
+              trial.data.confidenceMistake = true;
+
+              // Calculate and store confidence data
+              trial.data.confidenceEndTime = Date.now();
+              trial.data.confidenceTotalTime = trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+              trial.data.confidenceSelection = slider.value;
+
+              // Continue to the next Stimulus
+              console.warn("Mistake stored in trial data");
+              Runner.post(currentStimulus);
+            }
+
+            // Finally, we ignore any submissions if the slider is hidden, only submit if slider is visible
+            if (keycode === keyLayout.submit && slider.className === "confidence-slider") {
+              // Calculate and store confidence data
+              trial.data.confidenceEndTime = Date.now();
+              trial.data.confidenceTotalTime = trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+              trial.data.confidenceSelection = slider.value;
+
+              // Continue to the next Stimulus
+              Runner.post(currentStimulus);
+            }
+          } else {
+            console.warn("Did not get reference to slider element");
           }
-        } else {
-          // Progress to the next state
-          selection =
-            currentStimulus.getParameters().keybindings[keycode].choice;
+        } else if (currentStimulus.getParameters().name === "reference") {
+          // Handle 'reference' stimuli
+          selection = currentStimulus.getParameters().keybindings[keycode].choice;
           currentStimulus.removeKeybindings();
 
-          if (currentStimulus.getParameters().name === "reference") {
-            // Calculate and store reference data
-            trial.data.referenceEndTime = Date.now();
-            trial.data.referenceTotalTime =
-              trial.data.referenceEndTime - trial.data.referenceStartTime;
-            trial.data.referenceSelection = selection === "left" ? 1 : 2;
-            trial.data.correct = selection === trial.data.deviation ? 1 : 0;
-            if (trial.data.correct === 1 && trial.name === "main") {
-              trial.data.score++;
-            }
-          } else if (currentStimulus.getParameters().name === "confidence") {
-            // Calculate and store confidence data
-            const slider = <HTMLInputElement>(
-              document.getElementById("confidence-slider")
-            );
-            trial.data.confidenceEndTime = Date.now();
-            trial.data.confidenceTotalTime =
-              trial.data.confidenceEndTime - trial.data.confidenceStartTime;
-            trial.data.confidenceSelection = slider.value;
-          }
+          // Calculate and store reference data
+          trial.data.referenceEndTime = Date.now();
+          trial.data.referenceTotalTime = trial.data.referenceEndTime - trial.data.referenceStartTime;
 
-          // Invoke the post method of the Runner
+          // Normalize selection data
+          trial.data.referenceSelection = selection === "left" ? 1 : 2;
+
+          // Normalize correct data
+          trial.data.correct = selection === trial.data.deviation ? 1 : 0;
+
+          // Increment score if correct
+          if (trial.data.correct === 1 && trial.name === "main") trial.data.score++;
+
+          // Continue to the next Stimulus
           Runner.post(currentStimulus);
         }
-      } else if (currentStimulus.getParameters().name === "confidence") {
-        if (
-          Configuration.keys === "spectrometer" &&
-          keycode === keyLayout.alt
-        ) {
-          // If the mistake button has been triggered in the spectrometer,
-          // note the mistake and timing accordingly
-          const slider = <HTMLInputElement>(
-            document.getElementById("confidence-slider")
-          );
-          trial.data.confidenceSelection = slider.value;
-          trial.data.confidenceMistake = true;
-          trial.data.confidenceEndTime = Date.now();
-          trial.data.confidenceTotalTime =
-            trial.data.confidenceEndTime - trial.data.confidenceStartTime;
-
-          console.info("Mistake stored alongside trial data.");
-
-          // Clean up event listeners
-          document.removeEventListener(
-            "keyup",
-            currentStimulus.getParameters().eventHandler
-          );
-
-          // Continue with trial
-          Runner.post(currentStimulus);
-        } else if (
-          Configuration.keys === "desktop" &&
-          (event.type === "click" || keycode === keyLayout.alt)
-        ) {
-          // If the mistake button has been triggered on a desktop,
-          // note the mistake and timing accordingly
-          const slider = <HTMLInputElement>(
-            document.getElementById("confidence-slider")
-          );
-          trial.data.confidenceSelection = slider.value;
-          trial.data.confidenceMistake = true;
-          trial.data.confidenceEndTime = Date.now();
-          trial.data.confidenceTotalTime =
-            trial.data.confidenceEndTime - trial.data.confidenceStartTime;
-
-          console.info("Mistake stored alongside trial data.");
-
-          // Continue with trial
-          Runner.post(currentStimulus);
-        }
+      } else {
+        console.warn(`Invalid key "${keycode}" for stimulus type "${currentStimulus.getParameters().name}"`);
       }
     }
 

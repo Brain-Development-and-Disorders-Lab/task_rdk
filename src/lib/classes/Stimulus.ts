@@ -51,7 +51,7 @@ export class Stimulus {
       for (const binding in this.keybindings) {
         if (this.keybindings[binding]) {
           document.addEventListener(
-            "keydown",
+            "keyup",
             this.keybindings[binding].handler
           );
         }
@@ -67,7 +67,7 @@ export class Stimulus {
     for (const binding in this.keybindings) {
       if (this.keybindings[binding]) {
         document.removeEventListener(
-          "keydown",
+          "keyup",
           this.keybindings[binding].handler
         );
       }
