@@ -11,9 +11,9 @@ const del = require("del");
 
 /**
  * Primary build pipeline
- * @param {function} cb callback function
+ * @param {() => void} cb callback function
  */
-function build(cb) {
+const build = (cb) => {
   // Run the Webpack build, then move the images
   webpack(webpackConfig, () => {
     gulp.src("./src/img/**/*").pipe(gulp.dest("./built/img/"));
@@ -23,9 +23,9 @@ function build(cb) {
 
 /**
  * Clean up build artefacts
- * @param {function} cb callback function
+ * @param {() => void} cb callback function
  */
-function clean(cb) {
+const clean = (cb) => {
   del(["built", "rdk.zip"]);
   cb();
 }
@@ -33,9 +33,9 @@ function clean(cb) {
 /**
  * Generate a compressed archive of the 'built/'
  * sub-directory.
- * @param {function} cb callback function
+ * @param {() => void} cb callback function
  */
-function package(cb) {
+const package = (cb) => {
   gulp.src("built/*").pipe(zip("rdk.zip")).pipe(gulp.dest("./"));
   cb();
 }

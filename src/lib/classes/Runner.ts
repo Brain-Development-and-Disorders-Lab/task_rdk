@@ -19,7 +19,7 @@ export class Runner {
    */
   static pre(stimulus: Stimulus): void {
     stimulus.setTimer(
-      window.setTimeout(function () {
+      window.setTimeout(() => {
         Runner.run(stimulus);
       }, stimulus.getParameters().timing.pre)
     );
@@ -35,7 +35,7 @@ export class Runner {
     window.clearTimeout(stimulus.getTimer());
     if (stimulus.getParameters().timing.run >= 0) {
       stimulus.setTimer(
-        window.setTimeout(function () {
+        window.setTimeout(() => {
           Runner.post(stimulus);
         }, stimulus.getParameters().timing.run)
       );
@@ -50,7 +50,7 @@ export class Runner {
     stimulus.removeKeybindings();
     window.clearTimeout(stimulus.getTimer());
     stimulus.setTimer(
-      window.setTimeout(function () {
+      window.setTimeout(() => {
         Runner.finish(stimulus);
       }, stimulus.getParameters().timing.post)
     );

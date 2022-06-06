@@ -295,7 +295,7 @@ export class Graphics {
     // Try to hide the thumb?
     document
       .getElementById("confidence-slider")
-      .addEventListener("click", function () {
+      .addEventListener("click", () => {
         const slider = document.getElementById("confidence-slider");
         slider.className = "confidence-slider";
       });
