@@ -587,4 +587,5 @@ function calculateDuration() {
 
 experiment.start({
   timeline: timeline,
+  show_progress_bar: true,
 });
