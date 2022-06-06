@@ -17,13 +17,13 @@ import "jspsych/plugins/jspsych-preload";
 import "jspsych-attention-check";
 
 // Import the plugin before adding it to the timeline
-import "./Plugin";
+import "./plugin";
 
 // configuration
 import { configuration } from "./configuration";
 
 // Additional functions
-import { scaling } from "./lib/Functions";
+import { calculateDuration, scaling } from "./lib/functions";
 
 const experiment = new Experiment(configuration);
 
@@ -567,23 +567,23 @@ for (let t = 0; t < configuration.manipulations.numMainTrials; t++) {
   });
 }
 
-// -------------------- Functions --------------------
-/**
- * Calculate the total duration of the games
- * @return {number} duration
- */
-function calculateDuration() {
-  // Total number of seconds
-  let total =
-    configuration.manipulations.numTutorialTrials +
-    configuration.manipulations.numPracticeTrials +
-    configuration.manipulations.numCalibrationOneTrials +
-    configuration.manipulations.numMainTrials;
-  total *= 0.75 + 1 + 2 + 0.25 + 4;
+// Add end screen to the experiment
+const end =
+    `<h1>${configuration.name} game</h1>` +
+    `<h2>Experiment finished</h2>` +
+    `<p>Thank you for your participation in this research.</p>` +
+    `<p>Press ${submitControlImage} to end the experiment.</p>`;
 
-  total /= 60;
-  return Math.ceil(total);
-}
+timeline.push({
+  type: 'instructions',
+  pages: [
+    end,
+  ],
+  allow_backward: false,
+  button_label_next: 'Finish',
+  show_clickable_nav: false,
+  key_forward: keyLayout.submit,
+});
 
 experiment.start({
   timeline: timeline,

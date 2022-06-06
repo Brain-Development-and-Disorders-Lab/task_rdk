@@ -11,7 +11,7 @@ import "./css/styles.css";
 import "./css/buttons.css";
 
 // Additional functions
-import { scaling } from "./lib/Functions";
+import { scaling } from "./lib/functions";
 
 // Core modules
 import { Graphics } from "./lib/classes/Graphics";
