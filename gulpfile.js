@@ -19,7 +19,7 @@ const build = (cb) => {
     gulp.src("./src/img/**/*").pipe(gulp.dest("./built/img/"));
   });
   cb();
-}
+};
 
 /**
  * Clean up build artefacts
@@ -28,7 +28,7 @@ const build = (cb) => {
 const clean = (cb) => {
   del(["built", "rdk.zip"]);
   cb();
-}
+};
 
 /**
  * Generate a compressed archive of the 'built/'
@@ -38,7 +38,7 @@ const clean = (cb) => {
 const package = (cb) => {
   gulp.src("built/*").pipe(zip("rdk.zip")).pipe(gulp.dest("./"));
   cb();
-}
+};
 
 exports.build = build;
 exports.clean = clean;

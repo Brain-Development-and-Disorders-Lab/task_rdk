@@ -112,14 +112,14 @@ jsPsych.plugins["dot-game"] = (() => {
     if (trial.name === "main") {
       trial.data.score = 0;
       previousTrialCollection.forEach((storedTrial) => {
-        if (storedTrial.trial_type === "dot-game") {
-          if (storedTrial.name === "main") {
-            trial.data.score = storedTrial.score;
-          }
+        if (
+          storedTrial.trial_type === "dot-game" &&
+          storedTrial.name === "main"
+        ) {
+          trial.data.score = storedTrial.score;
         }
       });
     }
-
 
     /**
      * Iterates through each of the stimuli by popping a stimulus from the
@@ -127,14 +127,13 @@ jsPsych.plugins["dot-game"] = (() => {
      * class. Calls `endTrial()` if all stimuli have been displayed for the
      * trial.
      */
-     const nextStimulus = () => {
-      // End the trial if there are no more stimuli to display
+    const nextStimulus = () => {
       if (stimuli.length === 0) {
+        // End the trial if there are no more stimuli to display
         trial.data.trialEndTime = Date.now();
         trial.data.trialTotalTime =
           trial.data.trialEndTime - trial.data.trialStartTime;
 
-        // End of the trial, all stimuli have been displayed.
         endTrial();
         return;
       }
@@ -144,12 +143,13 @@ jsPsych.plugins["dot-game"] = (() => {
 
       // Configure stimulus-specific parameters
       if (currentStimulus.getParameters().name === "reference") {
+        // Reference stimulus
         trial.data.referenceStartTime = Date.now();
 
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
       } else if (currentStimulus.getParameters().name === "confidence") {
-        // Start a timer if a reference or confidence stimuli is run.
+        // Start a timer if a confidence stimuli is run.
         trial.data.confidenceMistake = false;
         trial.data.confidenceStartTime = Date.now();
 
@@ -161,7 +161,7 @@ jsPsych.plugins["dot-game"] = (() => {
           configuration.target === "desktop" ||
           configuration.keys === "spectrometer"
         ) {
-          jsPsych.data.get().localSave(`csv`, `dots_part_${Date.now()}.csv`);
+          jsPsych.data.get().localSave(`csv`, `dots_partial_${Date.now()}.csv`);
         }
       } else if (currentStimulus.getParameters().name === "motion") {
         trial.data.stimulusDuration =
@@ -185,7 +185,7 @@ jsPsych.plugins["dot-game"] = (() => {
 
       // Start the stimulus
       Runner.start(currentStimulus);
-    }
+    };
 
     /**
      * An event handler for decision made during a trial
@@ -273,8 +273,9 @@ jsPsych.plugins["dot-game"] = (() => {
           trial.data.correct = selection === trial.data.deviation ? 1 : 0;
 
           // Increment score if correct
-          if (trial.data.correct === 1 && trial.name === "main")
+          if (trial.data.correct === 1 && trial.name === "main") {
             trial.data.score++;
+          }
 
           // Continue to the next Stimulus
           Runner.post(currentStimulus);
@@ -286,7 +287,7 @@ jsPsych.plugins["dot-game"] = (() => {
           }"`
         );
       }
-    }
+    };
 
     /**
      * Adjusts coherence level based on calibration data
@@ -323,7 +324,7 @@ jsPsych.plugins["dot-game"] = (() => {
           );
         }
       }
-    }
+    };
 
     /**
      * End the trial
@@ -338,7 +339,7 @@ jsPsych.plugins["dot-game"] = (() => {
 
       // Finalise the trial
       jsPsych.finishTrial();
-    }
+    };
 
     const previousData = jsPsych.data.get().last(2).values();
     if (trial.name === "calibration") {

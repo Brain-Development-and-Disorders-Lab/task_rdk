@@ -22,7 +22,7 @@ export const calculateDuration = (): number => {
 
   total /= 60;
   return Math.ceil(total);
-}
+};
 
 /**
  * Determine the scaling factor to apply to the graphics.
@@ -34,4 +34,4 @@ export const scaling = (): number => {
   } else {
     return 1.0;
   }
-}
+};

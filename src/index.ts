@@ -48,25 +48,27 @@ timeline.push({
 // -------------------- Instructions --------------------
 let instructionContinueText: string;
 if (keyLayout.name === "spectrometer") {
-  instructionContinueText =
-    `<div id="instructions-navigation">` +
-    `<br>` +
-    `<hr>` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage("ControlsNavigationSpectrometer.png")}" ` +
-    `style="${configuration.style.controls}">` +
-    `</div>`;
+  instructionContinueText = `<div id="instructions-navigation">
+      <br>
+      <hr>
+      <img
+        src="${experiment
+          .getStimuli()
+          .getImage("ControlsNavigationSpectrometer.png")}"
+        style="${configuration.style.controls}"
+      >
+    </div>`;
 } else {
-  instructionContinueText =
-    `<div id="instructions-navigation">` +
-    `<br>` +
-    `<hr>` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage("ControlsNavigationDesktop.png")}" ` +
-    `style="${configuration.style.controls}">` +
-    `</div>`;
+  instructionContinueText = `<div id="instructions-navigation">
+      <br>
+      <hr>
+      <img
+        src="${experiment
+          .getStimuli()
+          .getImage("ControlsNavigationDesktop.png")}"
+        style="${configuration.style.controls}"
+      >
+    </div>`;
 }
 
 // Configure the correct image key to be shown
@@ -74,61 +76,57 @@ let leftControlImage: string;
 let rightControlImage: string;
 let submitControlImage: string;
 if (keyLayout.name === "spectrometer") {
-  leftControlImage =
-    `<img src="${experiment.getStimuli().getImage("2.png")}" ` +
-    `style="${configuration.style.keyboard}"> `;
-  rightControlImage =
-    `<img src="${experiment.getStimuli().getImage("3.png")}" ` +
-    `style="${configuration.style.keyboard}"> `;
-  submitControlImage =
-    `<img src="${experiment.getStimuli().getImage("4.png")}" ` +
-    `style="${configuration.style.keyboard}"> `;
+  leftControlImage = `<img
+      src="${experiment.getStimuli().getImage("2.png")}"
+      style="${configuration.style.keyboard}"
+    > `;
+  rightControlImage = `<img
+      src="${experiment.getStimuli().getImage("3.png")}"
+      style="${configuration.style.keyboard}"
+    > `;
+  submitControlImage = `<img
+      src="${experiment.getStimuli().getImage("4.png")}"
+      style="${configuration.style.keyboard}"
+    > `;
 } else {
-  leftControlImage =
-    `<img src="${experiment.getStimuli().getImage("F.png")}" ` +
-    `style="${configuration.style.keyboard}"> `;
-  rightControlImage =
-    `<img src="${experiment.getStimuli().getImage("J.png")}" ` +
-    `style="${configuration.style.keyboard}"> `;
-  submitControlImage =
-    `<img src="${experiment.getStimuli().getImage("K.png")}" ` +
-    `style="${configuration.style.keyboard}"> `;
+  leftControlImage = `<img
+      src="${experiment.getStimuli().getImage("F.png")}"
+      style="${configuration.style.keyboard}"
+    > `;
+  rightControlImage = `<img
+      src="${experiment.getStimuli().getImage("J.png")}"
+      style="${configuration.style.keyboard}"
+    > `;
+  submitControlImage = `<img
+      src="${experiment.getStimuli().getImage("K.png")}"
+      style="${configuration.style.keyboard}"
+    > `;
 }
 
 const description = [
-  `<h1>${configuration.name} game</h1>` +
-    `<p><b>Approximate duration:</b> ${duration} minutes</p>` +
-    `<h2>Instructions</h2>` +
-    `<p>In each game, you will be briefly shown dots moving inside a ` +
-    `circular area.</p>` +
-    `<p>An example illustrating the appearance of these dots is ` +
-    `shown below:</p>` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage("InstructionsMovingDots.gif")}" ` +
-    `style="${configuration.style.image}">` +
-    `<p>When watching the dots, focus on the cross (<b>+</b>) at ` +
-    `the center of the circular area. It will make it easier to notice ` +
-    `the motion of the dots.</p>` +
-    instructionContinueText,
+  `<h1>${configuration.name} game</h1>
+    <p><b>Approximate duration:</b> ${duration} minutes</p>
+    <h2>Instructions</h2>
+    <p>In each game, you will be briefly shown dots moving inside a circular area.</p>
+    <p>An example illustrating the appearance of these dots is shown below:</p>
+    <img
+      src="${experiment.getStimuli().getImage("InstructionsMovingDots.gif")}"
+      style="${configuration.style.image}"
+    >
+    <p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>
+    ${instructionContinueText}`,
 
-  `<h1>${configuration.name} game</h1>` +
-    `<h2>Instructions</h2>` +
-    `<p>After watching the dots, a blue section and an orange section ` +
-    `will appear on the perimeter of the circle.</p>` +
-    `<p>It will look like the image below:</p>` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage("InstructionsReference.png")}" ` +
-    `style="${configuration.style.image}"/>` +
-    `<p><b>Your task:</b> Determine whether there was movement of dots ` +
-    `towards the blue or the orange section.</p>` +
-    `<p>Press ${leftControlImage} ` +
-    `on your keyboard to select  ` +
-    `<span style="color: #3ea3a3;">blue</span>, or press ` +
-    `${rightControlImage} on your keyboard to select ` +
-    `<span style="color: #d78000;">orange</span>.</p>` +
-    instructionContinueText,
+  `<h1>${configuration.name} game</h1>
+    <h2>Instructions</h2>
+    <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
+    <p>It will look like the image below:</p>
+    <img
+      src="${experiment.getStimuli().getImage("InstructionsReference.png")}" 
+      style="${configuration.style.image}"
+    />
+    <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
+    <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
+    ${instructionContinueText}`,
 
   `<h1>${configuration.name} game</h1>` +
     `<h2>Instructions</h2>` +
@@ -569,18 +567,16 @@ for (let t = 0; t < configuration.manipulations.numMainTrials; t++) {
 
 // Add end screen to the experiment
 const end =
-    `<h1>${configuration.name} game</h1>` +
-    `<h2>Experiment finished</h2>` +
-    `<p>Thank you for your participation in this research.</p>` +
-    `<p>Press ${submitControlImage} to end the experiment.</p>`;
+  `<h1>${configuration.name} game</h1>` +
+  `<h2>Experiment finished</h2>` +
+  `<p>Thank you for your participation in this research.</p>` +
+  `<p>Press ${submitControlImage} to end the experiment.</p>`;
 
 timeline.push({
-  type: 'instructions',
-  pages: [
-    end,
-  ],
+  type: "instructions",
+  pages: [end],
   allow_backward: false,
-  button_label_next: 'Finish',
+  button_label_next: "Finish",
   show_clickable_nav: false,
   key_forward: keyLayout.submit,
 });
