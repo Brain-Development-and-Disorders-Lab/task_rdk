@@ -26,7 +26,7 @@ const build = (cb) => {
  * @param {() => void} cb callback function
  */
 const clean = (cb) => {
-  del(["built", "rdk.zip"]);
+  del(["built"]);
   cb();
 };
 
@@ -36,7 +36,7 @@ const clean = (cb) => {
  * @param {() => void} cb callback function
  */
 const package = (cb) => {
-  gulp.src("built/*").pipe(zip("rdk.zip")).pipe(gulp.dest("./"));
+  gulp.src("built/*").pipe(zip("rdk.zip")).pipe(gulp.dest("./built"));
   cb();
 };
 
