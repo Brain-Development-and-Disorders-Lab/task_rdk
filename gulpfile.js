@@ -11,34 +11,34 @@ const del = require("del");
 
 /**
  * Primary build pipeline
- * @param {function} cb callback function
+ * @param {() => void} cb callback function
  */
-function build(cb) {
+const build = (cb) => {
   // Run the Webpack build, then move the images
   webpack(webpackConfig, () => {
     gulp.src("./src/img/**/*").pipe(gulp.dest("./built/img/"));
   });
   cb();
-}
+};
 
 /**
  * Clean up build artefacts
- * @param {function} cb callback function
+ * @param {() => void} cb callback function
  */
-function clean(cb) {
-  del(["built", "rdk.zip"]);
+const clean = (cb) => {
+  del(["built"]);
   cb();
-}
+};
 
 /**
  * Generate a compressed archive of the 'built/'
  * sub-directory.
- * @param {function} cb callback function
+ * @param {() => void} cb callback function
  */
-function package(cb) {
-  gulp.src("built/*").pipe(zip("rdk.zip")).pipe(gulp.dest("./"));
+const package = (cb) => {
+  gulp.src("built/*").pipe(zip("rdk.zip")).pipe(gulp.dest("./built"));
   cb();
-}
+};
 
 exports.build = build;
 exports.clean = clean;

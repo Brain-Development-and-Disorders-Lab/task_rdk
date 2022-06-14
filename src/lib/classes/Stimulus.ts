@@ -153,7 +153,7 @@ export class Stimulus {
     }
 
     two
-      .bind("update", function (frameCount) {
+      .bind("update", (frameCount: number) => {
         for (let d = 0; d < renderer.getElements().length; d++) {
           const element = renderer.getElements()[d];
           element.step(frameCount);
