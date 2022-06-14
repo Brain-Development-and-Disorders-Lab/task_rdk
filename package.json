@@ -23,7 +23,7 @@
   "homepage": "https://github.com/Brain-Development-and-Disorders-Lab/task_rdk#readme",
   "dependencies": {
     "jspsych": "^6.0.0",
-    "jspsych-attention-check": "^2.0.2",
+    "jspsych-attention-check": "^2.0.4",
     "neurocog": "^0.3.4",
     "two.js": "^0.7.8"
   },
