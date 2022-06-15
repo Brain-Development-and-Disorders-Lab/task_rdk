@@ -5041,10 +5041,10 @@ json5@2.x, json5@^2.1.2, json5@^2.2.1:
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.1.tgz#655d50ed1e6f95ad1a3caababd2b0efda10b395c"
   integrity sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==
 
-jspsych-attention-check@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/jspsych-attention-check/-/jspsych-attention-check-2.0.4.tgz#8b64f0ae3cbc176532f4f4a1ae4935f6c34cec3e"
-  integrity sha512-jDAZWLJMKPapuQ3IV8qEVd8yzhIV3mvPCL1rzpo8bs1ZhWZ0/KhcmLpuCgYHlUZB0X+JIyhxYQ62HRoPcOZ34w==
+jspsych-attention-check@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/jspsych-attention-check/-/jspsych-attention-check-2.0.5.tgz#c10f55a2656cfca388992ac183dfbaea61efbf83"
+  integrity sha512-mW/FBlN0UT+alDpJ1IQP7bfvpr9HXbdCiaSLFxDr0y5uREpOHGystw0eo6rzImOsPLnBPTqiFodUkSJ4zFFWVg==
   dependencies:
     grommet "^2.23.0"
     grommet-icons "^4.7.0"
