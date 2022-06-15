@@ -158,7 +158,7 @@ jsPsych.plugins["dot-game"] = (() => {
 
         // Download a copy of the current data
         if (
-          configuration.target === "desktop" ||
+          window.Experiment.getPlatform().valueOf() === "jsPsych" ||
           configuration.keys === "spectrometer"
         ) {
           jsPsych.data.get().localSave(`csv`, `dots_partial_${Date.now()}.csv`);
