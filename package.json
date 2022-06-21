@@ -24,7 +24,7 @@
   "dependencies": {
     "jspsych": "^6.0.0",
     "jspsych-attention-check": "^2.0.5",
-    "neurocog": "^0.3.4",
+    "neurocog": "^0.3.6",
     "two.js": "^0.7.8"
   },
   "devDependencies": {
