@@ -1,6 +1,6 @@
 {
   "name": "task_rdk",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "RDK Task",
   "scripts": {
     "build": "gulp build",
