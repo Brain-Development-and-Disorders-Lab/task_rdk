@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "RDK Task",
   "scripts": {
-    "dev": "webpack serve",
-    "watch": "webpack --watch",
     "build": "gulp build",
-    "style": "yarn prettier --write .",
     "clean": "gulp clean",
-    "package": "gulp package",
+    "dev": "webpack serve",
+    "style": "yarn prettier --write .",
     "test": "jest"
   },
   "repository": {
@@ -43,7 +41,6 @@
     "gulp": "^4.0.2",
     "gulp-eslint": "^6.0.0",
     "gulp-rename": "^2.0.0",
-    "gulp-zip": "^5.1.0",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^27.0.6",
     "prettier": "2.6.2",
