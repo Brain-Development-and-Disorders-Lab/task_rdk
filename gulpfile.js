@@ -1,7 +1,7 @@
 // Gulp modules
 const gulp = require("gulp");
 
-// Webpack modules
+// Webpack
 const webpack = require("webpack");
 
 // Other modules
