@@ -15,7 +15,7 @@ module.exports = {
   devServer: {
     contentBase: [
       // Output path
-      path.join(__dirname, "./built"),
+      path.join(__dirname, "./dist"),
       // Assets path
       path.join(__dirname, "./src/img"),
     ],
@@ -44,7 +44,7 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    path: path.resolve(__dirname, "./built"),
+    path: path.resolve(__dirname, "./dist"),
     filename: "[name].bundle.js",
     clean: true,
   },

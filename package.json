@@ -9,6 +9,9 @@
     "style": "yarn prettier --write .",
     "test": "jest"
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Brain-Development-and-Disorders-Lab/task_rdk.git"

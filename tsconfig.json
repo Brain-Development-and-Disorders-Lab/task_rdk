@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "outDir": "built/",
+    "outDir": "dist/",
     "allowJs": true,
     "target": "es5",
     "resolveJsonModule": true,

@@ -1,6 +1,6 @@
 module.exports = {
   testMatch: ["**/*.test.ts"],
-  testPathIgnorePatterns: ["/node_modules/", "built"],
+  testPathIgnorePatterns: ["/node_modules/", "dist"],
   testEnvironment: "jsdom",
   moduleNameMapper: {
     "\\.(css|less)$": "<rootDir>/test/__mocks__/styles.js",
