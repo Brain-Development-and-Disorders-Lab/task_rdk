@@ -14,6 +14,7 @@ import "jspsych/jspsych";
 import "jspsych/plugins/jspsych-instructions";
 import "jspsych/plugins/jspsych-fullscreen";
 import "jspsych/plugins/jspsych-preload";
+import "jspsych/plugins/jspsych-survey-html-form";
 import "jspsych-attention-check";
 
 // Import the plugin before adding it to the timeline
@@ -38,6 +39,14 @@ const tutorialCoherence = [0.3, 0.6];
 
 // Practice trial properties
 const practiceCoherence = [0.3, 0.6];
+
+if (experiment.getPlatform().valueOf() !== "gorilla") {
+  timeline.push({
+    type: "survey-html-form",
+    preamble: `<p>Please enter the participant ID (optional).</p>`,
+    html: `<input name="participantID" type="text" /></br></br>`,
+  });
+}
 
 // Set the experiment to run in fullscreen mode
 timeline.push({
