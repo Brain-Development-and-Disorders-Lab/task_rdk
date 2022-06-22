@@ -1,7 +1,7 @@
 // Gulp modules
 const gulp = require("gulp");
 
-// Webpack modules
+// Webpack
 const webpack = require("webpack");
 
 // Other modules
@@ -14,7 +14,7 @@ const del = require("del");
 const build = (cb) => {
   // Run the Webpack build, then move the images
   webpack(require("./webpack.config"), () => {
-    gulp.src("./src/img/**/*").pipe(gulp.dest("./built/img/"));
+    gulp.src("./src/img/**/*").pipe(gulp.dest("./dist/img/"));
   });
   cb();
 };
@@ -24,7 +24,7 @@ const build = (cb) => {
  * @param {() => void} cb callback function
  */
 const clean = (cb) => {
-  del(["built"]);
+  del(["dist", "task_rdk-v?.?.?.tgz"]);
   cb();
 };
 

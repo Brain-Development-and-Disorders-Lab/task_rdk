@@ -6,7 +6,7 @@ module.exports = {
     ".eslintrc.js",
     "jest.config.js",
     "**/__mocks__/*.js",
-    "**/built/*.js",
+    "**/dist/*.js",
   ],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],

@@ -21,11 +21,11 @@ jobs:
       - name: Build 🔨
         run: yarn build
       - name: Package 📦
-        run: yarn package
+        run: yarn pack
       - name: Release 🎉
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           files: |
-            rdk.zip
+            *.tgz
