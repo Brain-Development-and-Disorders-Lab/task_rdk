@@ -44,7 +44,7 @@ if (experiment.getPlatform().valueOf() !== "gorilla") {
   timeline.push({
     type: "survey-html-form",
     preamble: `<p>Please enter the participant LUID (8 digits).</p>`,
-    html: `<input name="participantID" type="text" /></br></br>`,
+    html: `<input name="participantID" type="text" required/></br></br>`,
   });
 }
 
