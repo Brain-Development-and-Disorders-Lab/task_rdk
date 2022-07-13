@@ -64,6 +64,7 @@ export const configuration = {
     numPracticeTrials: 10,
     numCalibrationOneTrials: 120,
     numMainTrials: 200,
+    requireID: true,
   },
 
   seed: 0.3723,

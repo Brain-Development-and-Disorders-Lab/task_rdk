@@ -40,10 +40,10 @@ const tutorialCoherence = [0.3, 0.6];
 // Practice trial properties
 const practiceCoherence = [0.3, 0.6];
 
-if (experiment.getPlatform().valueOf() !== "gorilla") {
+if (configuration.manipulations.requireID === true) {
   timeline.push({
     type: "survey-html-form",
-    preamble: `<p>Please enter the participant LUID (8 digits).</p>`,
+    preamble: `<p>Please enter your 8 digit participant ID.</p>`,
     html: `<input name="participantID" type="text" required/></br></br>`,
   });
 }
