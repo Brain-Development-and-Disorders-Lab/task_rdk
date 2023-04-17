@@ -13,6 +13,9 @@ import "./css/buttons.css";
 // Additional functions
 import { scaling } from "./lib/functions";
 
+// Neurocog.js instance
+import { experiment } from ".";
+
 // Core modules
 import { Graphics } from "./lib/classes/Graphics";
 import { Renderer } from "./lib/classes/Renderer";
@@ -158,7 +161,7 @@ jsPsych.plugins["dot-game"] = (() => {
 
         // Download a copy of the current data
         if (
-          window.Experiment.getPlatform().valueOf() === "jsPsych" ||
+          experiment.getPlatform().valueOf() === "jsPsych" ||
           configuration.keys === "spectrometer"
         ) {
           jsPsych.data.get().localSave(`csv`, `dots_partial_${Date.now()}.csv`);

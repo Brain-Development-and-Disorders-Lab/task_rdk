@@ -7,6 +7,9 @@ import { configuration } from "../../configuration";
 // 'Stimuli' type
 import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
 
+// Neurocog.js instance
+import { experiment } from "../..";
+
 /**
  * Renderer abstraction that interfaces directly with the
  * Two.js graphics library
@@ -40,7 +43,7 @@ export class Renderer {
     this.elements = [];
 
     // Get the ImageCollection
-    this.imageCollection = window.Experiment.getStimuli();
+    this.imageCollection = experiment.getStimuli();
   }
 
   /**

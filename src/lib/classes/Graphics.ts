@@ -4,6 +4,9 @@ import { configuration } from "../../configuration";
 // 'Stimuli' type
 import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
 
+// Neurocog.js instance
+import { experiment } from "../..";
+
 // Core modules
 import { Dot } from "./Dot";
 import { Renderer } from "./Renderer";
@@ -26,7 +29,7 @@ export class Graphics {
     this.renderer = renderer;
 
     // Get the ImageCollection
-    this.imageCollection = window.Experiment.getStimuli();
+    this.imageCollection = experiment.getStimuli();
   }
 
   /**

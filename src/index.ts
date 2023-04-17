@@ -7,7 +7,7 @@
  * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/bang_2018_decision_confidence/src/timeline.js
  * @author Henry Burgess <s4481993@student.uq.edu.au>
  */
-import Experiment from "neurocog";
+import { Experiment } from "neurocog";
 
 // Import jsPsych to ensure it is bundled when compiled
 import "jspsych/jspsych";
@@ -26,7 +26,7 @@ import { configuration } from "./configuration";
 // Additional functions
 import { calculateDuration, scaling } from "./lib/functions";
 
-const experiment = new Experiment(configuration);
+export const experiment = new Experiment(configuration);
 
 const timeline = [];
 
@@ -130,7 +130,7 @@ const description = [
     <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
     <p>It will look like the image below:</p>
     <img
-      src="${experiment.getStimuli().getImage("InstructionsReference.png")}" 
+      src="${experiment.getStimuli().getImage("InstructionsReference.png")}"
       style="${configuration.style.image}"
     />
     <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
