@@ -65,6 +65,7 @@ export const configuration = {
     numCalibrationOneTrials: 120,
     numMainTrials: 200,
     requireID: true,
+    demoMode: false,
   },
 
   seed: 0.3723,
@@ -101,7 +102,7 @@ export const configuration = {
   },
   resources: {},
 
-  // -------------------- User testing --------------------
+  // -------------------- Developer settings --------------------
   testing: false,
   showInstructions: false,
 };
