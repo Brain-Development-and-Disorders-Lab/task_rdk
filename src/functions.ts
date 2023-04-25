@@ -1,11 +1,11 @@
 /**
  * @summary Utility file for Bang et al. RDK task.
  *
- * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/rdk/src/core/util.ts
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/lib/functions.ts
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
-import { configuration } from "../configuration";
+import { configuration } from "./configuration";
 
 /**
  * Calculate the total duration of the games

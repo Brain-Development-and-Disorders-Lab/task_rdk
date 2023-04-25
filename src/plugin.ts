@@ -1,8 +1,8 @@
 /**
  * @summary Main jsPsych plugin file for Bang et al. RDK task.
  *
- * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/rdk/src/core/plugin.ts
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/plugin.ts
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
 // Stylesheets
@@ -11,16 +11,19 @@ import "./css/styles.css";
 import "./css/buttons.css";
 
 // Additional functions
-import { scaling } from "./lib/functions";
+import { scaling } from "./functions";
 
 // Core modules
-import { Graphics } from "./lib/classes/Graphics";
-import { Renderer } from "./lib/classes/Renderer";
-import { Stimulus } from "./lib/classes/Stimulus";
-import { Runner } from "./lib/classes/Runner";
+import { Graphics } from "./classes/Graphics";
+import { Renderer } from "./classes/Renderer";
+import { Stimulus } from "./classes/Stimulus";
+import { Runner } from "./classes/Runner";
 
 // Configuration
 import { configuration } from "./configuration";
+
+// Custom types
+import { RenderParameters } from "../types";
 
 // External libraries
 import Two from "two.js";
@@ -28,7 +31,7 @@ import Two from "two.js";
 jsPsych.plugins["dot-game"] = (() => {
   const plugin = {
     info: {},
-    trial: (displayElement: HTMLElement, trial: any) => {
+    trial: (_displayElement: HTMLElement, _trial: any) => {
       console.error(`This needs to be defined!`);
     },
   };
@@ -75,7 +78,7 @@ jsPsych.plugins["dot-game"] = (() => {
     containerDiv.appendChild(childDiv);
 
     // Setup the renderer parameters.
-    const rendererParameters = {
+    const rendererParameters: RenderParameters = {
       distanceFromScreen: distanceFromScreen,
       viewRadius: viewRadius,
       dotRadius: dotRadius,
@@ -131,8 +134,7 @@ jsPsych.plugins["dot-game"] = (() => {
       if (stimuli.length === 0) {
         // End the trial if there are no more stimuli to display
         trial.data.trialEndTime = Date.now();
-        trial.data.trialTotalTime =
-          trial.data.trialEndTime - trial.data.trialStartTime;
+        trial.data.trialTotalTime = trial.data.trialEndTime - trial.data.trialStartTime;
 
         endTrial();
         return;
@@ -155,14 +157,6 @@ jsPsych.plugins["dot-game"] = (() => {
 
         // Show the mouse cursor
         graphics.cursorVisibility(true);
-
-        // Download a copy of the current data
-        if (
-          window.Experiment.getPlatform().valueOf() === "jsPsych" ||
-          configuration.keys === "spectrometer"
-        ) {
-          jsPsych.data.get().localSave(`csv`, `dots_partial_${Date.now()}.csv`);
-        }
       } else if (currentStimulus.getParameters().name === "motion") {
         trial.data.stimulusDuration =
           currentStimulus.getParameters().timing.run;
@@ -189,9 +183,9 @@ jsPsych.plugins["dot-game"] = (() => {
 
     /**
      * An event handler for decision made during a trial
-     * @param {Event} event the particular event or keypress
+     * @param {KeyboardEvent} event the particular event or keypress
      */
-    const decisionHandler = (event) => {
+    const decisionHandler = (event: KeyboardEvent) => {
       // Record the keycode to process the event
       const keycode = event.key;
 

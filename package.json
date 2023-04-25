@@ -24,13 +24,14 @@
   "homepage": "https://github.com/Brain-Development-and-Disorders-Lab/task_rdk#readme",
   "dependencies": {
     "jspsych": "^6.0.0",
-    "jspsych-attention-check": "^2.0.7",
+    "jspsych-attention-check": "^2.1.1",
     "neurocog": "^0.3.8",
-    "two.js": "^0.7.8"
+    "two.js": "^0.8.10"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
     "@types/seedrandom": "^3.0.1",
+    "@types/two.js": "^0.7.5",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "css-loader": "^5.2.6",
