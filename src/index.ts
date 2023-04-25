@@ -4,8 +4,8 @@
  * @Description Constructs the timeline of the task using a variety of
  * plugins.
  *
- * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/bang_2018_decision_confidence/src/timeline.js
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/index.ts
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 import { Experiment } from "neurocog";
 
@@ -24,7 +24,7 @@ import "./plugin";
 import { configuration } from "./configuration";
 
 // Additional functions
-import { calculateDuration, scaling } from "./lib/functions";
+import { calculateDuration, scaling } from "./functions";
 
 export const experiment = new Experiment(configuration);
 
@@ -40,16 +40,16 @@ const tutorialCoherence = [0.3, 0.6];
 // Practice trial properties
 const practiceCoherence = [0.3, 0.6];
 
-if (configuration.manipulations.demoMode === false) {
-  // Standard experiment flow
-  if (configuration.manipulations.requireID === true) {
-    timeline.push({
-      type: "survey-html-form",
-      preamble: `<p>Please enter your 8 digit participant ID.</p>`,
-      html: `<input name="participantID" type="text" required/></br></br>`,
-    });
-  }
+// Standard experiment flow
+if (configuration.manipulations.requireID === true) {
+  timeline.push({
+    type: "survey-html-form",
+    preamble: `<p>Please enter your 8 digit participant ID.</p>`,
+    html: `<input name="participantID" type="text" required/></br></br>`,
+  });
+}
 
+if (configuration.manipulations.demoMode === false) {
   // Set the experiment to run in fullscreen mode
   timeline.push({
     type: "fullscreen",
@@ -160,6 +160,7 @@ if (configuration.manipulations.demoMode === false) {
       `the previous trial.</p>` +
       instructionContinueText,
   ];
+
   if (configuration.showInstructions === true) {
     timeline.push({
       type: "instructions",
@@ -431,7 +432,8 @@ if (configuration.manipulations.demoMode === false) {
       },
       input_timeout: 1500,
       feedback: {
-        correct: "Correct! You should focus on the fixation cross in the circle.",
+        correct:
+          "Correct! You should focus on the fixation cross in the circle.",
         incorrect:
           "Incorrect. You should focus on the fixation cross in the circle",
       },
@@ -471,7 +473,11 @@ if (configuration.manipulations.demoMode === false) {
   }
 
   // -------------------- Phase one calibration games --------------------
-  for (let t = 0; t < configuration.manipulations.numCalibrationOneTrials; t++) {
+  for (
+    let t = 0;
+    t < configuration.manipulations.numCalibrationOneTrials;
+    t++
+  ) {
     let trialName = "calibration";
     if (t === 0 || t === 1) trialName = "calibration-constant";
 

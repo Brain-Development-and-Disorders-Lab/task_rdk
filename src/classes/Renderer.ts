@@ -2,36 +2,45 @@
 import { Dot } from "./Dot";
 
 // Configuration
-import { configuration } from "../../configuration";
+import { configuration } from "../configuration";
 
 // 'Stimuli' type
 import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
 
 // Neurocog.js instance
-import { experiment } from "../..";
+import { experiment } from "..";
+
+// External libraries
+import Two from "two.js";
+import { Circle } from "two.js/src/shapes/circle";
+import { Rectangle } from "two.js/src/shapes/rectangle";
+import { ArcSegment } from "two.js/src/shapes/arc-segment";
+
+// Custom types
+import { RenderParameters } from "../../types";
 
 /**
  * Renderer abstraction that interfaces directly with the
  * Two.js graphics library
  */
 export class Renderer {
-  private target: any;
-  private displayElement: any;
-  private distanceFromScreen: any;
-  private viewRadius: any;
-  private dotRadius: any;
-  private width: any;
-  private height: any;
+  private target: Two;
+  private displayElement: HTMLElement;
+  private distanceFromScreen: number;
+  private viewRadius: number;
+  private dotRadius: number;
+  private width: number;
+  private height: number;
   private renderLayer: any;
   private elements: any[];
   private imageCollection: Stimuli;
 
   /**
    * Default constructor for Renderer
-   * @param {any} two Two.js instance
-   * @param {any} parameters configuration information
+   * @param {Two} two Two.js instance
+   * @param {RenderParameters} parameters configuration information
    */
-  constructor(two: any, parameters: any) {
+  constructor(two: Two, parameters: RenderParameters) {
     this.target = two;
     this.displayElement = parameters.target;
     this.distanceFromScreen = parameters.distanceFromScreen;
@@ -54,7 +63,7 @@ export class Renderer {
    * @param {boolean} update toggles updating the object via a step() method
    * @param {string} fill the colour of the fill
    * @param {string} stroke the colour of the stroke
-   * @return {any} a Two.js circle object
+   * @return {Circle} a Two.js circle object
    */
   createCircle(
     x: number,
@@ -63,7 +72,7 @@ export class Renderer {
     update: boolean,
     fill = "black",
     stroke = "black"
-  ): any {
+  ): Circle {
     const coordinates = Renderer.translate(x, y, this.width, this.height);
     const circle = this.target.makeCircle(coordinates[0], coordinates[1], r);
     circle.fill = fill;
@@ -80,7 +89,7 @@ export class Renderer {
    * @param {number} h height of the rectangle
    * @param {boolean} update toggles updating the object via a step() method
    * @param {string} fill the colour of the rectangle
-   * @return {any} a Two.js rectangle object
+   * @return {Rectangle} a Two.js rectangle object
    */
   createRectangle(
     x: number,
@@ -89,7 +98,7 @@ export class Renderer {
     h: number,
     update: boolean,
     fill = "black"
-  ): any {
+  ): Rectangle {
     const coordinates = Renderer.translate(x, y, w, h);
     const rectangle = this.target.makeRectangle(
       coordinates[0],
@@ -141,9 +150,9 @@ export class Renderer {
    * @param {Dot} dot instance of Dot
    * @param {boolean} update toggles updating the object via a step() method
    * @param {string} fill the colour of the Dot
-   * @return {any} Two.Circle instance
+   * @return {Circle} Two.Circle instance
    */
-  createDot(dot: Dot, update: boolean, fill = "black"): any {
+  createDot(dot: Dot, update: boolean, fill = "black"): Circle {
     const coordinates = Renderer.translate(
       dot.getX(),
       dot.getY(),
@@ -167,9 +176,9 @@ export class Renderer {
    * @param {number} startAngle the starting angle of the arc
    * @param {number} endAngle the ending angle of the arc
    * @param {string} fill the colour of the arc
-   * @return {any} arc object
+   * @return {ArcSegment} arc object
    */
-  createArc(startAngle: number, endAngle: number, fill = "red"): any {
+  createArc(startAngle: number, endAngle: number, fill = "red"): ArcSegment {
     const coordinates = Renderer.translate(0, 0, this.width, this.height);
     const arc = this.target.makeArcSegment(
       coordinates[0],

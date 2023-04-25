@@ -4,8 +4,8 @@
  * @description Contains specific parameters used in the Bang et al. RDK task,
  * contains the number of trials and different key layouts.
  *
- * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/rdk/src/config.ts
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/configuration.ts
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
 // List of targets
@@ -19,7 +19,7 @@ enum Targets {
 const TARGET = Targets.DESKTOP;
 
 export const configuration = {
-  name: "Moving dots",
+  name: "RDK Task",
   studyName: "bang_2018_decision_confidence",
   localisation: "en-AU",
   contact: "henry.burgess@wustl.edu",
@@ -64,7 +64,7 @@ export const configuration = {
     numPracticeTrials: 10,
     numCalibrationOneTrials: 120,
     numMainTrials: 200,
-    requireID: true,
+    requireID: false,
     demoMode: false,
   },
 

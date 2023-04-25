@@ -1,11 +1,11 @@
 // Configuration
-import { configuration } from "../../configuration";
+import { configuration } from "../configuration";
 
 // 'Stimuli' type
 import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
 
 // Neurocog.js instance
-import { experiment } from "../..";
+import { experiment } from "..";
 
 // Core modules
 import { Dot } from "./Dot";
@@ -34,15 +34,10 @@ export class Graphics {
 
   /**
    * Set the visibility of the mouse cursor
-   * @param {boolean} _visible the status of cursor visibility
+   * @param {boolean} visible the status of cursor visibility
    */
-  cursorVisibility(_visible = true): void {
-    const _target = document.getElementById("jspsych-content");
-    if (_visible) {
-      _target.style.cursor = "auto";
-    } else {
-      _target.style.cursor = "none";
-    }
+  cursorVisibility(visible = true): void {
+    document.getElementById("jspsych-content").style.cursor = visible ? "auto" : "none";
   }
 
   /**

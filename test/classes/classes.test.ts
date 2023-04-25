@@ -1,8 +1,8 @@
 /**
- * @summary Unit tests for Bang et al. task.
+ * @summary Unit tests for RDK task classes
  *
- * @link   https://github.com/henry-burgess/ccddm2020/blob/master/tasks/bang_2018_decision_confidence/test/classes.test.js
- * @author Henry Burgess <s4481993@student.uq.edu.au>
+ * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/test/classes/classes.test.js
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
 // Package dependencies
