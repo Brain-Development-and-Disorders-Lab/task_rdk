@@ -7,7 +7,7 @@
 
 // Package dependencies
 import { test, expect } from "@jest/globals";
-import { Dot } from "../../src/lib/classes/Dot";
+import { Dot } from "../../src/classes/Dot";
 
 test("check that two.js circle object is null", () => {
   const dotParameters = {
