@@ -8,23 +8,13 @@
  * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
-// List of targets
-enum Targets {
-  GORILLA = "gorilla",
-  DESKTOP = "desktop",
-  SPECTROMETER = "spectrometer",
-}
-
-// Specify the build target here
-const TARGET = Targets.DESKTOP;
-
 export const configuration = {
   name: "RDK Task",
   studyName: "bang_2018_decision_confidence",
   localisation: "en-AU",
   contact: "henry.burgess@wustl.edu",
   allowParticipantContact: false,
-  target: TARGET,
+  target: __TARGET__,
 
   // -------------------- Scaling --------------------
   scalingDefault: 1.0,
@@ -49,15 +39,15 @@ export const configuration = {
     },
     spectrometer: {
       name: "spectrometer",
-      left: "Digit2",
-      right: "Digit3",
-      alt: "Digit1",
-      submit: "Digit4",
-      trigger: "Digit5",
+      left: "2",
+      right: "3",
+      alt: "1",
+      submit: "4",
+      trigger: "5",
       showButtons: false,
     },
   },
-  keys: "desktop",
+  keys: __TARGET__,
 
   manipulations: {
     numTutorialTrials: 10,

@@ -1,9 +1,6 @@
 // Gulp modules
 const gulp = require("gulp");
 
-// Webpack
-const webpack = require("webpack");
-
 // Other modules
 const del = require("del");
 
@@ -11,11 +8,9 @@ const del = require("del");
  * Primary build pipeline
  * @param {() => void} cb callback function
  */
-const build = (cb) => {
-  // Run the Webpack build, then move the images
-  webpack(require("./webpack.config"), () => {
-    gulp.src("./src/img/**/*").pipe(gulp.dest("./dist/img/"));
-  });
+const resources = (cb) => {
+  // Copy all stimuli to build output
+  gulp.src("./src/img/**/*").pipe(gulp.dest("./dist/img/"));
   cb();
 };
 
@@ -28,6 +23,6 @@ const clean = (cb) => {
   cb();
 };
 
-exports.build = build;
+exports.resources = resources;
 exports.clean = clean;
-exports.default = build;
+exports.default = resources;
