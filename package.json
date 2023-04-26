@@ -3,9 +3,11 @@
   "version": "1.6.3",
   "description": "RDK Task",
   "scripts": {
-    "build": "gulp build",
+    "build": "yarn build:desktop",
+    "build:desktop": "webpack build --env target=desktop && gulp resources",
+    "build:spectrometer": "webpack build --env target=spectrometer && gulp resources",
     "clean": "gulp clean",
-    "dev": "webpack serve",
+    "dev": "webpack serve --env target=desktop",
     "style": "yarn prettier --write .",
     "test": "jest"
   },
