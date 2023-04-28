@@ -8,7 +8,9 @@
  * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
-export const configuration = {
+import { IConfiguration } from "../types";
+
+export const configuration: IConfiguration = {
   name: "RDK Task",
   studyName: "bang_2018_decision_confidence",
   localisation: "en-AU",

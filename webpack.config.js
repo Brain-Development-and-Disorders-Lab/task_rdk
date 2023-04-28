@@ -6,7 +6,6 @@ module.exports = (env) => {
   console.log("Target:", env.target || "desktop");
 
   return {
-    mode: "development",
     entry: {
       index: "./src/index.ts",
     },
