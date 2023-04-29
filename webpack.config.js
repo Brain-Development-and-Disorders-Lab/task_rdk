@@ -13,7 +13,7 @@ module.exports = (env) => {
     devtool: "inline-source-map",
     plugins: [
       new HtmlWebpackPlugin({
-        title: "RDK Game",
+        title: "RDK Task",
       }),
       new DefinePlugin({
         __TARGET__: JSON.stringify(env.target || "desktop"),

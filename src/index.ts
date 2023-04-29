@@ -9,6 +9,9 @@
  */
 import { Experiment } from "neurocog";
 
+// Utility libraries
+import _ from "lodash";
+
 // Import jsPsych to ensure it is bundled when compiled
 import "jspsych/jspsych";
 import "jspsych/plugins/jspsych-instructions";
@@ -20,7 +23,7 @@ import "jspsych-attention-check";
 // Import the plugin before adding it to the timeline
 import "./plugin";
 
-// configuration
+// Configuration
 import { configuration } from "./configuration";
 
 // Additional functions
@@ -41,24 +44,26 @@ const tutorialCoherence = [0.3, 0.6];
 const practiceCoherence = [0.3, 0.6];
 
 // Standard experiment flow
-if (configuration.manipulations.requireID === true) {
+if (_.isEqual(configuration.manipulations.requireID, true)) {
   timeline.push({
     type: "survey-html-form",
-    preamble: `<p>Please enter your 8 digit participant ID.</p>`,
-    html: `<input name="participantID" type="text" required/></br></br>`,
+    preamble: `<p>Enter a participant identifier</p>`,
+    html: `<input name="participantIdentifier" type="text" required /></br></br>`,
   });
 }
 
-if (configuration.manipulations.demoMode === false) {
+if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Set the experiment to run in fullscreen mode
   timeline.push({
     type: "fullscreen",
     fullscreen_mode: true,
+    message: `<p>Enable fullscreen view</p>`,
+    delay_after: 1500,
   });
 
   // -------------------- Instructions --------------------
   let instructionContinueText: string;
-  if (keyLayout.name === "spectrometer") {
+  if (_.isEqual(keyLayout.name, "spectrometer")) {
     instructionContinueText = `<div id="instructions-navigation">
         <br>
         <hr>
@@ -86,7 +91,7 @@ if (configuration.manipulations.demoMode === false) {
   let leftControlImage: string;
   let rightControlImage: string;
   let submitControlImage: string;
-  if (keyLayout.name === "spectrometer") {
+  if (_.isEqual(keyLayout.name, "spectrometer")) {
     leftControlImage = `<img
         src="${experiment.getStimuli().getImage("2.png")}"
         style="${configuration.style.keyboard}"
@@ -161,7 +166,7 @@ if (configuration.manipulations.demoMode === false) {
       instructionContinueText,
   ];
 
-  if (configuration.showInstructions === true) {
+  if (_.isEqual(configuration.showInstructions, true)) {
     timeline.push({
       type: "instructions",
       pages: description,
@@ -171,7 +176,7 @@ if (configuration.manipulations.demoMode === false) {
       show_page_number: true,
       show_clickable_nav: keyLayout.showButtons,
     });
-  } else if (keyLayout.name !== "spectrometer") {
+  } else if (!_.isEqual(keyLayout.name, "spectrometer")) {
     // Display video
     timeline.push({
       type: "instructions",
@@ -192,7 +197,7 @@ if (configuration.manipulations.demoMode === false) {
   }
 
   // Attention-check question
-  if (keyLayout.name !== "spectrometer") {
+  if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
       type: "attention-check",
       prompt: "What is the purpose of this task?",
@@ -313,7 +318,7 @@ if (configuration.manipulations.demoMode === false) {
   });
 
   // Attention-check question
-  if (keyLayout.name !== "spectrometer") {
+  if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
       type: "attention-check",
       prompt:
@@ -404,7 +409,7 @@ if (configuration.manipulations.demoMode === false) {
   ];
 
   // Attention-check question
-  if (keyLayout.name !== "spectrometer") {
+  if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
       type: "attention-check",
       prompt: "What is the best way to detect the motion of the moving dots?",
@@ -443,7 +448,7 @@ if (configuration.manipulations.demoMode === false) {
   // -------------------- Spectrometer --------------------
   // If inside the spectrometer, wait until the signal key is pressed.
   // Else, use the standard pre-game screen.
-  if (keyLayout.name === "spectrometer") {
+  if (_.isEqual(keyLayout.name, "spectrometer")) {
     const spectrometer = [
       `<h1>${configuration.name} game</h1>` +
         `<h2>Please Wait...</h2>` +
@@ -512,7 +517,7 @@ if (configuration.manipulations.demoMode === false) {
   }
 
   // Attention-check question
-  if (keyLayout.name !== "spectrometer") {
+  if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
       type: "attention-check",
       prompt: "What is the objective of this task?",
@@ -633,5 +638,5 @@ if (configuration.manipulations.demoMode === false) {
 
 experiment.start({
   timeline: timeline,
-  show_progress_bar: true,
+  show_progress_bar: _.isEqual(keyLayout.name, "desktop"),
 });

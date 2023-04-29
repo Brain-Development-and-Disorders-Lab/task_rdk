@@ -17,7 +17,7 @@ import { Rectangle } from "two.js/src/shapes/rectangle";
 import { ArcSegment } from "two.js/src/shapes/arc-segment";
 
 // Custom types
-import { RenderParameters } from "../../types";
+import { IRenderer } from "../../types";
 
 /**
  * Renderer abstraction that interfaces directly with the
@@ -38,9 +38,9 @@ export class Renderer {
   /**
    * Default constructor for Renderer
    * @param {Two} two Two.js instance
-   * @param {RenderParameters} parameters configuration information
+   * @param {IRenderer} parameters configuration information
    */
-  constructor(two: Two, parameters: RenderParameters) {
+  constructor(two: Two, parameters: IRenderer) {
     this.target = two;
     this.displayElement = parameters.target;
     this.distanceFromScreen = parameters.distanceFromScreen;

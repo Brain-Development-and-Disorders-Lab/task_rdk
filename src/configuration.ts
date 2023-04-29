@@ -8,7 +8,9 @@
  * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
-export const configuration = {
+import { IConfiguration } from "../types";
+
+export const configuration: IConfiguration = {
   name: "RDK Task",
   studyName: "bang_2018_decision_confidence",
   localisation: "en-AU",
@@ -54,7 +56,7 @@ export const configuration = {
     numPracticeTrials: 10,
     numCalibrationOneTrials: 120,
     numMainTrials: 200,
-    requireID: false,
+    requireID: true,
     demoMode: false,
   },
 

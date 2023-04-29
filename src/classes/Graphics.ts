@@ -10,6 +10,7 @@ import { experiment } from "..";
 // Core modules
 import { Dot } from "./Dot";
 import { Renderer } from "./Renderer";
+import { IDot } from "../../types";
 
 /**
  * Graphics class used to interface with the plugin and the renderer class
@@ -176,7 +177,7 @@ export class Graphics {
    */
   addDots(): void {
     // Initial parameters.
-    const referenceDotParameters = {
+    const referenceDotParameters: IDot = {
       type: "reference",
       width: this.renderer.getWidth(),
       height: this.renderer.getHeight(),
@@ -186,7 +187,7 @@ export class Graphics {
       direction: this.trial.dotDirection,
     };
 
-    const randomDotParameters = {
+    const randomDotParameters: IDot = {
       type: "random",
       width: this.renderer.getWidth(),
       height: this.renderer.getHeight(),
