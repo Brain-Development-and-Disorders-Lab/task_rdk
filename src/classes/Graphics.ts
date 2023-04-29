@@ -10,6 +10,8 @@ import { experiment } from "..";
 // Core modules
 import { Dot } from "./Dot";
 import { Renderer } from "./Renderer";
+
+// Type definitions
 import { IDot } from "../../types";
 
 /**

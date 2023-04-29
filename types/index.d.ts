@@ -21,6 +21,19 @@ export type IDot = {
   direction: number;
 };
 
+// Stimulus parameters
+export type IStimulus = {
+  name: string;
+  interactive: boolean;
+  selected: any;
+  keybindings?: any;
+  timing: any;
+  target: any;
+  trial: any;
+  postTrialHandler: any;
+  rendererParameters: IRenderer;
+};
+
 // Keyboard layout
 export type IKeys = {
   name: string;

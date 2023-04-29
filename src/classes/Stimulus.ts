@@ -1,10 +1,14 @@
+// Core modules
 import { Graphics } from "./Graphics";
+
+// Type definitions
+import { IRenderer, IStimulus } from "../../types";
 
 /**
  * Stimulus abstraction
  */
 export class Stimulus {
-  private parameters: any;
+  private parameters: IStimulus;
   private name: string;
   private interactive: boolean;
   private selected: any;
@@ -13,15 +17,18 @@ export class Stimulus {
   private target: any;
   private trial: any;
   private postTrialHandler: any;
-  private rendererParameters: any;
+  private rendererParameters: IRenderer;
   private timer: number;
   /**
    * Default constructor for Stimulus
-   * @param {any} parameters configuration information
+   * @param {IStimulus} parameters configuration information
    */
-  constructor(parameters: any) {
-    this.name = parameters.name;
+  constructor(parameters: IStimulus) {
+    // Store parameters
     this.parameters = parameters;
+
+    // Unpack parameters
+    this.name = parameters.name;
     this.interactive = parameters.interactive;
     this.selected = parameters.selected;
     this.keybindings = parameters.keybindings;
@@ -30,6 +37,8 @@ export class Stimulus {
     this.trial = parameters.trial;
     this.postTrialHandler = parameters.postTrialHandler;
     this.rendererParameters = parameters.rendererParameters;
+
+    // Timer
     this.timer = null;
   }
 
@@ -73,9 +82,9 @@ export class Stimulus {
 
   /**
    * Set the timer of the stimuli
-   * @param {Timer} timer the timer
+   * @param {number} timer the timer
    */
-  setTimer(timer) {
+  setTimer(timer: number) {
     this.clearTimer();
     this.timer = timer;
   }
