@@ -47,8 +47,8 @@ const practiceCoherence = [0.3, 0.6];
 if (_.isEqual(configuration.manipulations.requireID, true)) {
   timeline.push({
     type: "survey-html-form",
-    preamble: `<p>Please enter your 8 digit participant ID.</p>`,
-    html: `<input name="participantID" type="text" required/></br></br>`,
+    preamble: `<p>Enter a participant identifier</p>`,
+    html: `<input name="participantIdentifier" type="text" required /></br></br>`,
   });
 }
 
@@ -57,6 +57,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   timeline.push({
     type: "fullscreen",
     fullscreen_mode: true,
+    message: `<p>Enable fullscreen view</p>`,
+    delay_after: 1500,
   });
 
   // -------------------- Instructions --------------------

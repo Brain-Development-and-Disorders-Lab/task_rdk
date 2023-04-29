@@ -56,7 +56,7 @@ export const configuration: IConfiguration = {
     numPracticeTrials: 10,
     numCalibrationOneTrials: 120,
     numMainTrials: 200,
-    requireID: false,
+    requireID: true,
     demoMode: false,
   },
 
