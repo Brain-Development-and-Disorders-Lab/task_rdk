@@ -1,43 +1,54 @@
 // Core modules
 import { Renderer } from "./Renderer";
 
+// Type definitions
+import { IDot } from "../../types";
+import { Circle } from "two.js/src/shapes/circle";
+
 /**
  * Dot class used to abstract the positioning of moving dots.
  */
 export class Dot {
+  // Cartesian coordinates
   private x: number;
   private y: number;
-  private shown: boolean;
+
+  // Dot parameters
   private type: any;
   private width: number;
   private height: number;
   private viewRadius: number;
   private dotVelocity: number;
   private dotRadius: number;
-  private reference: number;
   private direction: any;
-  private dot: any;
-  private stuck: boolean;
+
+  // Dot-specific attributes
+  private dot: Circle;
+  private shown: boolean;
+
   /**
    * Dot class constructor
    * @param {number} x the x cartesian coordinate of the dot
    * @param {number} y the y cartesian coordinate of the dot
-   * @param {*} parameters a parameters object containing properties
+   * @param {IDot} parameters a parameters object containing properties
    */
-  constructor(x: number, y: number, parameters: any) {
+  constructor(x: number, y: number, parameters: IDot) {
+    // Cartesian coordinates
     this.x = x;
     this.y = y;
-    this.shown = false;
+
+    // Unpack parameters
     this.type = parameters.type;
     this.width = parameters.width;
     this.height = parameters.height;
     this.viewRadius = parameters.viewRadius;
     this.dotVelocity = parameters.dotVelocity;
     this.dotRadius = parameters.dotRadius;
-    this.reference = parameters.reference;
     this.direction = parameters.direction;
+
+    // Dot-specific attributes
     this.dot = null;
-    this.stuck = false;
+    this.shown = false;
   }
 
   /**

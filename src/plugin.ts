@@ -23,7 +23,7 @@ import { Runner } from "./classes/Runner";
 import { configuration } from "./configuration";
 
 // Custom types
-import { RenderParameters } from "../types";
+import { IRenderer } from "../types";
 
 // External libraries
 import Two from "two.js";
@@ -78,7 +78,7 @@ jsPsych.plugins["dot-game"] = (() => {
     containerDiv.appendChild(childDiv);
 
     // Setup the renderer parameters.
-    const rendererParameters: RenderParameters = {
+    const rendererParameters: IRenderer = {
       distanceFromScreen: distanceFromScreen,
       viewRadius: viewRadius,
       dotRadius: dotRadius,

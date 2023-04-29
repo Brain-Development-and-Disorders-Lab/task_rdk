@@ -1,13 +1,24 @@
 import { Configuration } from "neurocog/types";
 
 // Renderer parameters
-export type RenderParameters = {
+export type IRenderer = {
   distanceFromScreen: number;
   viewRadius: number;
   dotRadius: number;
   width: number;
   height: number;
   target: HTMLElement;
+};
+
+// Dot parameters
+export type IDot = {
+  type: string;
+  width: number;
+  height: number;
+  viewRadius: number;
+  dotVelocity: number;
+  dotRadius: number;
+  direction: number;
 };
 
 // Keyboard layout
