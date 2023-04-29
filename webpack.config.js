@@ -6,13 +6,14 @@ module.exports = (env) => {
   console.log("Target:", env.target || "desktop");
 
   return {
+    mode: "development",
     entry: {
       index: "./src/index.ts",
     },
     devtool: "inline-source-map",
     plugins: [
       new HtmlWebpackPlugin({
-        title: "RDK Game",
+        title: "RDK Task",
       }),
       new DefinePlugin({
         __TARGET__: JSON.stringify(env.target || "desktop"),
