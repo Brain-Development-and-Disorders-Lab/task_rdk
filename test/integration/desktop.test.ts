@@ -13,6 +13,6 @@ describe("Desktop testing", () => {
   }, MAX_TIMEOUT);
 
   it("navigates to the task", async () => {
-    await expect(page.title()).resolves.toMatch("RDK Game");
+    await expect(page.title()).resolves.toMatch("RDK Task");
   });
 });
