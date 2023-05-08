@@ -276,10 +276,6 @@ export class Graphics {
 
     // Button to notify of a mistake
     html += `<div id="mistake-button-container">`;
-    html +=
-      `<button type="button" id="mistake-button" ` + `class="jspsych-btn">`;
-    html += `I made a mistake`;
-    html += `</button>`;
     if (configuration.keys === "spectrometer") {
       html +=
         `<img src="${this.imageCollection.getImage("1.png")}" ` +
@@ -289,6 +285,9 @@ export class Graphics {
         `<img src="${this.imageCollection.getImage("D.png")}" ` +
         `style="${configuration.style.keyboard}">`;
     }
+    html += `<p style="font-size: x-large; font-weight: bold">`;
+    html += `I made a mistake`;
+    html += `</p>`;
     html += `</div>`;
 
     this.renderer.getDisplayElement().parentNode.innerHTML = html;
