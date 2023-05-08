@@ -241,7 +241,10 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       `<h2>Practice Games</h2>` +
       `<p>Play a few games now and practice watching the dots while ` +
       `observing the appearance of the game.</p>` +
-      `<p>Your mouse will be hidden only when the circular view is visible.</p>` +
+      (_.isEqual(keyLayout.name, "spectrometer") ?
+      `<p>Use the buttons associated with the prompts to interact with the game.</p>`
+      : `<p>Your mouse will be hidden only when the circular view is visible.</p>`)
+       +
       instructionContinueText,
   ];
 
