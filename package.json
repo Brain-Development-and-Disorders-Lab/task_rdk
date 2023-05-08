@@ -1,6 +1,6 @@
 {
   "name": "task_rdk",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "description": "RDK Task",
   "scripts": {
     "build": "yarn build:desktop",
