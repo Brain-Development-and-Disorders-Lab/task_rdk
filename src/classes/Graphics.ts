@@ -11,6 +11,9 @@ import { experiment } from "..";
 import { Dot } from "./Dot";
 import { Renderer } from "./Renderer";
 
+// Utility libraries
+import _ from "lodash";
+
 // Type definitions
 import { IDot } from "../../types";
 
@@ -276,18 +279,21 @@ export class Graphics {
 
     // Button to notify of a mistake
     html += `<div id="mistake-button-container">`;
-    if (configuration.keys === "spectrometer") {
+    if (_.isEqual(configuration.keys, "spectrometer")) {
       html +=
         `<img src="${this.imageCollection.getImage("1.png")}" ` +
         `style="${configuration.style.keyboard}">`;
+      html += `<p style="font-size: x-large; font-weight: bold">`;
+      html += `I made a mistake`;
+      html += `</p>`;
     } else {
       html +=
         `<img src="${this.imageCollection.getImage("D.png")}" ` +
         `style="${configuration.style.keyboard}">`;
+      html += `<button id="mistake-button" class="jspsych-btn">`;
+      html += `I made a mistake`;
+      html += `</button>`;
     }
-    html += `<p style="font-size: x-large; font-weight: bold">`;
-    html += `I made a mistake`;
-    html += `</p>`;
     html += `</div>`;
 
     this.renderer.getDisplayElement().parentNode.innerHTML = html;
