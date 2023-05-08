@@ -120,7 +120,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   }
 
   const description = [
-    `<h1>${configuration.name} game</h1>
+    `<h1>${configuration.name}</h1>
       <p><b>Approximate duration:</b> ${duration} minutes</p>
       <h2>Instructions</h2>
       <p>In each game, you will be briefly shown dots moving inside a circular area.</p>
@@ -132,7 +132,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       <p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>
       ${instructionContinueText}`,
 
-    `<h1>${configuration.name} game</h1>
+    `<h1>${configuration.name}</h1>
       <h2>Instructions</h2>
       <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
       <p>It will look like the image below:</p>
@@ -144,7 +144,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
       ${instructionContinueText}`,
 
-    `<h1>${configuration.name} game</h1>` +
+    `<h1>${configuration.name}</h1>` +
       `<h2>Instructions</h2>` +
       `<p>After deciding the direction the dots were moving, ` +
       `you will rate how confident you were in making your decision.</p>` +
@@ -181,7 +181,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     timeline.push({
       type: "instructions",
       pages: [
-        `<h1>${configuration.name} Game</h1>` +
+        `<h1>${configuration.name}</h1>` +
           `<h2>Instructions - Video</h2>` +
           `<div class="video-container">` +
           `<iframe style="width: 100%; height: 100%;" src="https://www.youtube.com/embed/NIJ9DBcr_qI?&autoplay=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>` +
@@ -237,7 +237,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // -------------------- Tutorial games --------------------
   // Spectrometer start
   const tutorialGames = [
-    `<h1>${configuration.name} game</h1>` +
+    `<h1>${configuration.name}</h1>` +
       `<h2>Practice Games</h2>` +
       `<p>Play a few games now and practice watching the dots while ` +
       `observing the appearance of the game.</p>` +
@@ -297,7 +297,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
   // -------------------- Practice games --------------------
   const practice = [
-    `<h1>${configuration.name} game</h1>` +
+    `<h1>${configuration.name}</h1>` +
       `<h2>Practice Games</h2>` +
       `<p>You will now play another ${configuration.manipulations.numPracticeTrials} ` +
       `practice games. ` +
@@ -390,7 +390,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
   // -------------------- Calibration games --------------------
   const main = [
-    `<h1>${configuration.name} game</h1>` +
+    `<h1>${configuration.name}</h1>` +
       `<p>That concludes all the practice games.</p>` +
       `<p>Take a short break now.</p>` +
       `<p>When you are ready to continue, you will play ` +
@@ -453,7 +453,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Else, use the standard pre-game screen.
   if (_.isEqual(keyLayout.name, "spectrometer")) {
     const spectrometer = [
-      `<h1>${configuration.name} game</h1>` +
+      `<h1>${configuration.name}</h1>` +
         `<h2>Please Wait...</h2>` +
         `<p>You have now completed all of the practice games.</p>` +
         `<p>Waiting for spectrometer to be ready.</p>` +
@@ -592,10 +592,10 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
   // Add end screen to the experiment
   const end =
-    `<h1>${configuration.name} game</h1>` +
-    `<h2>Experiment finished</h2>` +
+    `<h1>${configuration.name}</h1>` +
+    `<h2>Task finished</h2>` +
     `<p>Thank you for your participation in this research.</p>` +
-    `<p>Press ${submitControlImage} to end the experiment.</p>`;
+    `<p>Press ${submitControlImage} to end the task.</p>`;
 
   timeline.push({
     type: "instructions",
