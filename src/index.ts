@@ -389,8 +389,11 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   }
 
   // -------------------- Calibration games --------------------
-  const main = [
-    `<h1>${configuration.name}</h1>` +
+  const main = [];
+
+  if (configuration.manipulations.numCalibrationOneTrials + configuration.manipulations.numMainTrials > 0) {
+    main.push(
+      `<h1>${configuration.name}</h1>` +
       `<p>That concludes all the practice games.</p>` +
       `<p>Take a short break now.</p>` +
       `<p>When you are ready to continue, you will play ` +
@@ -403,13 +406,17 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       `answered or not, and you will be asked to rate your ` +
       `confidence after some of the games. </p>` +
       `<br>` +
-      `<p>Each correct answer will give you 1 point, ` +
-      `and this point will contribute to your overall ` +
-      `point total across all the tasks, giving you ` +
-      `a chance to enter a lottery to win a $40 bonus!</p>` +
       `<p><b>Good luck!</b></p>` +
       instructionContinueText,
-  ];
+    );
+  } else {
+    // Training setup with no calibration or main trials
+    main.push(
+      `<h1>${configuration.name}</h1>` +
+      `<p>That concludes all the practice games.</p>` +
+      `<p>Press ${rightControlImage} on your keyboard to answer one final question.</p>`
+    );
+  }
 
   // Attention-check question
   if (!_.isEqual(keyLayout.name, "spectrometer")) {
