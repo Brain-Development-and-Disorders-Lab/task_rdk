@@ -45,7 +45,7 @@ export const configuration: IConfiguration = {
       right: "3",
       alt: "1",
       submit: "4",
-      trigger: "5",
+      trigger: "t",
       showButtons: false,
     },
   },
