@@ -29,6 +29,9 @@ import { configuration } from "./configuration";
 // Additional functions
 import { calculateDuration, scaling } from "./functions";
 
+// Existing and custom types
+import { RDKTrial } from "../types";
+
 export const experiment = new Experiment(configuration);
 
 const timeline = [];
@@ -271,7 +274,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     let r = Math.random() > 0.5 ? 0 : Math.PI;
     r = parseFloat(r.toFixed(3));
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -284,15 +287,18 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       keyLayout: keyLayout,
       data: {
         name: trialName,
+        number: t,
         coherence: k,
         stimulusDuration: d,
         dotDirection: r,
         referenceSelection: "",
-        deviation: "",
+        deviation: "left",
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // -------------------- Practice games --------------------
@@ -364,7 +370,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     const k = Math.random() > 0.5 ? practiceCoherence[0] : practiceCoherence[1];
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -377,6 +383,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       keyLayout: keyLayout,
       data: {
         name: trialName,
+        number: t,
         coherence: k,
         stimulusDuration: 1500,
         dotDirection: r,
@@ -385,7 +392,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // -------------------- Calibration games --------------------
@@ -501,7 +510,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     r = parseFloat(r.toFixed(3));
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -523,7 +532,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // Attention-check question
@@ -572,7 +583,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     r = parseFloat(r.toFixed(3));
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -594,7 +605,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // Add end screen to the experiment
@@ -621,7 +634,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     const k = Math.random() > 0.5 ? practiceCoherence[0] : practiceCoherence[1];
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -634,6 +647,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       keyLayout: keyLayout,
       data: {
         name: trialName,
+        number: t,
         coherence: k,
         stimulusDuration: 1500,
         dotDirection: r,
@@ -642,7 +656,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 }
 

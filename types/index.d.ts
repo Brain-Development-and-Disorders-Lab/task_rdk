@@ -1,5 +1,29 @@
 import { Configuration } from "neurocog/types";
 
+export type RDKTrial = {
+  type: "dot-game";
+  name: string;
+  distance: number;
+  coherence: number;
+  stimulusDuration: number;
+  dotDirection: number;
+  dotVelocity: number;
+  showFeedback: boolean;
+  checkConfidence: boolean;
+  keyLayout: IKeys;
+  data: {
+    name: string,
+    number: number,
+    coherence: number,
+    stimulusDuration: number,
+    dotDirection: number,
+    referenceSelection: string,
+    deviation: "left" | "right",
+    correct: boolean,
+    confidenceSelection: number,
+  }
+};
+
 // Renderer parameters
 export type IRenderer = {
   distanceFromScreen: number;
