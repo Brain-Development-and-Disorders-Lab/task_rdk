@@ -46,16 +46,17 @@ const tutorialCoherence = [0.3, 0.6];
 // Practice trial properties
 const practiceCoherence = [0.3, 0.6];
 
-// Standard experiment flow
-if (_.isEqual(configuration.manipulations.requireID, true)) {
-  timeline.push({
-    type: "survey-html-form",
-    preamble: `<p>Enter a participant identifier</p>`,
-    html: `<input name="participantIdentifier" type="text" required /></br></br>`,
-  });
-}
-
+// Generate regular or demo timelines
 if (_.isEqual(configuration.manipulations.demoMode, false)) {
+  // Require the ID input
+  if (_.isEqual(configuration.manipulations.requireID, true)) {
+    timeline.push({
+      type: "survey-html-form",
+      preamble: `<p>Enter a participant identifier</p>`,
+      html: `<input name="participantIdentifier" type="text" required /></br></br>`,
+    });
+  }
+
   // Set the experiment to run in fullscreen mode
   timeline.push({
     type: "fullscreen",
@@ -67,7 +68,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // -------------------- Instructions --------------------
   let instructionContinueText: string;
   if (_.isEqual(keyLayout.name, "spectrometer")) {
-    instructionContinueText = `<div id="instructions-navigation">
+    instructionContinueText =
+      `<div id="instructions-navigation">
         <br>
         <hr>
         <img
@@ -78,7 +80,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         >
       </div>`;
   } else {
-    instructionContinueText = `<div id="instructions-navigation">
+    instructionContinueText =
+      `<div id="instructions-navigation">
         <br>
         <hr>
         <img
@@ -95,78 +98,84 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   let rightControlImage: string;
   let submitControlImage: string;
   if (_.isEqual(keyLayout.name, "spectrometer")) {
-    leftControlImage = `<img
+    leftControlImage =
+      `<img
         src="${experiment.getStimuli().getImage("2.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    rightControlImage = `<img
+    rightControlImage =
+      `<img
         src="${experiment.getStimuli().getImage("3.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    submitControlImage = `<img
+    submitControlImage =
+      `<img
         src="${experiment.getStimuli().getImage("4.png")}"
         style="${configuration.style.keyboard}"
       > `;
   } else {
-    leftControlImage = `<img
+    leftControlImage =
+      `<img
         src="${experiment.getStimuli().getImage("F.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    rightControlImage = `<img
+    rightControlImage =
+      `<img
         src="${experiment.getStimuli().getImage("J.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    submitControlImage = `<img
+    submitControlImage =
+      `<img
         src="${experiment.getStimuli().getImage("K.png")}"
         style="${configuration.style.keyboard}"
       > `;
   }
 
   const description = [
-    `<h1>${configuration.name}</h1>
-      <p><b>Approximate duration:</b> ${duration} minutes</p>
-      <h2>Instructions</h2>
-      <p>In each game, you will be briefly shown dots moving inside a circular area.</p>
-      <p>An example illustrating the appearance of these dots is shown below:</p>
-      <img
-        src="${experiment.getStimuli().getImage("InstructionsMovingDots.gif")}"
-        style="${configuration.style.image}"
-      >
-      <p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>
-      ${instructionContinueText}`,
+    `<h1>${configuration.name}</h1>` +
+    `<p><b>Approximate duration:</b> ${duration} minutes</p>` +
+    `<h2>Instructions</h2>` +
+    `<p>In each game, you will be briefly shown dots moving inside a circular area.</p>` +
+    `<p>An example illustrating the appearance of these dots is shown below:</p>` +
+    `<img
+      src="${experiment.getStimuli().getImage("InstructionsMovingDots.gif")}"
+      style="${configuration.style.image}"
+    >` +
+    `<p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>` +
+    `${instructionContinueText}`,
 
     `<h1>${configuration.name}</h1>
-      <h2>Instructions</h2>
-      <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
-      <p>It will look like the image below:</p>
-      <img
-        src="${experiment.getStimuli().getImage("InstructionsReference.png")}"
-        style="${configuration.style.image}"
-      />
-      <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
-      <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
-      ${instructionContinueText}`,
+    <h2>Instructions</h2>
+    <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
+    <p>It will look like the image below:</p>
+    <img
+      src="${experiment.getStimuli().getImage("InstructionsReference.png")}"
+      style="${configuration.style.image}"
+    />
+    <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
+    <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
+    ${instructionContinueText}`,
 
     `<h1>${configuration.name}</h1>` +
-      `<h2>Instructions</h2>` +
-      `<p>After deciding the direction the dots were moving, ` +
-      `you will rate how confident you were in making your decision.</p>` +
-      `<p>You will see a slider like the one below:</p>` +
-      `<img src="${experiment
-        .getStimuli()
-        .getImage("InstructionsConfidence.png")}" ` +
-      `style="${configuration.style.image}"/>` +
-      `<p>Press ${leftControlImage} ` +
-      `on your keyboard to decrease your confidence, ` +
-      `or press ${rightControlImage} ` +
-      `on your keyboard to increase your confidence. ` +
-      `</p>` +
-      `<p>Once you have adjusted your confidence, press ` +
-      submitControlImage +
-      `to finish the game and continue. There is also a button ` +
-      `to notify the researchers that you made a mistake in ` +
-      `the previous trial.</p>` +
-      instructionContinueText,
+    `<h2>Instructions</h2>` +
+    `<p>After deciding the direction the dots were moving, ` +
+    `you will rate how confident you were in making your decision.</p>` +
+    `<p>You will see a slider like the one below:</p>` +
+    `<img src="${experiment
+      .getStimuli()
+      .getImage("InstructionsConfidence.png")}" ` +
+    `style="${configuration.style.image}"/>` +
+    `<p>Press ${leftControlImage} ` +
+    `on your keyboard to decrease your confidence, ` +
+    `or press ${rightControlImage} ` +
+    `on your keyboard to increase your confidence. ` +
+    `</p>` +
+    `<p>Once you have adjusted your confidence, press ` +
+    submitControlImage +
+    `to finish the game and continue. There is also a button ` +
+    `to notify the researchers that you made a mistake in ` +
+    `the previous trial.</p>` +
+    instructionContinueText,
   ];
 
   if (_.isEqual(configuration.showInstructions, true)) {
@@ -626,8 +635,34 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     key_forward: keyLayout.submit,
   });
 } else {
-  // Enable demo mode, looping trials that show feedback and ask for confidence estimates
-  for (let t = 0; t < 100; t++) {
+  // Number of demonstration trials
+  const demoTrials = 20;
+
+  // Include instructions for the demonstration
+  const demoInstructions = [
+    `<h1>${configuration.name}</h1>` +
+    `<h2>Confidence demo</h2>` +
+    `<p>The following ${demoTrials} trials demonstrate a confidence comparison task.</p>` +
+    `<p>You will be asked to indicate which of two decisions was associated with greater confidence.</p>` +
+    `<p>Press ` +
+    `<img src="${experiment
+      .getStimuli()
+      .getImage(`${keyLayout.right.charAt(keyLayout.right.length - 1).toUpperCase()}.png`)}" ` +
+    `style="${configuration.style.keyboard}"/>` +
+    `to continue.</p>`
+  ];
+  timeline.push({
+    type: "instructions",
+    pages: demoInstructions,
+    allow_keys: !keyLayout.showButtons,
+    key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
+    key_backward: keyLayout.left.charAt(keyLayout.left.length - 1),
+    show_page_number: true,
+    show_clickable_nav: keyLayout.showButtons,
+  });
+
+  // Generate demonstration trials
+  for (let t = 0; t < demoTrials; t++) {
     const trialName = "practice";
     let r = Math.random() > 0.5 ? 0 : Math.PI;
     r = parseFloat(r.toFixed(3));
@@ -642,8 +677,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       stimulusDuration: 1500,
       dotDirection: r,
       dotVelocity: 2.0,
-      showFeedback: true,
-      checkConfidence: true,
+      showFeedback: false,
+      checkConfidence: (t + 1) % configuration.manipulations.nGap === 0 && t > 0,
       keyLayout: keyLayout,
       data: {
         name: trialName,
@@ -660,6 +695,25 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
     timeline.push(trial);
   }
+
+  const end =
+    `<h1>${configuration.name}</h1>` +
+    `<h2>Confidence demo finished</h2>` +
+    `<p>Press ` +
+    `<img src="${experiment
+      .getStimuli()
+      .getImage(`${keyLayout.right.charAt(keyLayout.right.length - 1).toUpperCase()}.png`)}" ` +
+    `style="${configuration.style.keyboard}"/>` +
+    ` to end the task.</p>`;
+
+  timeline.push({
+    type: "instructions",
+    pages: [end],
+    allow_backward: false,
+    button_label_next: "Finish",
+    show_clickable_nav: false,
+    key_forward: keyLayout.right,
+  });
 }
 
 experiment.start({

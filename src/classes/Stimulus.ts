@@ -152,6 +152,8 @@ export class Stimulus {
         graphics.addReferenceIndicator();
       } else if (component === "confidence") {
         graphics.addConfidence(parameters);
+      } else if (component === "forced_confidence") {
+        graphics.addForcedConfidence(parameters);
       } else if (component === "left") {
         graphics.addLeftKey();
       } else if (component === "right") {

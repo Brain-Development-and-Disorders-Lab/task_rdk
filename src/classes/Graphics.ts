@@ -316,6 +316,71 @@ export class Graphics {
   }
 
   /**
+   * Setup HTML elements for confidence "forced-choice" element
+   * @param parameters configuration information for confidence selection
+   */
+  addForcedConfidence(parameters: any): void {
+    // Confidence instructions
+    let html = "";
+
+    // Generate language to describe the n-th trial comparison
+    let nGapLanguage = "previous trial";
+    if (configuration.manipulations.nGap >= 1) {
+      nGapLanguage = `${configuration.manipulations.nGap} trials`;
+    }
+
+    // Confidence selection
+    html += `<div>`;
+    html += `<p>Between the previous trial and ${nGapLanguage} earlier, which answer was most likely to be correct?</p>`;
+    html += `<br>`;
+    html += `</div>`;
+
+    // Key images for target
+    html += `<div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">`;
+    if (configuration.keys === "spectrometer") {
+      html +=
+        `<div style="display: flex; flex-direction: column; align-items: center;">` +
+          `<b>Previous trial</b>` +
+          `<img src="` +
+          `${this.imageCollection.getImage(
+            "2.png"
+          )}" ` +
+          `style="${configuration.style.keyboard}">` +
+        `</div>`;
+      html +=
+      `<div style="display: flex; flex-direction: column; align-items: center;">` +
+        `<b>${nGapLanguage} earlier</b>` +
+        `<img src="` +
+        `${this.imageCollection.getImage(
+          "3.png"
+        )}" ` +
+        `style="${configuration.style.keyboard}">` +
+      `</div>`;
+    } else {
+      html +=
+        `<div style="display: flex; flex-direction: column; align-items: center;">` +
+          `<b>Previous trial</b>` +
+          `<img src="` +
+          `${this.imageCollection.getImage("F.png")}" ` +
+          `style="${configuration.style.keyboard}">` +
+        `</div>`;
+      html +=
+        `<div style="display: flex; flex-direction: column; align-items: center;">` +
+          `<b>${nGapLanguage} earlier</b>` +
+          `<img src="` +
+          `${this.imageCollection.getImage("J.png")}" ` +
+          `style="${configuration.style.keyboard}">` +
+        `</div>`;
+    }
+    html += `</div>`;
+
+    this.renderer.getDisplayElement().parentNode.innerHTML = html;
+
+    // Bind appropriate event listeners to actions
+    document.addEventListener("keyup", parameters.eventHandler);
+  }
+
+  /**
    * Clear all elements from the renderer
    */
   clear(): void {
