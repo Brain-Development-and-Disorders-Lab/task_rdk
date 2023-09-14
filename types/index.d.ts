@@ -12,16 +12,16 @@ export type RDKTrial = {
   checkConfidence: boolean;
   keyLayout: IKeys;
   data: {
-    name: string,
-    number: number,
-    coherence: number,
-    stimulusDuration: number,
-    dotDirection: number,
-    referenceSelection: string,
-    deviation: "left" | "right",
-    correct: boolean,
-    confidenceSelection: number,
-  }
+    name: string;
+    number: number;
+    coherence: number;
+    stimulusDuration: number;
+    dotDirection: number;
+    referenceSelection: string;
+    deviation: "left" | "right";
+    correct: boolean;
+    confidenceSelection: number;
+  };
 };
 
 // Renderer parameters

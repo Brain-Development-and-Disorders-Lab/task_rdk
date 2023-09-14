@@ -43,7 +43,9 @@ export class Graphics {
    * @param {boolean} visible the status of cursor visibility
    */
   cursorVisibility(visible = true): void {
-    document.getElementById("jspsych-content").style.cursor = visible ? "auto" : "none";
+    document.getElementById("jspsych-content").style.cursor = visible
+      ? "auto"
+      : "none";
   }
 
   /**
@@ -340,36 +342,32 @@ export class Graphics {
     if (configuration.keys === "spectrometer") {
       html +=
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-          `<b>Previous trial</b>` +
-          `<img src="` +
-          `${this.imageCollection.getImage(
-            "2.png"
-          )}" ` +
-          `style="${configuration.style.keyboard}">` +
+        `<b>Previous trial</b>` +
+        `<img src="` +
+        `${this.imageCollection.getImage("2.png")}" ` +
+        `style="${configuration.style.keyboard}">` +
         `</div>`;
       html +=
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
+        `<div style="display: flex; flex-direction: column; align-items: center;">` +
         `<b>${nGapLanguage} earlier</b>` +
         `<img src="` +
-        `${this.imageCollection.getImage(
-          "3.png"
-        )}" ` +
+        `${this.imageCollection.getImage("3.png")}" ` +
         `style="${configuration.style.keyboard}">` +
-      `</div>`;
+        `</div>`;
     } else {
       html +=
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-          `<b>Previous trial</b>` +
-          `<img src="` +
-          `${this.imageCollection.getImage("F.png")}" ` +
-          `style="${configuration.style.keyboard}">` +
+        `<b>Previous trial</b>` +
+        `<img src="` +
+        `${this.imageCollection.getImage("F.png")}" ` +
+        `style="${configuration.style.keyboard}">` +
         `</div>`;
       html +=
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-          `<b>${nGapLanguage} earlier</b>` +
-          `<img src="` +
-          `${this.imageCollection.getImage("J.png")}" ` +
-          `style="${configuration.style.keyboard}">` +
+        `<b>${nGapLanguage} earlier</b>` +
+        `<img src="` +
+        `${this.imageCollection.getImage("J.png")}" ` +
+        `style="${configuration.style.keyboard}">` +
         `</div>`;
     }
     html += `</div>`;

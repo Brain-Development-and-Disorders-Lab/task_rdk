@@ -134,7 +134,8 @@ jsPsych.plugins["dot-game"] = (() => {
       if (stimuli.length === 0) {
         // End the trial if there are no more stimuli to display
         trial.data.trialEndTime = Date.now();
-        trial.data.trialTotalTime = trial.data.trialEndTime - trial.data.trialStartTime;
+        trial.data.trialTotalTime =
+          trial.data.trialEndTime - trial.data.trialStartTime;
 
         endTrial();
         return;
@@ -249,16 +250,18 @@ jsPsych.plugins["dot-game"] = (() => {
           } else {
             console.warn("Did not get reference to slider element");
           }
-        } else if (currentStimulus.getParameters().name === "forced_confidence") {
+        } else if (
+          currentStimulus.getParameters().name === "forced_confidence"
+        ) {
           // Handle 'reference' stimuli
           selection =
             currentStimulus.getParameters().keybindings[keycode].choice;
-            currentStimulus.removeKeybindings();
+          currentStimulus.removeKeybindings();
 
           // Calculate and store reference data
           trial.data.confidenceEndTime = Date.now();
           trial.data.confidenceTotalTime =
-          trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+            trial.data.confidenceEndTime - trial.data.confidenceStartTime;
 
           // Normalize selection data
           trial.data.confidenceSelection = selection === "left" ? 1 : 2;

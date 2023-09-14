@@ -68,8 +68,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // -------------------- Instructions --------------------
   let instructionContinueText: string;
   if (_.isEqual(keyLayout.name, "spectrometer")) {
-    instructionContinueText =
-      `<div id="instructions-navigation">
+    instructionContinueText = `<div id="instructions-navigation">
         <br>
         <hr>
         <img
@@ -80,8 +79,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         >
       </div>`;
   } else {
-    instructionContinueText =
-      `<div id="instructions-navigation">
+    instructionContinueText = `<div id="instructions-navigation">
         <br>
         <hr>
         <img
@@ -98,34 +96,28 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   let rightControlImage: string;
   let submitControlImage: string;
   if (_.isEqual(keyLayout.name, "spectrometer")) {
-    leftControlImage =
-      `<img
+    leftControlImage = `<img
         src="${experiment.getStimuli().getImage("2.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    rightControlImage =
-      `<img
+    rightControlImage = `<img
         src="${experiment.getStimuli().getImage("3.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    submitControlImage =
-      `<img
+    submitControlImage = `<img
         src="${experiment.getStimuli().getImage("4.png")}"
         style="${configuration.style.keyboard}"
       > `;
   } else {
-    leftControlImage =
-      `<img
+    leftControlImage = `<img
         src="${experiment.getStimuli().getImage("F.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    rightControlImage =
-      `<img
+    rightControlImage = `<img
         src="${experiment.getStimuli().getImage("J.png")}"
         style="${configuration.style.keyboard}"
       > `;
-    submitControlImage =
-      `<img
+    submitControlImage = `<img
         src="${experiment.getStimuli().getImage("K.png")}"
         style="${configuration.style.keyboard}"
       > `;
@@ -133,16 +125,16 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
   const description = [
     `<h1>${configuration.name}</h1>` +
-    `<p><b>Approximate duration:</b> ${duration} minutes</p>` +
-    `<h2>Instructions</h2>` +
-    `<p>In each game, you will be briefly shown dots moving inside a circular area.</p>` +
-    `<p>An example illustrating the appearance of these dots is shown below:</p>` +
-    `<img
+      `<p><b>Approximate duration:</b> ${duration} minutes</p>` +
+      `<h2>Instructions</h2>` +
+      `<p>In each game, you will be briefly shown dots moving inside a circular area.</p>` +
+      `<p>An example illustrating the appearance of these dots is shown below:</p>` +
+      `<img
       src="${experiment.getStimuli().getImage("InstructionsMovingDots.gif")}"
       style="${configuration.style.image}"
     >` +
-    `<p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>` +
-    `${instructionContinueText}`,
+      `<p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>` +
+      `${instructionContinueText}`,
 
     `<h1>${configuration.name}</h1>
     <h2>Instructions</h2>
@@ -157,25 +149,25 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     ${instructionContinueText}`,
 
     `<h1>${configuration.name}</h1>` +
-    `<h2>Instructions</h2>` +
-    `<p>After deciding the direction the dots were moving, ` +
-    `you will rate how confident you were in making your decision.</p>` +
-    `<p>You will see a slider like the one below:</p>` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage("InstructionsConfidence.png")}" ` +
-    `style="${configuration.style.image}"/>` +
-    `<p>Press ${leftControlImage} ` +
-    `on your keyboard to decrease your confidence, ` +
-    `or press ${rightControlImage} ` +
-    `on your keyboard to increase your confidence. ` +
-    `</p>` +
-    `<p>Once you have adjusted your confidence, press ` +
-    submitControlImage +
-    `to finish the game and continue. There is also a button ` +
-    `to notify the researchers that you made a mistake in ` +
-    `the previous trial.</p>` +
-    instructionContinueText,
+      `<h2>Instructions</h2>` +
+      `<p>After deciding the direction the dots were moving, ` +
+      `you will rate how confident you were in making your decision.</p>` +
+      `<p>You will see a slider like the one below:</p>` +
+      `<img src="${experiment
+        .getStimuli()
+        .getImage("InstructionsConfidence.png")}" ` +
+      `style="${configuration.style.image}"/>` +
+      `<p>Press ${leftControlImage} ` +
+      `on your keyboard to decrease your confidence, ` +
+      `or press ${rightControlImage} ` +
+      `on your keyboard to increase your confidence. ` +
+      `</p>` +
+      `<p>Once you have adjusted your confidence, press ` +
+      submitControlImage +
+      `to finish the game and continue. There is also a button ` +
+      `to notify the researchers that you made a mistake in ` +
+      `the previous trial.</p>` +
+      instructionContinueText,
   ];
 
   if (_.isEqual(configuration.showInstructions, true)) {
@@ -253,10 +245,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       `<h2>Practice Games</h2>` +
       `<p>Play a few games now and practice watching the dots while ` +
       `observing the appearance of the game.</p>` +
-      (_.isEqual(keyLayout.name, "spectrometer") ?
-      `<p>Use the buttons associated with the prompts to interact with the game.</p>`
-      : `<p>Your mouse will be hidden only when the circular view is visible.</p>`)
-       +
+      (_.isEqual(keyLayout.name, "spectrometer")
+        ? `<p>Use the buttons associated with the prompts to interact with the game.</p>`
+        : `<p>Your mouse will be hidden only when the circular view is visible.</p>`) +
       instructionContinueText,
   ];
 
@@ -409,30 +400,34 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // -------------------- Calibration games --------------------
   const main = [];
 
-  if (configuration.manipulations.numCalibrationOneTrials + configuration.manipulations.numMainTrials > 0) {
+  if (
+    configuration.manipulations.numCalibrationOneTrials +
+      configuration.manipulations.numMainTrials >
+    0
+  ) {
     main.push(
       `<h1>${configuration.name}</h1>` +
-      `<p>That concludes all the practice games.</p>` +
-      `<p>Take a short break now.</p>` +
-      `<p>When you are ready to continue, you will play ` +
-      `${
-        configuration.manipulations.numCalibrationOneTrials +
-        configuration.manipulations.numMainTrials
-      } ` +
-      `games.</p>` +
-      `<p>You will not be shown if you have correctly ` +
-      `answered or not, and you will be asked to rate your ` +
-      `confidence after some of the games. </p>` +
-      `<br>` +
-      `<p><b>Good luck!</b></p>` +
-      instructionContinueText,
+        `<p>That concludes all the practice games.</p>` +
+        `<p>Take a short break now.</p>` +
+        `<p>When you are ready to continue, you will play ` +
+        `${
+          configuration.manipulations.numCalibrationOneTrials +
+          configuration.manipulations.numMainTrials
+        } ` +
+        `games.</p>` +
+        `<p>You will not be shown if you have correctly ` +
+        `answered or not, and you will be asked to rate your ` +
+        `confidence after some of the games. </p>` +
+        `<br>` +
+        `<p><b>Good luck!</b></p>` +
+        instructionContinueText
     );
   } else {
     // Training setup with no calibration or main trials
     main.push(
       `<h1>${configuration.name}</h1>` +
-      `<p>That concludes all the practice games.</p>` +
-      `<p>Press ${rightControlImage} on your keyboard to answer one final question.</p>`
+        `<p>That concludes all the practice games.</p>` +
+        `<p>Press ${rightControlImage} on your keyboard to answer one final question.</p>`
     );
   }
 
@@ -641,15 +636,19 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Include instructions for the demonstration
   const demoInstructions = [
     `<h1>${configuration.name}</h1>` +
-    `<h2>Confidence demo</h2>` +
-    `<p>The following ${demoTrials} trials demonstrate a confidence comparison task.</p>` +
-    `<p>You will be asked to indicate which of two decisions was associated with greater confidence.</p>` +
-    `<p>Press ` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage(`${keyLayout.right.charAt(keyLayout.right.length - 1).toUpperCase()}.png`)}" ` +
-    `style="${configuration.style.keyboard}"/>` +
-    `to continue.</p>`
+      `<h2>Confidence demo</h2>` +
+      `<p>The following ${demoTrials} trials demonstrate a confidence comparison task.</p>` +
+      `<p>You will be asked to indicate which of two decisions was associated with greater confidence.</p>` +
+      `<p>Press ` +
+      `<img src="${experiment
+        .getStimuli()
+        .getImage(
+          `${keyLayout.right
+            .charAt(keyLayout.right.length - 1)
+            .toUpperCase()}.png`
+        )}" ` +
+      `style="${configuration.style.keyboard}"/>` +
+      `to continue.</p>`,
   ];
   timeline.push({
     type: "instructions",
@@ -678,7 +677,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       dotDirection: r,
       dotVelocity: 2.0,
       showFeedback: false,
-      checkConfidence: (t + 1) % configuration.manipulations.nGap === 0 && t > 0,
+      checkConfidence:
+        (t + 1) % configuration.manipulations.nGap === 0 && t > 0,
       keyLayout: keyLayout,
       data: {
         name: trialName,
@@ -702,7 +702,11 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     `<p>Press ` +
     `<img src="${experiment
       .getStimuli()
-      .getImage(`${keyLayout.right.charAt(keyLayout.right.length - 1).toUpperCase()}.png`)}" ` +
+      .getImage(
+        `${keyLayout.right
+          .charAt(keyLayout.right.length - 1)
+          .toUpperCase()}.png`
+      )}" ` +
     `style="${configuration.style.keyboard}"/>` +
     ` to end the task.</p>`;
 
