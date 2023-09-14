@@ -29,6 +29,9 @@ import { configuration } from "./configuration";
 // Additional functions
 import { calculateDuration, scaling } from "./functions";
 
+// Existing and custom types
+import { RDKTrial } from "../types";
+
 export const experiment = new Experiment(configuration);
 
 const timeline = [];
@@ -43,16 +46,17 @@ const tutorialCoherence = [0.3, 0.6];
 // Practice trial properties
 const practiceCoherence = [0.3, 0.6];
 
-// Standard experiment flow
-if (_.isEqual(configuration.manipulations.requireID, true)) {
-  timeline.push({
-    type: "survey-html-form",
-    preamble: `<p>Enter a participant identifier</p>`,
-    html: `<input name="participantIdentifier" type="text" required /></br></br>`,
-  });
-}
-
+// Generate regular or demo timelines
 if (_.isEqual(configuration.manipulations.demoMode, false)) {
+  // Require the ID input
+  if (_.isEqual(configuration.manipulations.requireID, true)) {
+    timeline.push({
+      type: "survey-html-form",
+      preamble: `<p>Enter a participant identifier</p>`,
+      html: `<input name="participantIdentifier" type="text" required /></br></br>`,
+    });
+  }
+
   // Set the experiment to run in fullscreen mode
   timeline.push({
     type: "fullscreen",
@@ -120,29 +124,29 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   }
 
   const description = [
-    `<h1>${configuration.name}</h1>
-      <p><b>Approximate duration:</b> ${duration} minutes</p>
-      <h2>Instructions</h2>
-      <p>In each game, you will be briefly shown dots moving inside a circular area.</p>
-      <p>An example illustrating the appearance of these dots is shown below:</p>
-      <img
-        src="${experiment.getStimuli().getImage("InstructionsMovingDots.gif")}"
-        style="${configuration.style.image}"
-      >
-      <p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>
-      ${instructionContinueText}`,
+    `<h1>${configuration.name}</h1>` +
+      `<p><b>Approximate duration:</b> ${duration} minutes</p>` +
+      `<h2>Instructions</h2>` +
+      `<p>In each game, you will be briefly shown dots moving inside a circular area.</p>` +
+      `<p>An example illustrating the appearance of these dots is shown below:</p>` +
+      `<img
+      src="${experiment.getStimuli().getImage("InstructionsMovingDots.gif")}"
+      style="${configuration.style.image}"
+    >` +
+      `<p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>` +
+      `${instructionContinueText}`,
 
     `<h1>${configuration.name}</h1>
-      <h2>Instructions</h2>
-      <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
-      <p>It will look like the image below:</p>
-      <img
-        src="${experiment.getStimuli().getImage("InstructionsReference.png")}"
-        style="${configuration.style.image}"
-      />
-      <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
-      <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
-      ${instructionContinueText}`,
+    <h2>Instructions</h2>
+    <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
+    <p>It will look like the image below:</p>
+    <img
+      src="${experiment.getStimuli().getImage("InstructionsReference.png")}"
+      style="${configuration.style.image}"
+    />
+    <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
+    <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
+    ${instructionContinueText}`,
 
     `<h1>${configuration.name}</h1>` +
       `<h2>Instructions</h2>` +
@@ -241,10 +245,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       `<h2>Practice Games</h2>` +
       `<p>Play a few games now and practice watching the dots while ` +
       `observing the appearance of the game.</p>` +
-      (_.isEqual(keyLayout.name, "spectrometer") ?
-      `<p>Use the buttons associated with the prompts to interact with the game.</p>`
-      : `<p>Your mouse will be hidden only when the circular view is visible.</p>`)
-       +
+      (_.isEqual(keyLayout.name, "spectrometer")
+        ? `<p>Use the buttons associated with the prompts to interact with the game.</p>`
+        : `<p>Your mouse will be hidden only when the circular view is visible.</p>`) +
       instructionContinueText,
   ];
 
@@ -271,7 +274,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     let r = Math.random() > 0.5 ? 0 : Math.PI;
     r = parseFloat(r.toFixed(3));
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -284,15 +287,18 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       keyLayout: keyLayout,
       data: {
         name: trialName,
+        number: t,
         coherence: k,
         stimulusDuration: d,
         dotDirection: r,
         referenceSelection: "",
-        deviation: "",
+        deviation: "left",
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // -------------------- Practice games --------------------
@@ -364,7 +370,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     const k = Math.random() > 0.5 ? practiceCoherence[0] : practiceCoherence[1];
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -377,6 +383,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       keyLayout: keyLayout,
       data: {
         name: trialName,
+        number: t,
         coherence: k,
         stimulusDuration: 1500,
         dotDirection: r,
@@ -385,36 +392,42 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // -------------------- Calibration games --------------------
   const main = [];
 
-  if (configuration.manipulations.numCalibrationOneTrials + configuration.manipulations.numMainTrials > 0) {
+  if (
+    configuration.manipulations.numCalibrationOneTrials +
+      configuration.manipulations.numMainTrials >
+    0
+  ) {
     main.push(
       `<h1>${configuration.name}</h1>` +
-      `<p>That concludes all the practice games.</p>` +
-      `<p>Take a short break now.</p>` +
-      `<p>When you are ready to continue, you will play ` +
-      `${
-        configuration.manipulations.numCalibrationOneTrials +
-        configuration.manipulations.numMainTrials
-      } ` +
-      `games.</p>` +
-      `<p>You will not be shown if you have correctly ` +
-      `answered or not, and you will be asked to rate your ` +
-      `confidence after some of the games. </p>` +
-      `<br>` +
-      `<p><b>Good luck!</b></p>` +
-      instructionContinueText,
+        `<p>That concludes all the practice games.</p>` +
+        `<p>Take a short break now.</p>` +
+        `<p>When you are ready to continue, you will play ` +
+        `${
+          configuration.manipulations.numCalibrationOneTrials +
+          configuration.manipulations.numMainTrials
+        } ` +
+        `games.</p>` +
+        `<p>You will not be shown if you have correctly ` +
+        `answered or not, and you will be asked to rate your ` +
+        `confidence after some of the games. </p>` +
+        `<br>` +
+        `<p><b>Good luck!</b></p>` +
+        instructionContinueText
     );
   } else {
     // Training setup with no calibration or main trials
     main.push(
       `<h1>${configuration.name}</h1>` +
-      `<p>That concludes all the practice games.</p>` +
-      `<p>Press ${rightControlImage} on your keyboard to answer one final question.</p>`
+        `<p>That concludes all the practice games.</p>` +
+        `<p>Press ${rightControlImage} on your keyboard to answer one final question.</p>`
     );
   }
 
@@ -501,7 +514,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     r = parseFloat(r.toFixed(3));
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -523,7 +536,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // Attention-check question
@@ -572,7 +587,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     r = parseFloat(r.toFixed(3));
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -594,7 +609,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
 
   // Add end screen to the experiment
@@ -613,15 +630,45 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     key_forward: keyLayout.submit,
   });
 } else {
-  // Enable demo mode, looping trials that show feedback and ask for confidence estimates
-  for (let t = 0; t < 100; t++) {
+  // Number of demonstration trials
+  const demoTrials = 20;
+
+  // Include instructions for the demonstration
+  const demoInstructions = [
+    `<h1>${configuration.name}</h1>` +
+      `<h2>Confidence demo</h2>` +
+      `<p>The following ${demoTrials} trials demonstrate a confidence comparison task.</p>` +
+      `<p>You will be asked to indicate which of two decisions was associated with greater confidence.</p>` +
+      `<p>Press ` +
+      `<img src="${experiment
+        .getStimuli()
+        .getImage(
+          `${keyLayout.right
+            .charAt(keyLayout.right.length - 1)
+            .toUpperCase()}.png`
+        )}" ` +
+      `style="${configuration.style.keyboard}"/>` +
+      `to continue.</p>`,
+  ];
+  timeline.push({
+    type: "instructions",
+    pages: demoInstructions,
+    allow_keys: !keyLayout.showButtons,
+    key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
+    key_backward: keyLayout.left.charAt(keyLayout.left.length - 1),
+    show_page_number: true,
+    show_clickable_nav: keyLayout.showButtons,
+  });
+
+  // Generate demonstration trials
+  for (let t = 0; t < demoTrials; t++) {
     const trialName = "practice";
     let r = Math.random() > 0.5 ? 0 : Math.PI;
     r = parseFloat(r.toFixed(3));
     const k = Math.random() > 0.5 ? practiceCoherence[0] : practiceCoherence[1];
     const deviation = r === 0 ? "right" : "left";
 
-    timeline.push({
+    const trial: RDKTrial = {
       type: "dot-game",
       name: trialName,
       distance: 50 * scaling(),
@@ -629,11 +676,13 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       stimulusDuration: 1500,
       dotDirection: r,
       dotVelocity: 2.0,
-      showFeedback: true,
-      checkConfidence: true,
+      showFeedback: false,
+      checkConfidence:
+        (t + 1) % configuration.manipulations.nGap === 0 && t > 0,
       keyLayout: keyLayout,
       data: {
         name: trialName,
+        number: t,
         coherence: k,
         stimulusDuration: 1500,
         dotDirection: r,
@@ -642,8 +691,33 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
-    });
+    };
+
+    timeline.push(trial);
   }
+
+  const end =
+    `<h1>${configuration.name}</h1>` +
+    `<h2>Confidence demo finished</h2>` +
+    `<p>Press ` +
+    `<img src="${experiment
+      .getStimuli()
+      .getImage(
+        `${keyLayout.right
+          .charAt(keyLayout.right.length - 1)
+          .toUpperCase()}.png`
+      )}" ` +
+    `style="${configuration.style.keyboard}"/>` +
+    ` to end the task.</p>`;
+
+  timeline.push({
+    type: "instructions",
+    pages: [end],
+    allow_backward: false,
+    button_label_next: "Finish",
+    show_clickable_nav: false,
+    key_forward: keyLayout.right,
+  });
 }
 
 experiment.start({

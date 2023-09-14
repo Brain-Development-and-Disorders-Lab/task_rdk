@@ -56,6 +56,7 @@ export const configuration: IConfiguration = {
     numPracticeTrials: 10,
     numCalibrationOneTrials: 120,
     numMainTrials: 200,
+    nGap: 4,
     requireID: true,
     demoMode: false,
   },
@@ -93,8 +94,4 @@ export const configuration: IConfiguration = {
     "K.png": "img/K.png",
   },
   resources: {},
-
-  // -------------------- Developer settings --------------------
-  testing: false,
-  showInstructions: false,
 };
