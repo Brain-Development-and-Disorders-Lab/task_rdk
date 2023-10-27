@@ -1,16 +1,8 @@
 // Core modules
 import { Dot } from "./Dot";
 
-// Configuration
-import { configuration } from "../configuration";
-
-// 'Stimuli' type
-import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
-
-// Neurocog.js instance
-import { experiment } from "..";
-
 // External libraries
+import { JsPsych } from "jspsych";
 import Two from "two.js";
 import { Circle } from "two.js/src/shapes/circle";
 import { Rectangle } from "two.js/src/shapes/rectangle";
@@ -24,6 +16,7 @@ import { IRenderer } from "../../types";
  * Two.js graphics library
  */
 export class Renderer {
+  public jsPsych: JsPsych;
   private target: Two;
   private displayElement: HTMLElement;
   private distanceFromScreen: number;
@@ -33,14 +26,14 @@ export class Renderer {
   private height: number;
   private renderLayer: any;
   private elements: any[];
-  private imageCollection: Stimuli;
 
   /**
    * Default constructor for Renderer
    * @param {Two} two Two.js instance
    * @param {IRenderer} parameters configuration information
    */
-  constructor(two: Two, parameters: IRenderer) {
+  constructor(jsPsych: JsPsych, two: Two, parameters: IRenderer) {
+    this.jsPsych = jsPsych;
     this.target = two;
     this.displayElement = parameters.target;
     this.distanceFromScreen = parameters.distanceFromScreen;
@@ -50,9 +43,6 @@ export class Renderer {
     this.height = parameters.height;
     this.renderLayer = null;
     this.elements = [];
-
-    // Get the ImageCollection
-    this.imageCollection = experiment.getStimuli();
   }
 
   /**
@@ -206,10 +196,10 @@ export class Renderer {
 
       // Create the left image container and the left image
       const leftImage = document.createElement("img");
-      if (configuration.keys === "desktop") {
-        leftImage.src = this.imageCollection.getImage("F.png");
+      if (__TARGET__ === "desktop") {
+        leftImage.src = this.jsPsych.extensions.Neurocog.getStimulus("F.png");
       } else {
-        leftImage.src = this.imageCollection.getImage("2.png");
+        leftImage.src = this.jsPsych.extensions.Neurocog.getStimulus("2.png");
       }
       leftImage.style.height = "20vh";
       leftImage.style.position = "absolute";
@@ -224,10 +214,10 @@ export class Renderer {
 
       // Create the right image container and the right image
       const rightImage = document.createElement("img");
-      if (configuration.keys === "desktop") {
-        rightImage.src = this.imageCollection.getImage("J.png");
+      if (__TARGET__ === "desktop") {
+        rightImage.src = this.jsPsych.extensions.Neurocog.getStimulus("J.png");
       } else {
-        rightImage.src = this.imageCollection.getImage("3.png");
+        rightImage.src = this.jsPsych.extensions.Neurocog.getStimulus("3.png");
       }
       rightImage.style.height = "20vh";
       rightImage.style.position = "absolute";

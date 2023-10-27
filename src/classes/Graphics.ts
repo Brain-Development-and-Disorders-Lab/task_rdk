@@ -1,11 +1,5 @@
-// Configuration
-import { configuration } from "../configuration";
-
-// 'Stimuli' type
-import { Stimuli } from "neurocog/dist/lib/classes/Stimuli";
-
-// Neurocog.js instance
-import { experiment } from "..";
+// jsPsych
+import { JsPsych } from "jspsych";
 
 // Core modules
 import { Dot } from "./Dot";
@@ -21,21 +15,20 @@ import { IDot } from "../../types";
  * Graphics class used to interface with the plugin and the renderer class
  */
 export class Graphics {
+  private jsPsych: JsPsych;
   private trial: any;
   private renderer: Renderer;
-  private imageCollection: Stimuli;
 
   /**
    * Graphics constructor
+   * @param {JsPsych} jsPsych Experiment instance of jsPsych
    * @param {any} trial jsPsych trial
    * @param {Renderer} renderer renderer class instance
    */
-  constructor(trial: any, renderer: Renderer) {
+  constructor(jsPsych: JsPsych, trial: any, renderer: Renderer) {
+    this.jsPsych = jsPsych;
     this.trial = trial;
     this.renderer = renderer;
-
-    // Get the ImageCollection
-    this.imageCollection = experiment.getStimuli();
   }
 
   /**
@@ -238,18 +231,18 @@ export class Graphics {
     let html = "";
 
     // Key images for target
-    if (configuration.keys === "spectrometer") {
+    if (__TARGET__ === "spectrometer") {
       html +=
         `<div><img src="` +
-        `${this.imageCollection.getImage(
+        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus(
           "ControlsConfidenceSpectrometer.png"
         )}" ` +
-        `style="${configuration.style.controls}"></div>`;
+        `class="controls-graphic"></div>`;
     } else {
       html +=
         `<div><img src="` +
-        `${this.imageCollection.getImage("ControlsConfidenceDesktop.png")}" ` +
-        `style="${configuration.style.controls}"></div>`;
+        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("ControlsConfidenceDesktop.png")}" ` +
+        `class="controls-graphic"></div>`;
     }
 
     // Confidence slider
@@ -281,17 +274,17 @@ export class Graphics {
 
     // Button to notify of a mistake
     html += `<div id="mistake-button-container">`;
-    if (_.isEqual(configuration.keys, "spectrometer")) {
+    if (_.isEqual(__TARGET__, "spectrometer")) {
       html +=
-        `<img src="${this.imageCollection.getImage("1.png")}" ` +
-        `style="${configuration.style.keyboard}">`;
+        `<img src="${this.renderer.jsPsych.extensions.Neurocog.getStimulus("1.png")}" ` +
+        `class="keyboard-graphic">`;
       html += `<p style="font-size: x-large; font-weight: bold">`;
       html += `I made a mistake`;
       html += `</p>`;
     } else {
       html +=
-        `<img src="${this.imageCollection.getImage("D.png")}" ` +
-        `style="${configuration.style.keyboard}">`;
+        `<img src="${this.renderer.jsPsych.extensions.Neurocog.getStimulus("D.png")}" ` +
+        `class="keyboard-graphic"">`;
       html += `<button id="mistake-button" class="jspsych-btn">`;
       html += `I made a mistake`;
       html += `</button>`;
@@ -310,7 +303,7 @@ export class Graphics {
 
     // Bind appropriate event listeners to actions
     document.addEventListener("keyup", parameters.eventHandler);
-    if (configuration.keys === "desktop") {
+    if (__TARGET__ === "desktop") {
       document
         .getElementById("mistake-button")
         .addEventListener("click", parameters.eventHandler);
@@ -326,48 +319,48 @@ export class Graphics {
     let html = "";
 
     // Generate language to describe the n-th trial comparison
-    let nGapLanguage = "previous trial";
-    if (configuration.manipulations.nGap >= 1) {
-      nGapLanguage = `${configuration.manipulations.nGap} trials`;
+    let nGapLanguage = "before that";
+    if (this.jsPsych.extensions.Neurocog.getManipulation("nGap", 2) - 1 > 1) {
+      nGapLanguage = `${this.jsPsych.extensions.Neurocog.getManipulation("nGap", 2)} trials earlier`;
     }
 
     // Confidence selection
     html += `<div>`;
-    html += `<p>Between the previous trial and ${nGapLanguage} earlier, which answer was most likely to be correct?</p>`;
+    html += `<p>Between the <b>last trial</b> and the <b>trial ${nGapLanguage}</b>, which answer was most likely to be correct?</p>`;
     html += `<br>`;
     html += `</div>`;
 
     // Key images for target
     html += `<div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">`;
-    if (configuration.keys === "spectrometer") {
+    if (__TARGET__ === "spectrometer") {
       html +=
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>Previous trial</b>` +
+        `<b>Last trial</b>` +
         `<img src="` +
-        `${this.imageCollection.getImage("2.png")}" ` +
-        `style="${configuration.style.keyboard}">` +
+        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("2.png")}" ` +
+        `class="keyboard-graphic">` +
         `</div>`;
       html +=
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>${nGapLanguage} earlier</b>` +
+        `<b>Trial ${nGapLanguage}</b>` +
         `<img src="` +
-        `${this.imageCollection.getImage("3.png")}" ` +
-        `style="${configuration.style.keyboard}">` +
+        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("3.png")}" ` +
+        `class="keyboard-graphic">` +
         `</div>`;
     } else {
       html +=
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>Previous trial</b>` +
+        `<b>Last trial</b>` +
         `<img src="` +
-        `${this.imageCollection.getImage("F.png")}" ` +
-        `style="${configuration.style.keyboard}">` +
+        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("F.png")}" ` +
+        `class="keyboard-graphic">` +
         `</div>`;
       html +=
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>${nGapLanguage} earlier</b>` +
+        `<b>Trial ${nGapLanguage}</b>` +
         `<img src="` +
-        `${this.imageCollection.getImage("J.png")}" ` +
-        `style="${configuration.style.keyboard}">` +
+        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("J.png")}" ` +
+        `class="keyboard-graphic">` +
         `</div>`;
     }
     html += `</div>`;

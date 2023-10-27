@@ -4,8 +4,8 @@
   "description": "RDK Task",
   "scripts": {
     "build": "yarn build:desktop",
-    "build:desktop": "webpack build --env target=desktop && gulp resources",
-    "build:spectrometer": "webpack build --env target=spectrometer && gulp resources",
+    "build:desktop": "webpack build --env target=desktop && gulp artefacts",
+    "build:spectrometer": "webpack build --env target=spectrometer && gulp artefacts",
     "clean": "gulp clean",
     "start": "webpack serve --env target=desktop",
     "style": "yarn prettier --write .",
@@ -25,10 +25,15 @@
   },
   "homepage": "https://github.com/Brain-Development-and-Disorders-Lab/task_rdk#readme",
   "dependencies": {
-    "jspsych": "^6.0.0",
-    "jspsych-attention-check": "^2.1.1",
+    "@jspsych/plugin-fullscreen": "^1.2.0",
+    "@jspsych/plugin-instructions": "^1.1.3",
+    "@jspsych/plugin-preload": "^1.1.2",
+    "@jspsych/plugin-survey-html-form": "^1.0.2",
+    "i18next": "^23.5.1",
+    "jspsych": "^7.3.3",
+    "jspsych-attention-check": "^3.0.0",
     "lodash": "^4.17.21",
-    "neurocog": "^0.3.8",
+    "neurocog": "^1.0.0",
     "two.js": "^0.8.10"
   },
   "devDependencies": {

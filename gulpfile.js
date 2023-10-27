@@ -8,9 +8,11 @@ const del = require("del");
  * Primary build pipeline
  * @param {() => void} cb callback function
  */
-const resources = (cb) => {
+const artefacts = (cb) => {
   // Copy all stimuli to build output
-  gulp.src("./src/img/**/*").pipe(gulp.dest("./dist/img/"));
+  gulp.src("./src/stimuli/**/*").pipe(gulp.dest("./dist/stimuli/"));
+  // Copy all resources to build output
+  gulp.src("./src/resources/**/*").pipe(gulp.dest("./dist/resources/"));
   cb();
 };
 
@@ -23,6 +25,6 @@ const clean = (cb) => {
   cb();
 };
 
-exports.resources = resources;
+exports.artefacts = artefacts;
 exports.clean = clean;
-exports.default = resources;
+exports.default = artefacts;

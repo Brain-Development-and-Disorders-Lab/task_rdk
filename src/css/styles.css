@@ -5,7 +5,6 @@ confidence estimate.
 
 Author: Henry Burgess <henry.burgess@wustl.edu>
 */
-
 .graphics-container {
   display: flex;
   flex-direction: column;
@@ -14,9 +13,25 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
 }
 
 .video-container {
-  width: 60vw;
-  height: 30vw;
+  width: 35vw;
+  height: 50vh;
   margin: auto;
+}
+
+.image-graphic {
+  max-height: 40vh;
+  width: 60vw;
+}
+
+.controls-graphic {
+  width: 90vw;
+}
+
+.keyboard-graphic {
+  vertical-align:middle;
+  height: 10vh;
+  width: auto;
+  margin: 5%;
 }
 
 .confidence-slider::-webkit-slider-thumb {
@@ -109,4 +124,49 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   font-size: 18px;
   font-weight: bold;
   margin: 24px 0px 0px;
+}
+
+/* Base control button class */
+.control-button {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 1.4em;
+  background-color: #e7e7e7;
+  color: #575757;
+  width: auto;
+  padding: 16px 24px 16px 24px;
+  border-radius: 16px;
+  border: 2px solid #d8d8d8;
+  box-shadow: 3px 3px #d3d3d3;
+  cursor: none;
+}
+
+.control-button::after {
+  display: block;
+  padding-bottom: 100%;
+}
+
+/* Hover behaviour */
+.control-button:hover {
+  background-color: #e7e7e7;
+}
+
+/* Update shading in a 'selected' class */
+.control-button-selected {
+  background-color: #bbbbbb;
+  box-shadow: 1px 1px #d3d3d3;
+}
+
+/* Update shading in a 'disabled' class */
+.control-button-disabled {
+  color: #b4b4b4;
+  background-color: #f3f3f3;
+}
+
+/* Update shading in a 'success' class */
+.control-button-success {
+  color: #747474;
+  background-color: #71e466;
+  border: 2px solid #67d15e;
+  box-shadow: 3px 3px #62c759;
 }

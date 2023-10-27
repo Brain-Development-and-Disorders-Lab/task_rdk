@@ -3,8 +3,6 @@ const { DefinePlugin } = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (env) => {
-  console.log("Target:", env.target || "desktop");
-
   return {
     mode: "development",
     entry: {
@@ -23,11 +21,13 @@ module.exports = (env) => {
       contentBase: [
         // Output path
         path.join(__dirname, "./dist"),
-        // Assets path
-        path.join(__dirname, "./src/img"),
+        // Stimuli path
+        path.join(__dirname, "./src/stimuli"),
+        // Resources path
+        path.join(__dirname, "./src/resources"),
       ],
       // Required public path for assets
-      contentBasePublicPath: "/img",
+      contentBasePublicPath: "/stimuli",
       hot: true,
     },
     module: {

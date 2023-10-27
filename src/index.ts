@@ -1,5 +1,5 @@
 /**
- * @summary Timeline configuration of Bang et al. RDK task.
+ * @summary Timeline configuration of RDK task
  *
  * @Description Constructs the timeline of the task using a variety of
  * plugins.
@@ -7,37 +7,97 @@
  * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/index.ts
  * @author Henry Burgess <henry.burgess@wustl.edu>
  */
-import { Experiment } from "neurocog";
-
 // Utility libraries
 import _ from "lodash";
+import i18next from "i18next";
 
 // Import jsPsych to ensure it is bundled when compiled
-import "jspsych/jspsych";
-import "jspsych/plugins/jspsych-instructions";
-import "jspsych/plugins/jspsych-fullscreen";
-import "jspsych/plugins/jspsych-preload";
-import "jspsych/plugins/jspsych-survey-html-form";
-import "jspsych-attention-check";
+import { initJsPsych } from "jspsych";
+import InstructionsPlugin from "@jspsych/plugin-instructions";
+import FullscreenPlugin from "@jspsych/plugin-fullscreen";
+import SurveyHtmlFormPlugin from "@jspsych/plugin-survey-html-form";
+
+// Attention check plugin
+import jsPsychAttentionCheck from "jspsych-attention-check";
+
+// Neurocog extension
+import NeurocogExtension from "neurocog";
 
 // Import the plugin before adding it to the timeline
-import "./plugin";
+import DotGamePlugin from "./plugin";
 
-// Configuration
-import { configuration } from "./configuration";
+// Additional functions and variables
+import { scaling } from "./functions";
 
-// Additional functions
-import { calculateDuration, scaling } from "./functions";
+// Load translations
+import * as en_us from "../locales/en-us.json";
+i18next.init({
+  lng: "en",
+  debug: true,
+  resources: {
+    en: en_us
+  },
+});
 
-// Existing and custom types
-import { RDKTrial } from "../types";
+/**
+ * Initialize jsPsych
+ */
+const jsPsych = initJsPsych({
+  extensions: [
+    {
+      type: NeurocogExtension,
+      params: {
+        name: "RDK Task",
+        studyName: "task_rdk",
+        allowParticipantContact: false,
+        contact: "henry.burgess@wustl.edu",
+        seed: 0.3723,
+      }
+    }
+  ],
+});
 
-export const experiment = new Experiment(configuration);
+// Input configurations, mapping device inputs to task actions
+const InputConfigurations = {
+  desktop: {
+    name: "desktop",
+    left: "f",
+    right: "j",
+    alt: "d",
+    submit: "k",
+    showButtons: false,
+  },
+  spectrometer: {
+    name: "spectrometer",
+    left: "2",
+    right: "3",
+    alt: "1",
+    submit: "4",
+    trigger: "t",
+    showButtons: false,
+  },
+};
 
+// Experimental parameters, defining the number of trials and other experiment behavior
+export const Manipulations = {
+  numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation("numTutorialTrials", 10),
+  numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation("numPracticeTrials", 10),
+  numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation("numCalibrationOneTrials", 120),
+  numMainTrials: jsPsych.extensions.Neurocog.getManipulation("numMainTrials", 200),
+  nGap: jsPsych.extensions.Neurocog.getManipulation("nGap", 2),
+  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
+  demoMode: jsPsych.extensions.Neurocog.getManipulation("demoMode", false),
+  showInstructions: jsPsych.extensions.Neurocog.getManipulation("showInstructions", false),
+};
+
+console.info("Manipulations:", Manipulations);
+
+/**
+ * Create the experiment timeline
+ */
 const timeline = [];
 
-const duration = calculateDuration();
-const keyLayout = configuration.layouts[configuration.keys];
+const keyLayout = InputConfigurations[__TARGET__];
 
 // Tutorial trial properties
 const tutorialDuration = [1, 5];
@@ -47,19 +107,19 @@ const tutorialCoherence = [0.3, 0.6];
 const practiceCoherence = [0.3, 0.6];
 
 // Generate regular or demo timelines
-if (_.isEqual(configuration.manipulations.demoMode, false)) {
+if (_.isEqual(Manipulations.demoMode, false)) {
   // Require the ID input
-  if (_.isEqual(configuration.manipulations.requireID, true)) {
+  if (_.isEqual(Manipulations.requireID, true)) {
     timeline.push({
-      type: "survey-html-form",
-      preamble: `<p>Enter a participant identifier</p>`,
+      type: SurveyHtmlFormPlugin,
+      preamble: `<p>${i18next.t("enter_identifier")}</p>`,
       html: `<input name="participantIdentifier" type="text" required /></br></br>`,
     });
   }
 
   // Set the experiment to run in fullscreen mode
   timeline.push({
-    type: "fullscreen",
+    type: FullscreenPlugin,
     fullscreen_mode: true,
     message: `<p>Enable fullscreen view</p>`,
     delay_after: 1500,
@@ -72,10 +132,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         <br>
         <hr>
         <img
-          src="${experiment
-            .getStimuli()
-            .getImage("ControlsNavigationSpectrometer.png")}"
-          style="${configuration.style.controls}"
+          src="${jsPsych.extensions.Neurocog
+            .getStimulus("ControlsNavigationSpectrometer.png")}"
+          class="controls-graphic"
         >
       </div>`;
   } else {
@@ -83,10 +142,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         <br>
         <hr>
         <img
-          src="${experiment
-            .getStimuli()
-            .getImage("ControlsNavigationDesktop.png")}"
-          style="${configuration.style.controls}"
+          src="${jsPsych.extensions.Neurocog.getStimulus("ControlsNavigationDesktop.png")}"
+          class="controls-graphic"
         >
       </div>`;
   }
@@ -97,82 +154,80 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   let submitControlImage: string;
   if (_.isEqual(keyLayout.name, "spectrometer")) {
     leftControlImage = `<img
-        src="${experiment.getStimuli().getImage("2.png")}"
-        style="${configuration.style.keyboard}"
+        src="${jsPsych.extensions.Neurocog.getStimulus("2.png")}"
+        class="keyboard-graphic"
       > `;
     rightControlImage = `<img
-        src="${experiment.getStimuli().getImage("3.png")}"
-        style="${configuration.style.keyboard}"
-      > `;
+        src="${jsPsych.extensions.Neurocog.getStimulus("3.png")}"
+        class="keyboard-graphic"
+        > `;
     submitControlImage = `<img
-        src="${experiment.getStimuli().getImage("4.png")}"
-        style="${configuration.style.keyboard}"
+        src="${jsPsych.extensions.Neurocog.getStimulus("4.png")}"
+        class="keyboard-graphic"
       > `;
   } else {
     leftControlImage = `<img
-        src="${experiment.getStimuli().getImage("F.png")}"
-        style="${configuration.style.keyboard}"
+        src="${jsPsych.extensions.Neurocog.getStimulus("F.png")}"
+        class="keyboard-graphic"
       > `;
     rightControlImage = `<img
-        src="${experiment.getStimuli().getImage("J.png")}"
-        style="${configuration.style.keyboard}"
+        src="${jsPsych.extensions.Neurocog.getStimulus("J.png")}"
+        class="keyboard-graphic"
       > `;
     submitControlImage = `<img
-        src="${experiment.getStimuli().getImage("K.png")}"
-        style="${configuration.style.keyboard}"
+        src="${jsPsych.extensions.Neurocog.getStimulus("K.png")}"
+        class="keyboard-graphic"
       > `;
   }
 
   const description = [
-    `<h1>${configuration.name}</h1>` +
-      `<p><b>Approximate duration:</b> ${duration} minutes</p>` +
+    `<h1>RDK Task</h1>` +
+      `<p><b>Approximate duration:</b> 45 minutes</p>` +
       `<h2>Instructions</h2>` +
       `<p>In each game, you will be briefly shown dots moving inside a circular area.</p>` +
       `<p>An example illustrating the appearance of these dots is shown below:</p>` +
       `<img
-      src="${experiment.getStimuli().getImage("InstructionsMovingDots.gif")}"
-      style="${configuration.style.image}"
-    >` +
+        src="${jsPsych.extensions.Neurocog.getStimulus("InstructionsMovingDots.gif")}"
+        class="image-graphic"
+      >` +
       `<p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>` +
       `${instructionContinueText}`,
 
-    `<h1>${configuration.name}</h1>
+    `<h1>RDK Task</h1>
     <h2>Instructions</h2>
     <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
     <p>It will look like the image below:</p>
     <img
-      src="${experiment.getStimuli().getImage("InstructionsReference.png")}"
-      style="${configuration.style.image}"
+      src="${jsPsych.extensions.Neurocog.getStimulus("InstructionsReference.png")}"
+      class="image-graphic"
     />
     <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
     <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
     ${instructionContinueText}`,
 
-    `<h1>${configuration.name}</h1>` +
-      `<h2>Instructions</h2>` +
-      `<p>After deciding the direction the dots were moving, ` +
-      `you will rate how confident you were in making your decision.</p>` +
-      `<p>You will see a slider like the one below:</p>` +
-      `<img src="${experiment
-        .getStimuli()
-        .getImage("InstructionsConfidence.png")}" ` +
-      `style="${configuration.style.image}"/>` +
-      `<p>Press ${leftControlImage} ` +
-      `on your keyboard to decrease your confidence, ` +
-      `or press ${rightControlImage} ` +
-      `on your keyboard to increase your confidence. ` +
-      `</p>` +
-      `<p>Once you have adjusted your confidence, press ` +
-      submitControlImage +
-      `to finish the game and continue. There is also a button ` +
-      `to notify the researchers that you made a mistake in ` +
-      `the previous trial.</p>` +
-      instructionContinueText,
+    `<h1>RDK Task</h1>` +
+    `<h2>Instructions</h2>` +
+    `<p>After deciding the direction the dots were moving, ` +
+    `you will rate how confident you were in making your decision.</p>` +
+    `<p>You will see a slider like the one below:</p>` +
+    `<img src="${jsPsych.extensions.Neurocog.getStimulus("InstructionsConfidence.png")}" ` +
+    `class="image-graphic"/>` +
+    `<p>Press ${leftControlImage} ` +
+    `on your keyboard to decrease your confidence, ` +
+    `or press ${rightControlImage} ` +
+    `on your keyboard to increase your confidence. ` +
+    `</p>` +
+    `<p>Once you have adjusted your confidence, press ` +
+    submitControlImage +
+    `to finish the game and continue. There is also a button ` +
+    `to notify the researchers that you made a mistake in ` +
+    `the previous trial.</p>` +
+    instructionContinueText,
   ];
 
-  if (_.isEqual(configuration.showInstructions, true)) {
+  if (_.isEqual(Manipulations.showInstructions, true)) {
     timeline.push({
-      type: "instructions",
+      type: InstructionsPlugin,
       pages: description,
       allow_keys: !keyLayout.showButtons,
       key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
@@ -183,14 +238,13 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   } else if (!_.isEqual(keyLayout.name, "spectrometer")) {
     // Display video
     timeline.push({
-      type: "instructions",
+      type: InstructionsPlugin,
       pages: [
-        `<h1>${configuration.name}</h1>` +
-          `<h2>Instructions - Video</h2>` +
-          `<div class="video-container">` +
-          `<iframe style="width: 100%; height: 100%;" src="https://www.youtube.com/embed/NIJ9DBcr_qI?&autoplay=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>` +
-          `</div>` +
-          instructionContinueText,
+        `<h1>RDK Task</h1>
+        <h2>Instructions - Video</h2>
+        <iframe src="https://wustl.box.com/embed/s/chdrca09riebeka65hzhpljrqv7gzj9p?sortColumn=date" class="video-container" frameborder="0" allowfullscreen webkitallowfullscreen msallowfullscreen></iframe>
+        <p><i>This video is best viewed in fullscreen mode.</i></p>` +
+        instructionContinueText,
       ],
       allow_keys: !keyLayout.showButtons,
       key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
@@ -203,7 +257,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Attention-check question
   if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
-      type: "attention-check",
+      type: jsPsychAttentionCheck,
       prompt: "What is the purpose of this task?",
       responses: [
         {
@@ -235,13 +289,14 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         incorrect:
           "Incorrect. You will have to guess the direction of the moving dots.",
       },
+      extensions: [{ type: NeurocogExtension }],
     });
   }
 
   // -------------------- Tutorial games --------------------
   // Spectrometer start
   const tutorialGames = [
-    `<h1>${configuration.name}</h1>` +
+    `<h1>RDK Task</h1>` +
       `<h2>Practice Games</h2>` +
       `<p>Play a few games now and practice watching the dots while ` +
       `observing the appearance of the game.</p>` +
@@ -252,7 +307,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   ];
 
   timeline.push({
-    type: "instructions",
+    type: InstructionsPlugin,
     pages: tutorialGames,
     allow_keys: !keyLayout.showButtons,
     key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
@@ -261,7 +316,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     show_clickable_nav: keyLayout.showButtons,
   });
 
-  for (let t = 0; t < configuration.manipulations.numTutorialTrials; t++) {
+  for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
     const trialName = "tutorial";
     const d = parseFloat(
       (
@@ -274,8 +329,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     let r = Math.random() > 0.5 ? 0 : Math.PI;
     r = parseFloat(r.toFixed(3));
 
-    const trial: RDKTrial = {
-      type: "dot-game",
+    const trial = {
+      type: DotGamePlugin,
       name: trialName,
       distance: 50 * scaling(),
       coherence: k,
@@ -283,7 +338,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       dotDirection: r,
       dotVelocity: 2.0,
       showFeedback: false,
-      checkConfidence: true,
+      checkConfidence: false,
       keyLayout: keyLayout,
       data: {
         name: trialName,
@@ -296,6 +351,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
+      extensions: [{ type: NeurocogExtension }],
     };
 
     timeline.push(trial);
@@ -303,9 +359,9 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
   // -------------------- Practice games --------------------
   const practice = [
-    `<h1>${configuration.name}</h1>` +
+    `<h1>RDK Task</h1>` +
       `<h2>Practice Games</h2>` +
-      `<p>You will now play another ${configuration.manipulations.numPracticeTrials} ` +
+      `<p>You will now play another ${Manipulations.numPracticeTrials} ` +
       `practice games. ` +
       `You won't have to rate your confidence after each game, ` +
       `but you will be shown if your answer was correct or not.</p>` +
@@ -317,7 +373,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   ];
 
   timeline.push({
-    type: "instructions",
+    type: InstructionsPlugin,
     pages: practice,
     allow_keys: !keyLayout.showButtons,
     key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
@@ -329,7 +385,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Attention-check question
   if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
-      type: "attention-check",
+      type: jsPsychAttentionCheck,
       prompt:
         "How will you know if you have correctly guessed the " +
         "direction of the dots in the next practice games?",
@@ -360,18 +416,19 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: "Correct! The fixation cross in the circle will go green.",
         incorrect: "Incorrect. The fixation cross in the circle will go green",
       },
+      extensions: [{ type: NeurocogExtension }],
     });
   }
 
-  for (let t = 0; t < configuration.manipulations.numPracticeTrials; t++) {
+  for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
     const trialName = "practice";
     let r = Math.random() > 0.5 ? 0 : Math.PI;
     r = parseFloat(r.toFixed(3));
     const k = Math.random() > 0.5 ? practiceCoherence[0] : practiceCoherence[1];
     const deviation = r === 0 ? "right" : "left";
 
-    const trial: RDKTrial = {
-      type: "dot-game",
+    const trial = {
+      type: DotGamePlugin,
       name: trialName,
       distance: 50 * scaling(),
       coherence: k,
@@ -392,6 +449,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
+      extensions: [{ type: NeurocogExtension }],
     };
 
     timeline.push(trial);
@@ -401,18 +459,17 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   const main = [];
 
   if (
-    configuration.manipulations.numCalibrationOneTrials +
-      configuration.manipulations.numMainTrials >
+    Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials >
     0
   ) {
     main.push(
-      `<h1>${configuration.name}</h1>` +
+      `<h1>RDK Task</h1>` +
         `<p>That concludes all the practice games.</p>` +
         `<p>Take a short break now.</p>` +
         `<p>When you are ready to continue, you will play ` +
         `${
-          configuration.manipulations.numCalibrationOneTrials +
-          configuration.manipulations.numMainTrials
+          Manipulations.numCalibrationOneTrials +
+          Manipulations.numMainTrials
         } ` +
         `games.</p>` +
         `<p>You will not be shown if you have correctly ` +
@@ -425,7 +482,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   } else {
     // Training setup with no calibration or main trials
     main.push(
-      `<h1>${configuration.name}</h1>` +
+      `<h1>RDK Task</h1>` +
         `<p>That concludes all the practice games.</p>` +
         `<p>Press ${rightControlImage} on your keyboard to answer one final question.</p>`
     );
@@ -434,7 +491,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Attention-check question
   if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
-      type: "attention-check",
+      type: jsPsychAttentionCheck,
       prompt: "What is the best way to detect the motion of the moving dots?",
       responses: [
         {
@@ -465,6 +522,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         incorrect:
           "Incorrect. You should focus on the fixation cross in the circle",
       },
+      extensions: [{ type: NeurocogExtension }],
     });
   }
 
@@ -473,7 +531,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Else, use the standard pre-game screen.
   if (_.isEqual(keyLayout.name, "spectrometer")) {
     const spectrometer = [
-      `<h1>${configuration.name}</h1>` +
+      `<h1>RDK Task</h1>` +
         `<h2>Please Wait...</h2>` +
         `<p>You have now completed all of the practice games.</p>` +
         `<p>Waiting for spectrometer to be ready.</p>` +
@@ -482,7 +540,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     ];
 
     timeline.push({
-      type: "instructions",
+      type: InstructionsPlugin,
       pages: spectrometer,
       allow_keys: !keyLayout.showButtons,
       key_forward: keyLayout.trigger.charAt(keyLayout.trigger.length - 1),
@@ -490,7 +548,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     });
   } else {
     timeline.push({
-      type: "instructions",
+      type: InstructionsPlugin,
       pages: main,
       allow_keys: !keyLayout.showButtons,
       key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
@@ -503,7 +561,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // -------------------- Phase one calibration games --------------------
   for (
     let t = 0;
-    t < configuration.manipulations.numCalibrationOneTrials;
+    t < Manipulations.numCalibrationOneTrials;
     t++
   ) {
     let trialName = "calibration";
@@ -514,8 +572,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     r = parseFloat(r.toFixed(3));
     const deviation = r === 0 ? "right" : "left";
 
-    const trial: RDKTrial = {
-      type: "dot-game",
+    const trial = {
+      type: DotGamePlugin,
       name: trialName,
       distance: 50 * scaling(),
       coherence: k,
@@ -523,7 +581,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       dotDirection: r,
       dotVelocity: 2.0,
       showFeedback: false,
-      checkConfidence: t % 5 === 0,
+      checkConfidence: (t + 1) % Manipulations.nGap === 0 && t > 0,
       keyLayout: keyLayout,
       data: {
         name: trialName,
@@ -536,6 +594,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
+      extensions: [{ type: NeurocogExtension }],
     };
 
     timeline.push(trial);
@@ -544,7 +603,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   // Attention-check question
   if (!_.isEqual(keyLayout.name, "spectrometer")) {
     timeline.push({
-      type: "attention-check",
+      type: jsPsychAttentionCheck,
       prompt: "What is the objective of this task?",
       responses: [
         {
@@ -576,19 +635,20 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         incorrect:
           "Incorrect. You will have to guess the direction of the moving dots.",
       },
+      extensions: [{ type: NeurocogExtension }],
     });
   }
 
   // -------------------- Main games --------------------
-  for (let t = 0; t < configuration.manipulations.numMainTrials; t++) {
+  for (let t = 0; t < Manipulations.numMainTrials; t++) {
     const trialName = "main";
     const k = 0.2;
     let r = Math.random() > 0.5 ? 0 : Math.PI;
     r = parseFloat(r.toFixed(3));
     const deviation = r === 0 ? "right" : "left";
 
-    const trial: RDKTrial = {
-      type: "dot-game",
+    const trial = {
+      type: DotGamePlugin,
       name: trialName,
       distance: 50 * scaling(),
       coherence: k,
@@ -596,7 +656,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       dotDirection: r,
       dotVelocity: 2.0,
       showFeedback: false,
-      checkConfidence: t % 5 === 0,
+      checkConfidence: (t + 1) % Manipulations.nGap === 0 && t > 0,
       keyLayout: keyLayout,
       data: {
         name: trialName,
@@ -609,6 +669,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
+      extensions: [{ type: NeurocogExtension }],
     };
 
     timeline.push(trial);
@@ -616,13 +677,13 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
   // Add end screen to the experiment
   const end =
-    `<h1>${configuration.name}</h1>` +
+    `<h1>RDK Task</h1>` +
     `<h2>Task finished</h2>` +
     `<p>Thank you for your participation in this research.</p>` +
     `<p>Press ${submitControlImage} to end the task.</p>`;
 
   timeline.push({
-    type: "instructions",
+    type: InstructionsPlugin,
     pages: [end],
     allow_backward: false,
     button_label_next: "Finish",
@@ -635,23 +696,21 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
 
   // Include instructions for the demonstration
   const demoInstructions = [
-    `<h1>${configuration.name}</h1>` +
+    `<h1>RDK Task</h1>` +
       `<h2>Confidence demo</h2>` +
       `<p>The following ${demoTrials} trials demonstrate a confidence comparison task.</p>` +
       `<p>You will be asked to indicate which of two decisions was associated with greater confidence.</p>` +
       `<p>Press ` +
-      `<img src="${experiment
-        .getStimuli()
-        .getImage(
+      `<img src="${jsPsych.extensions.Neurocog.getStimulus(
           `${keyLayout.right
             .charAt(keyLayout.right.length - 1)
             .toUpperCase()}.png`
         )}" ` +
-      `style="${configuration.style.keyboard}"/>` +
+      `class="keyboard-graphic"/>` +
       `to continue.</p>`,
   ];
   timeline.push({
-    type: "instructions",
+    type: InstructionsPlugin,
     pages: demoInstructions,
     allow_keys: !keyLayout.showButtons,
     key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
@@ -668,8 +727,8 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
     const k = Math.random() > 0.5 ? practiceCoherence[0] : practiceCoherence[1];
     const deviation = r === 0 ? "right" : "left";
 
-    const trial: RDKTrial = {
-      type: "dot-game",
+    const trial = {
+      type: DotGamePlugin,
       name: trialName,
       distance: 50 * scaling(),
       coherence: k,
@@ -678,7 +737,7 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
       dotVelocity: 2.0,
       showFeedback: false,
       checkConfidence:
-        (t + 1) % configuration.manipulations.nGap === 0 && t > 0,
+        (t + 1) % Manipulations.nGap === 0 && t > 0,
       keyLayout: keyLayout,
       data: {
         name: trialName,
@@ -691,27 +750,26 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
         correct: false,
         confidenceSelection: 0,
       },
+      extensions: [{ type: NeurocogExtension }],
     };
 
     timeline.push(trial);
   }
 
   const end =
-    `<h1>${configuration.name}</h1>` +
+    `<h1>RDK Task</h1>` +
     `<h2>Confidence demo finished</h2>` +
     `<p>Press ` +
-    `<img src="${experiment
-      .getStimuli()
-      .getImage(
+    `<img src="${jsPsych.extensions.Neurocog.getStimulus(
         `${keyLayout.right
           .charAt(keyLayout.right.length - 1)
           .toUpperCase()}.png`
       )}" ` +
-    `style="${configuration.style.keyboard}"/>` +
+    `class="keyboard-graphic"/>` +
     ` to end the task.</p>`;
 
   timeline.push({
-    type: "instructions",
+    type: InstructionsPlugin,
     pages: [end],
     allow_backward: false,
     button_label_next: "Finish",
@@ -720,7 +778,4 @@ if (_.isEqual(configuration.manipulations.demoMode, false)) {
   });
 }
 
-experiment.start({
-  timeline: timeline,
-  show_progress_bar: _.isEqual(keyLayout.name, "desktop"),
-});
+jsPsych.run(timeline);
