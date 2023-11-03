@@ -1681,9 +1681,9 @@ axios@^0.27.2:
     form-data "^4.0.0"
 
 axios@^1.4.0:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.5.1.tgz#11fbaa11fc35f431193a9564109c88c1f27b585f"
-  integrity sha512-Q28iYCWzNHjAm+yEAot5QaAMxhMghWLFVf7rRdwhUI+c2jix2DUXjAHXVi+s1ibs3mjPO/cCgbA++3BjD0vP/A==
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
+  integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -5722,10 +5722,10 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-neurocog@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/neurocog/-/neurocog-1.0.0.tgz#2ca3d22ff376848b164d50a4630f2af1c525e27a"
-  integrity sha512-p7o/XBfzDZPRX9dK7gN9ow2r28tffdoSvES/iKjC6V4QbIqGNJJIh8CVia1XZA7A9uk1DK3p/SP04zlS0bbVlg==
+neurocog@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/neurocog/-/neurocog-1.1.1.tgz#8f652bc13a6b5d4814a469fbd3ba26aa5e289099"
+  integrity sha512-sW7m6iXWkqw4d1duk8e2c1SDumUKF4jGH6zDuceaNTswL4OXcOntNnZU0ToM+OZX4h7wMP27zxjwNjewdgfN8g==
   dependencies:
     "@types/lodash" "^4.14.196"
     axios "^1.4.0"

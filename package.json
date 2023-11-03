@@ -33,7 +33,7 @@
     "jspsych": "^7.3.3",
     "jspsych-attention-check": "^3.0.0",
     "lodash": "^4.17.21",
-    "neurocog": "^1.0.0",
+    "neurocog": "^1.1.1",
     "two.js": "^0.8.10"
   },
   "devDependencies": {
