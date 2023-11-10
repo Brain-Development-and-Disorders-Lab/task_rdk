@@ -1,7 +1,7 @@
-import { Configuration } from "neurocog/types";
+import DotGamePlugin from "../src/plugin";
 
 export type RDKTrial = {
-  type: "dot-game";
+  type: DotGamePlugin;
   name: string;
   distance: number;
   coherence: number;
@@ -66,16 +66,4 @@ export type IKeys = {
   alt: string;
   submit: string;
   showButtons: boolean;
-};
-
-// Configuration type
-export type IConfiguration = Configuration & {
-  layouts: {
-    desktop: IKeys;
-    spectrometer: IKeys & {
-      trigger: string;
-    };
-  };
-
-  [key: string]: any;
 };

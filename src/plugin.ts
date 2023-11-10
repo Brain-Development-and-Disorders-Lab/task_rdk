@@ -1,5 +1,5 @@
 /**
- * @summary Main jsPsych plugin file for Bang et al. RDK task.
+ * @summary jsPsych plugin file for Bang et al. RDK task.
  *
  * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/plugin.ts
  * @author Henry Burgess <henry.burgess@wustl.edu>
@@ -8,7 +8,6 @@
 // Stylesheets
 import "jspsych/css/jspsych.css";
 import "./css/styles.css";
-import "./css/buttons.css";
 
 // Additional functions
 import { scaling } from "./functions";
@@ -19,36 +18,64 @@ import { Renderer } from "./classes/Renderer";
 import { Stimulus } from "./classes/Stimulus";
 import { Runner } from "./classes/Runner";
 
-// Configuration
-import { configuration } from "./configuration";
-
 // Custom types
 import { IRenderer } from "../types";
 
 // External libraries
 import Two from "two.js";
+import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
-jsPsych.plugins["dot-game"] = (() => {
-  const plugin = {
-    info: {},
-    trial: (_displayElement: HTMLElement, _trial: any) => {
-      console.error(`This needs to be defined!`);
+const info = {
+  name: "dot-game",
+  parameters: {
+    name: {
+      type: ParameterType.STRING,
+      default: undefined,
     },
-  };
+    distance: {
+      type: ParameterType.FLOAT,
+      default: undefined,
+    },
+    keyLayout: {
+      type: ParameterType.COMPLEX,
+      default: undefined,
+    },
+    data: {
+      type: ParameterType.COMPLEX,
+      default: undefined,
+    },
+    showFeedback: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+    coherence: {
+      type: ParameterType.FLOAT,
+      default: undefined,
+    },
+    coherences: {
+      type: ParameterType.COMPLEX,
+      default: undefined,
+      readonly: false,
+    },
+    stimulusDuration: {
+      type: ParameterType.INT,
+      default: undefined,
+    },
+    checkConfidence: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+  },
+};
 
-  // Instantiate the parameters and information of the plugin.
-  plugin.info = {
-    name: "dot-game",
-    parameters: {},
-  };
+type Info = typeof info;
 
-  /**
-   * Main function used by jsPsych to run the trial.
-   * @param {HTMLElement} displayElement Element on the webpage consisting of the
-   * HTML displaying the trial.
-   * @param {any} trial Attributes of the trial.
-   */
-  plugin.trial = (displayElement: HTMLElement, trial: any) => {
+class DotGamePlugin implements JsPsychPlugin<Info> {
+  static info = info;
+
+  constructor(private jsPsych: JsPsych) {};
+
+  trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // Setup variables.
     const distanceFromScreen = trial.distance;
 
@@ -61,7 +88,7 @@ jsPsych.plugins["dot-game"] = (() => {
     let height = viewRadius * 2 + 10;
 
     // Apply scaling
-    if (height > window.innerHeight * configuration.scalingDefault) {
+    if (height > window.innerHeight * 1.0) {
       height *= scaling();
       width *= scaling();
       viewRadius *= scaling();
@@ -73,7 +100,7 @@ jsPsych.plugins["dot-game"] = (() => {
     // Instantiate new <div> container for graphics elements
     const containerDiv = document.createElement("div");
     containerDiv.className = "graphics-container";
-    displayElement.appendChild(containerDiv);
+    display_element.appendChild(containerDiv);
     const childDiv = document.createElement("div");
     containerDiv.appendChild(childDiv);
 
@@ -96,15 +123,15 @@ jsPsych.plugins["dot-game"] = (() => {
     // Instantiate Two.js with parameters and place in DOM
     const two = new Two(twoParameters).appendTo(childDiv);
 
-    let renderer = new Renderer(two, rendererParameters);
-    let graphics = new Graphics(trial, renderer);
+    let renderer = new Renderer(this.jsPsych, two, rendererParameters);
+    let graphics = new Graphics(this.jsPsych, trial, renderer);
 
     // Setup data-related variables.
     let selection = "";
 
     // Compute the trial number
     trial.data.trialNumber = 0;
-    const previousTrialCollection = jsPsych.data.get().values();
+    const previousTrialCollection = this.jsPsych.data.get().values();
     previousTrialCollection.forEach((storedTrial) => {
       if (storedTrial.trial_type === "dot-game") {
         trial.data.trialNumber = storedTrial.trialNumber + 1;
@@ -133,7 +160,7 @@ jsPsych.plugins["dot-game"] = (() => {
     const nextStimulus = () => {
       if (stimuli.length === 0) {
         // End the trial if there are no more stimuli to display
-        trial.data.trialEndTime = Date.now();
+        trial.data.trialEndTime = performance.now();
         trial.data.trialTotalTime =
           trial.data.trialEndTime - trial.data.trialStartTime;
 
@@ -147,14 +174,13 @@ jsPsych.plugins["dot-game"] = (() => {
       // Configure stimulus-specific parameters
       if (currentStimulus.getParameters().name === "reference") {
         // Reference stimulus
-        trial.data.referenceStartTime = Date.now();
+        trial.data.referenceStartTime = performance.now();
 
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
       } else if (currentStimulus.getParameters().name === "confidence") {
         // Start a timer if a confidence stimuli is run.
-        trial.data.confidenceMistake = false;
-        trial.data.confidenceStartTime = Date.now();
+        trial.data.confidenceStartTime = performance.now();
 
         // Show the mouse cursor
         graphics.cursorVisibility(true);
@@ -217,29 +243,13 @@ jsPsych.plugins["dot-game"] = (() => {
               slider.stepUp(1);
             }
 
-            // Ensure we handle a mistake notification
-            if (keycode === keyLayout.alt || event.type === "click") {
-              // Store mistake boolean
-              trial.data.confidenceMistake = true;
-
-              // Calculate and store confidence data
-              trial.data.confidenceEndTime = Date.now();
-              trial.data.confidenceTotalTime =
-                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
-              trial.data.confidenceSelection = slider.value;
-
-              // Continue to the next Stimulus
-              console.warn("Mistake stored in trial data");
-              Runner.post(currentStimulus);
-            }
-
             // Finally, we ignore any submissions if the slider is hidden, only submit if slider is visible
             if (
               keycode === keyLayout.submit &&
               slider.className === "confidence-slider"
             ) {
               // Calculate and store confidence data
-              trial.data.confidenceEndTime = Date.now();
+              trial.data.confidenceEndTime = performance.now();
               trial.data.confidenceTotalTime =
                 trial.data.confidenceEndTime - trial.data.confidenceStartTime;
               trial.data.confidenceSelection = slider.value;
@@ -259,7 +269,7 @@ jsPsych.plugins["dot-game"] = (() => {
           currentStimulus.removeKeybindings();
 
           // Calculate and store reference data
-          trial.data.confidenceEndTime = Date.now();
+          trial.data.confidenceEndTime = performance.now();
           trial.data.confidenceTotalTime =
             trial.data.confidenceEndTime - trial.data.confidenceStartTime;
 
@@ -275,7 +285,7 @@ jsPsych.plugins["dot-game"] = (() => {
           currentStimulus.removeKeybindings();
 
           // Calculate and store reference data
-          trial.data.referenceEndTime = Date.now();
+          trial.data.referenceEndTime = performance.now();
           trial.data.referenceTotalTime =
             trial.data.referenceEndTime - trial.data.referenceStartTime;
 
@@ -307,7 +317,7 @@ jsPsych.plugins["dot-game"] = (() => {
      */
     const adjustCalibrationCoherence = () => {
       // Get the previous data from trials
-      const previousTrialData = jsPsych.data.get().last(2).values();
+      const previousTrialData = this.jsPsych.data.get().last(2).values();
 
       // Determine how many trials have elapsed
       if (previousTrialData[0] !== undefined) {
@@ -348,13 +358,13 @@ jsPsych.plugins["dot-game"] = (() => {
       renderer = null;
       graphics = null;
       Two.Instances.pop();
-      displayElement.innerHTML = "";
+      display_element.innerHTML = "";
 
       // Finalise the trial
-      jsPsych.finishTrial();
+      this.jsPsych.finishTrial();
     };
 
-    const previousData = jsPsych.data.get().last(2).values();
+    const previousData = this.jsPsych.data.get().last(2).values();
     if (trial.name === "calibration") {
       if (
         previousData[0].name === "calibration" &&
@@ -369,7 +379,7 @@ jsPsych.plugins["dot-game"] = (() => {
       // Calculate the median coherence to use in the coming trials
       if (previousTrial.name !== "main" && trial.data.number === 0) {
         // If this is the first, compute the median of the last 20 trials
-        let kMedian = jsPsych.data.get().last(21).select("coherence").median();
+        let kMedian = this.jsPsych.data.get().last(21).select("coherence").median();
 
         // Adjust coherence to constrain it within [0.12, 0.50]
         if (kMedian > 0.5) {
@@ -410,7 +420,7 @@ jsPsych.plugins["dot-game"] = (() => {
         run: 1000,
         post: 0,
       },
-      target: displayElement,
+      target: display_element,
       trial: trial,
       rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
@@ -431,7 +441,7 @@ jsPsych.plugins["dot-game"] = (() => {
         run: trial.stimulusDuration,
         post: 0,
       },
-      target: displayElement,
+      target: display_element,
       trial: trial,
       rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
@@ -470,7 +480,7 @@ jsPsych.plugins["dot-game"] = (() => {
           handler: decisionHandler,
         },
       },
-      target: displayElement,
+      target: display_element,
       trial: trial,
       rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
@@ -491,7 +501,7 @@ jsPsych.plugins["dot-game"] = (() => {
         run: 250,
         post: 0,
       },
-      target: displayElement,
+      target: display_element,
       trial: trial,
       rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
@@ -530,7 +540,7 @@ jsPsych.plugins["dot-game"] = (() => {
           handler: decisionHandler,
         },
       },
-      target: displayElement,
+      target: display_element,
       trial: trial,
       rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
@@ -560,7 +570,7 @@ jsPsych.plugins["dot-game"] = (() => {
           handler: decisionHandler,
         },
       },
-      target: displayElement,
+      target: display_element,
       trial: trial,
       rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
@@ -583,10 +593,10 @@ jsPsych.plugins["dot-game"] = (() => {
     }
 
     let currentStimulus = null;
-    trial.data.trialStartTime = Date.now();
+    trial.data.trialStartTime = performance.now();
 
     nextStimulus();
   };
+};
 
-  return plugin;
-})();
+export default DotGamePlugin;
