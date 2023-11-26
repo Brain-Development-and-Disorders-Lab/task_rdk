@@ -18,7 +18,8 @@ import FullscreenPlugin from "@jspsych/plugin-fullscreen";
 import SurveyHtmlFormPlugin from "@jspsych/plugin-survey-html-form";
 
 // Attention check plugin
-import jsPsychAttentionCheck from "jspsych-attention-check";
+// November 26, 2023: Removed for testing new MRI controllers
+// import jsPsychAttentionCheck from "jspsych-attention-check";
 
 // Neurocog extension
 import NeurocogExtension from "neurocog";
@@ -43,6 +44,7 @@ i18next.init({
  * Initialize jsPsych
  */
 const jsPsych = initJsPsych({
+  show_progress_bar: true,
   extensions: [
     {
       type: NeurocogExtension,
@@ -61,18 +63,14 @@ const jsPsych = initJsPsych({
 const InputConfigurations = {
   desktop: {
     name: "desktop",
-    left: "f",
-    right: "j",
-    alt: "d",
-    submit: "k",
+    left: "2",
+    right: "7",
     showButtons: false,
   },
   spectrometer: {
     name: "spectrometer",
     left: "2",
-    right: "3",
-    alt: "1",
-    submit: "4",
+    right: "7",
     trigger: "t",
     showButtons: false,
   },
@@ -85,12 +83,10 @@ export const Manipulations = {
   numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation("numCalibrationOneTrials", 120),
   numMainTrials: jsPsych.extensions.Neurocog.getManipulation("numMainTrials", 200),
   nGap: jsPsych.extensions.Neurocog.getManipulation("nGap", 2),
-  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
+  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", true),
   demoMode: jsPsych.extensions.Neurocog.getManipulation("demoMode", false),
   showInstructions: jsPsych.extensions.Neurocog.getManipulation("showInstructions", false),
 };
-
-console.info("Manipulations:", Manipulations);
 
 /**
  * Create the experiment timeline
@@ -122,120 +118,20 @@ if (_.isEqual(Manipulations.demoMode, false)) {
     type: FullscreenPlugin,
     fullscreen_mode: true,
     message: `<p>Enable fullscreen view</p>`,
-    delay_after: 1500,
   });
 
   // -------------------- Instructions --------------------
-  let instructionContinueText: string;
-  if (_.isEqual(keyLayout.name, "spectrometer")) {
-    instructionContinueText = `<div id="instructions-navigation">
-        <br>
-        <hr>
-        <img
-          src="${jsPsych.extensions.Neurocog
-            .getStimulus("ControlsNavigationSpectrometer.png")}"
-          class="controls-graphic"
-        >
-      </div>`;
-  } else {
-    instructionContinueText = `<div id="instructions-navigation">
-        <br>
-        <hr>
-        <img
-          src="${jsPsych.extensions.Neurocog.getStimulus("ControlsNavigationDesktop.png")}"
-          class="controls-graphic"
-        >
-      </div>`;
-  }
+  let instructionContinueText =
+    `<div id="instructions-navigation">
+      <br>
+      <hr>
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <p><b>\< Back (Left)</b></p>
+        <p><b>(Right) Next \></b></p>
+      </div>
+    </div>`;
 
-  // Configure the correct image key to be shown
-  let leftControlImage: string;
-  let rightControlImage: string;
-  let submitControlImage: string;
-  if (_.isEqual(keyLayout.name, "spectrometer")) {
-    leftControlImage = `<img
-        src="${jsPsych.extensions.Neurocog.getStimulus("2.png")}"
-        class="keyboard-graphic"
-      > `;
-    rightControlImage = `<img
-        src="${jsPsych.extensions.Neurocog.getStimulus("3.png")}"
-        class="keyboard-graphic"
-        > `;
-    submitControlImage = `<img
-        src="${jsPsych.extensions.Neurocog.getStimulus("4.png")}"
-        class="keyboard-graphic"
-      > `;
-  } else {
-    leftControlImage = `<img
-        src="${jsPsych.extensions.Neurocog.getStimulus("F.png")}"
-        class="keyboard-graphic"
-      > `;
-    rightControlImage = `<img
-        src="${jsPsych.extensions.Neurocog.getStimulus("J.png")}"
-        class="keyboard-graphic"
-      > `;
-    submitControlImage = `<img
-        src="${jsPsych.extensions.Neurocog.getStimulus("K.png")}"
-        class="keyboard-graphic"
-      > `;
-  }
-
-  const description = [
-    `<h1>RDK Task</h1>` +
-      `<p><b>Approximate duration:</b> 45 minutes</p>` +
-      `<h2>Instructions</h2>` +
-      `<p>In each game, you will be briefly shown dots moving inside a circular area.</p>` +
-      `<p>An example illustrating the appearance of these dots is shown below:</p>` +
-      `<img
-        src="${jsPsych.extensions.Neurocog.getStimulus("InstructionsMovingDots.gif")}"
-        class="image-graphic"
-      >` +
-      `<p>When watching the dots, focus on the cross (<b>+</b>) at the center of the circular area. It will make it easier to notice the motion of the dots.</p>` +
-      `${instructionContinueText}`,
-
-    `<h1>RDK Task</h1>
-    <h2>Instructions</h2>
-    <p>After watching the dots, a blue section and an orange section will appear on the perimeter of the circle.</p>
-    <p>It will look like the image below:</p>
-    <img
-      src="${jsPsych.extensions.Neurocog.getStimulus("InstructionsReference.png")}"
-      class="image-graphic"
-    />
-    <p><b>Your task:</b> Determine whether there was movement of dots towards the blue or the orange section.</p>
-    <p>Press ${leftControlImage} on your keyboard to select <span style="color: #3ea3a3;">blue</span>, or press ${rightControlImage} on your keyboard to select <span style="color: #d78000;">orange</span>.</p>
-    ${instructionContinueText}`,
-
-    `<h1>RDK Task</h1>` +
-    `<h2>Instructions</h2>` +
-    `<p>After deciding the direction the dots were moving, ` +
-    `you will rate how confident you were in making your decision.</p>` +
-    `<p>You will see a slider like the one below:</p>` +
-    `<img src="${jsPsych.extensions.Neurocog.getStimulus("InstructionsConfidence.png")}" ` +
-    `class="image-graphic"/>` +
-    `<p>Press ${leftControlImage} ` +
-    `on your keyboard to decrease your confidence, ` +
-    `or press ${rightControlImage} ` +
-    `on your keyboard to increase your confidence. ` +
-    `</p>` +
-    `<p>Once you have adjusted your confidence, press ` +
-    submitControlImage +
-    `to finish the game and continue. There is also a button ` +
-    `to notify the researchers that you made a mistake in ` +
-    `the previous trial.</p>` +
-    instructionContinueText,
-  ];
-
-  if (_.isEqual(Manipulations.showInstructions, true)) {
-    timeline.push({
-      type: InstructionsPlugin,
-      pages: description,
-      allow_keys: !keyLayout.showButtons,
-      key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
-      key_backward: keyLayout.left.charAt(keyLayout.left.length - 1),
-      show_page_number: true,
-      show_clickable_nav: keyLayout.showButtons,
-    });
-  } else if (!_.isEqual(keyLayout.name, "spectrometer")) {
+  if (_.isEqual(Manipulations.showInstructions, true) && !_.isEqual(keyLayout.name, "spectrometer")) {
     // Display video
     timeline.push({
       type: InstructionsPlugin,
@@ -254,55 +150,13 @@ if (_.isEqual(Manipulations.demoMode, false)) {
     });
   }
 
-  // Attention-check question
-  if (!_.isEqual(keyLayout.name, "spectrometer")) {
-    timeline.push({
-      type: jsPsychAttentionCheck,
-      prompt: "What is the purpose of this task?",
-      responses: [
-        {
-          value: "(1) Try and decide whether I like orange or blue more",
-          key: keyLayout.alt,
-          correct: false,
-        },
-        {
-          value: "(2) Guess the direction of the moving dots",
-          key: keyLayout.left,
-          correct: true,
-        },
-        {
-          value:
-            "(3) Try and stop other participants from guessing the direction of the dots",
-          key: keyLayout.right,
-          correct: false,
-        },
-      ],
-      style: "radio",
-      continue: {
-        confirm: true,
-        key: keyLayout.submit,
-      },
-      input_timeout: 1500,
-      feedback: {
-        correct:
-          "Correct! You will have to guess the direction of the moving dots.",
-        incorrect:
-          "Incorrect. You will have to guess the direction of the moving dots.",
-      },
-      extensions: [{ type: NeurocogExtension }],
-    });
-  }
-
   // -------------------- Tutorial games --------------------
-  // Spectrometer start
   const tutorialGames = [
     `<h1>RDK Task</h1>` +
       `<h2>Practice Games</h2>` +
       `<p>Play a few games now and practice watching the dots while ` +
       `observing the appearance of the game.</p>` +
-      (_.isEqual(keyLayout.name, "spectrometer")
-        ? `<p>Use the buttons associated with the prompts to interact with the game.</p>`
-        : `<p>Your mouse will be hidden only when the circular view is visible.</p>`) +
+      `<p>Use the buttons associated with the prompts to interact with the game.</p>` +
       instructionContinueText,
   ];
 
@@ -383,42 +237,7 @@ if (_.isEqual(Manipulations.demoMode, false)) {
   });
 
   // Attention-check question
-  if (!_.isEqual(keyLayout.name, "spectrometer")) {
-    timeline.push({
-      type: jsPsychAttentionCheck,
-      prompt:
-        "How will you know if you have correctly guessed the " +
-        "direction of the dots in the next practice games?",
-      responses: [
-        {
-          value: "(1) I will never be told the answer",
-          key: keyLayout.alt,
-          correct: false,
-        },
-        {
-          value: "(2) The fixation cross in the circle will go green",
-          key: keyLayout.left,
-          correct: true,
-        },
-        {
-          value: "(3) The fixation cross in the circle will go red",
-          key: keyLayout.right,
-          correct: false,
-        },
-      ],
-      style: "radio",
-      continue: {
-        confirm: true,
-        key: keyLayout.submit,
-      },
-      input_timeout: 1500,
-      feedback: {
-        correct: "Correct! The fixation cross in the circle will go green.",
-        incorrect: "Incorrect. The fixation cross in the circle will go green",
-      },
-      extensions: [{ type: NeurocogExtension }],
-    });
-  }
+  // November 26, 2023: Removed for testing new MRI controllers
 
   for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
     const trialName = "practice";
@@ -484,47 +303,13 @@ if (_.isEqual(Manipulations.demoMode, false)) {
     main.push(
       `<h1>RDK Task</h1>` +
         `<p>That concludes all the practice games.</p>` +
-        `<p>Press ${rightControlImage} on your keyboard to answer one final question.</p>`
+        `<p>When you are ready, press <b>Right</b> to continue with the main games.</p>` +
+        instructionContinueText,
     );
   }
 
   // Attention-check question
-  if (!_.isEqual(keyLayout.name, "spectrometer")) {
-    timeline.push({
-      type: jsPsychAttentionCheck,
-      prompt: "What is the best way to detect the motion of the moving dots?",
-      responses: [
-        {
-          value: "(1) Look at the corner of the screen",
-          key: keyLayout.alt,
-          correct: false,
-        },
-        {
-          value: "(2) Focus on the fixation cross in the circle",
-          key: keyLayout.left,
-          correct: true,
-        },
-        {
-          value: "(3) Track them with your finger",
-          key: keyLayout.right,
-          correct: false,
-        },
-      ],
-      style: "radio",
-      continue: {
-        confirm: true,
-        key: keyLayout.submit,
-      },
-      input_timeout: 1500,
-      feedback: {
-        correct:
-          "Correct! You should focus on the fixation cross in the circle.",
-        incorrect:
-          "Incorrect. You should focus on the fixation cross in the circle",
-      },
-      extensions: [{ type: NeurocogExtension }],
-    });
-  }
+  // November 26, 2023: Removed for testing new MRI controllers
 
   // -------------------- Spectrometer --------------------
   // If inside the spectrometer, wait until the signal key is pressed.
@@ -601,43 +386,7 @@ if (_.isEqual(Manipulations.demoMode, false)) {
   }
 
   // Attention-check question
-  if (!_.isEqual(keyLayout.name, "spectrometer")) {
-    timeline.push({
-      type: jsPsychAttentionCheck,
-      prompt: "What is the objective of this task?",
-      responses: [
-        {
-          value: "(1) Try and decide whether I like orange or blue more",
-          key: keyLayout.alt,
-          correct: false,
-        },
-        {
-          value: "(2) Guess the direction of the moving dots",
-          key: keyLayout.left,
-          correct: true,
-        },
-        {
-          value:
-            "(3) Try and stop other participants from guessing the direction of the dots",
-          key: keyLayout.right,
-          correct: false,
-        },
-      ],
-      style: "radio",
-      continue: {
-        confirm: true,
-        key: keyLayout.submit,
-      },
-      input_timeout: 1500,
-      feedback: {
-        correct:
-          "Correct! You will have to guess the direction of the moving dots.",
-        incorrect:
-          "Incorrect. You will have to guess the direction of the moving dots.",
-      },
-      extensions: [{ type: NeurocogExtension }],
-    });
-  }
+  // November 26, 2023: Removed for testing new MRI controllers
 
   // -------------------- Main games --------------------
   for (let t = 0; t < Manipulations.numMainTrials; t++) {
@@ -679,8 +428,7 @@ if (_.isEqual(Manipulations.demoMode, false)) {
   const end =
     `<h1>RDK Task</h1>` +
     `<h2>Task finished</h2>` +
-    `<p>Thank you for your participation in this research.</p>` +
-    `<p>Press ${submitControlImage} to end the task.</p>`;
+    `<p>Thank you for your participation in this research.</p>`;
 
   timeline.push({
     type: InstructionsPlugin,
