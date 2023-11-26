@@ -231,6 +231,37 @@ export class Renderer {
     }
   }
 
+  addButton(buttonText: string, offset = 'none'): HTMLDivElement {
+    // Create container
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.justifyContent = "center";
+    buttonContainer.style.alignItems = "center";
+    buttonContainer.style.width = "8%";
+    buttonContainer.style.height = "6%";
+    buttonContainer.style.padding = "2px";
+    buttonContainer.style.border = "4px solid black";
+    buttonContainer.style.borderRadius = "12px";
+    buttonContainer.style.backgroundColor = "white";
+    buttonContainer.style.position = "absolute";
+
+    // Apply offset if specified
+    if (offset === "left") {
+      buttonContainer.style.marginRight = "50%";
+    } else if (offset === "right") {
+      buttonContainer.style.marginLeft = "50%";
+    }
+
+    // Add label text for the button
+    const buttonLabel = document.createElement("p");
+    buttonLabel.textContent = buttonText;
+    buttonLabel.style.fontWeight = "bold";
+    buttonLabel.style.fontSize = "xx-large";
+    buttonContainer.appendChild(buttonLabel);
+
+    return buttonContainer;
+  }
+
   /**
    * Add a label onto the target
    * @param {string} labelType the type of label to add
@@ -241,55 +272,17 @@ export class Renderer {
       const graphicsCanvasDiv =
         document.getElementsByClassName("graphics-container")[0];
 
-      // Create the left label container and the left label
-      const leftContainer = document.createElement("div");
-      leftContainer.style.display = "flex";
-      leftContainer.style.justifyContent = "center";
-      leftContainer.style.alignItems = "center";
-      leftContainer.style.width = "8%";
-      leftContainer.style.height = "6%";
-      leftContainer.style.padding = "2px";
-      leftContainer.style.border = "4px solid black";
-      leftContainer.style.borderRadius = "12px";
-      leftContainer.style.backgroundColor = "white";
-      leftContainer.style.position = "absolute";
-      leftContainer.style.marginRight = "50%";
-
-      const leftLabel = document.createElement("p");
-      leftLabel.textContent = "Left";
-      leftLabel.style.fontWeight = "bold";
-      leftLabel.style.fontSize = "xx-large";
-      leftContainer.appendChild(leftLabel);
-
       // Prepend the left label container to the graphics container
-      graphicsCanvasDiv.prepend(leftContainer);
+      const leftButton = this.addButton("Left", "left");
+      graphicsCanvasDiv.prepend(leftButton);
     } else if (labelType === "right") {
       // Access the graphics container
       const graphicsCanvasDiv =
         document.getElementsByClassName("graphics-container")[0];
 
-      // Create the right label container and the right label
-      const rightContainer = document.createElement("div");
-      rightContainer.style.display = "flex";
-      rightContainer.style.justifyContent = "center";
-      rightContainer.style.alignItems = "center";
-      rightContainer.style.width = "8%";
-      rightContainer.style.height = "6%";
-      rightContainer.style.padding = "2px";
-      rightContainer.style.border = "4px solid black";
-      rightContainer.style.borderRadius = "12px";
-      rightContainer.style.backgroundColor = "white";
-      rightContainer.style.position = "absolute";
-      rightContainer.style.marginLeft = "50%";
-
-      const rightLabel = document.createElement("p");
-      rightLabel.innerText = "Right";
-      rightLabel.style.fontWeight = "bold";
-      rightLabel.style.fontSize = "xx-large";
-      rightContainer.appendChild(rightLabel);
-
       // Prepend the right label container to the graphics container
-      graphicsCanvasDiv.append(rightContainer);
+      const rightButton = this.addButton("Right", "right");
+      graphicsCanvasDiv.append(rightButton);
     } else {
       // Warning unknown
       console.warn(`Unknown label type: '${labelType}'`);

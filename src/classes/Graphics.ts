@@ -237,94 +237,6 @@ export class Graphics {
   }
 
   /**
-   * Setup HTML elements for confidence slider
-   * @param {any} parameters configuration information for the slider
-   */
-  addConfidence(parameters: any): void {
-    // Confidence instructions
-    let html = "";
-
-    // Key images for target
-    if (__TARGET__ === "spectrometer") {
-      html +=
-        `<div><img src="` +
-        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus(
-          "ControlsConfidenceSpectrometer.png"
-        )}" ` +
-        `class="controls-graphic"></div>`;
-    } else {
-      html +=
-        `<div><img src="` +
-        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("ControlsConfidenceDesktop.png")}" ` +
-        `class="controls-graphic"></div>`;
-    }
-
-    // Confidence slider
-    const labels = ["50%", "60%", "70%", "80%", "90%", "100%"];
-    html += `<div>`;
-    html += `<div style="margin: 50px 0px; ` + `width: 100%;">`;
-    html +=
-      `<div style="position: relative; width: 60vw;">` +
-      `<input type="range" value="70" min="50" max="100" ` +
-      `step="10" style="width: 100%;" ` +
-      `class="confidence-slider-hidden"` +
-      `id="confidence-slider">` +
-      `</input>`;
-    html += `<div>`;
-    // Add labels
-    for (let i = 0; i < labels.length; i++) {
-      const width = 100 / (labels.length - 1);
-      const offset = i * width - width / 2;
-      html +=
-        `<div style="display: inline-block; position: absolute; ` +
-        `left:${offset}%; text-align: center; ` +
-        `margin-top: 4vh; width: ${width}%;">`;
-      html +=
-        `<span style="text-align: center; ` +
-        `font-size: 1.5em;">${labels[i]}</span>`;
-      html += `</div>`;
-    }
-    html += `</div></div></div></div><br><hr>`;
-
-    // Button to notify of a mistake
-    html += `<div id="mistake-button-container">`;
-    if (_.isEqual(__TARGET__, "spectrometer")) {
-      html +=
-        `<img src="${this.renderer.jsPsych.extensions.Neurocog.getStimulus("1.png")}" ` +
-        `class="keyboard-graphic">`;
-      html += `<p style="font-size: x-large; font-weight: bold">`;
-      html += `I made a mistake`;
-      html += `</p>`;
-    } else {
-      html +=
-        `<img src="${this.renderer.jsPsych.extensions.Neurocog.getStimulus("D.png")}" ` +
-        `class="keyboard-graphic"">`;
-      html += `<button id="mistake-button" class="jspsych-btn">`;
-      html += `I made a mistake`;
-      html += `</button>`;
-    }
-    html += `</div>`;
-
-    this.renderer.getDisplayElement().parentNode.innerHTML = html;
-
-    // Try to hide the thumb?
-    document
-      .getElementById("confidence-slider")
-      .addEventListener("click", () => {
-        const slider = document.getElementById("confidence-slider");
-        slider.className = "confidence-slider";
-      });
-
-    // Bind appropriate event listeners to actions
-    document.addEventListener("keyup", parameters.eventHandler);
-    if (__TARGET__ === "desktop") {
-      document
-        .getElementById("mistake-button")
-        .addEventListener("click", parameters.eventHandler);
-    }
-  }
-
-  /**
    * Setup HTML elements for confidence "forced-choice" element
    * @param parameters configuration information for confidence selection
    */
@@ -332,53 +244,30 @@ export class Graphics {
     // Confidence instructions
     let html = "";
 
-    // Generate language to describe the n-th trial comparison
-    let nGapLanguage = "before that";
-    if (this.jsPsych.extensions.Neurocog.getManipulation("nGap", 2) - 1 > 1) {
-      nGapLanguage = `${this.jsPsych.extensions.Neurocog.getManipulation("nGap", 2)} trials earlier`;
-    }
-
-    // Confidence selection
+    // Confidence prompt
     html += `<div>`;
-    html += `<p>Between the <b>last trial</b> and the <b>trial ${nGapLanguage}</b>, which answer was most likely to be correct?</p>`;
+    html += `<p style="font-size: x-large;">Between the previous trial and this trial, did you feel more confident about your response to:</p>`;
+    html += `<p style="font-size: x-large;">The previous trial or this trial?</p>`;
     html += `<br>`;
     html += `</div>`;
 
-    // Key images for target
+    // Confidence buttons
     html += `<div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">`;
-    if (__TARGET__ === "spectrometer") {
-      html +=
+    html +=
+      `<div style="display: flex; flex-direction: column; align-items: center;">` +
+        `<p style="font-weight: bold; font-size: x-large;">Previous trial</p>` +
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>Last trial</b>` +
-        `<img src="` +
-        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("2.png")}" ` +
-        `class="keyboard-graphic">` +
-        `</div>`;
-      html +=
+          this.renderer.addButton("Left").outerHTML +
+        `</div>` +
+      `</div>`;
+    html +=
+      `<div style="display: flex; flex-direction: column; align-items: center;">` +
+        `<p style="font-weight: bold; font-size: x-large;">This trial</p>` +
         `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>Trial ${nGapLanguage}</b>` +
-        `<img src="` +
-        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("3.png")}" ` +
-        `class="keyboard-graphic">` +
-        `</div>`;
-    } else {
-      html +=
-        `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>Last trial</b>` +
-        `<img src="` +
-        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("F.png")}" ` +
-        `class="keyboard-graphic">` +
-        `</div>`;
-      html +=
-        `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<b>Trial ${nGapLanguage}</b>` +
-        `<img src="` +
-        `${this.renderer.jsPsych.extensions.Neurocog.getStimulus("J.png")}" ` +
-        `class="keyboard-graphic">` +
-        `</div>`;
-    }
+          this.renderer.addButton("Right").outerHTML +
+        `</div>` +
+      `</div>`;
     html += `</div>`;
-
     this.renderer.getDisplayElement().parentNode.innerHTML = html;
 
     // Bind appropriate event listeners to actions
