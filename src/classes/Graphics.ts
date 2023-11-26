@@ -255,17 +255,17 @@ export class Graphics {
     html += `<div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">`;
     html +=
       `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<p style="font-weight: bold; font-size: x-large;">Previous trial</p>` +
-        `<div style="display: flex; flex-direction: column; align-items: center;">` +
-          this.renderer.addButton("Left").outerHTML +
-        `</div>` +
+      `<p style="font-weight: bold; font-size: x-large;">Previous trial</p>` +
+      `<div style="display: flex; flex-direction: column; align-items: center;">` +
+      this.renderer.addButton("Left").outerHTML +
+      `</div>` +
       `</div>`;
     html +=
       `<div style="display: flex; flex-direction: column; align-items: center;">` +
-        `<p style="font-weight: bold; font-size: x-large;">This trial</p>` +
-        `<div style="display: flex; flex-direction: column; align-items: center;">` +
-          this.renderer.addButton("Right").outerHTML +
-        `</div>` +
+      `<p style="font-weight: bold; font-size: x-large;">This trial</p>` +
+      `<div style="display: flex; flex-direction: column; align-items: center;">` +
+      this.renderer.addButton("Right").outerHTML +
+      `</div>` +
       `</div>`;
     html += `</div>`;
     this.renderer.getDisplayElement().parentNode.innerHTML = html;

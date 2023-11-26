@@ -73,7 +73,7 @@ type Info = typeof info;
 class DotGamePlugin implements JsPsychPlugin<Info> {
   static info = info;
 
-  constructor(private jsPsych: JsPsych) {};
+  constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // Setup variables.
@@ -222,9 +222,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         )
       ) {
         // Handle the decision if a valid key has been pressed for this stage
-        if (
-          currentStimulus.getParameters().name === "forced_confidence"
-        ) {
+        if (currentStimulus.getParameters().name === "forced_confidence") {
           // Handle 'reference' stimuli
           selection =
             currentStimulus.getParameters().keybindings[keycode].choice;
@@ -341,7 +339,11 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       // Calculate the median coherence to use in the coming trials
       if (previousTrial.name !== "main" && trial.data.number === 0) {
         // If this is the first, compute the median of the last 20 trials
-        let kMedian = this.jsPsych.data.get().last(21).select("coherence").median();
+        let kMedian = this.jsPsych.data
+          .get()
+          .last(21)
+          .select("coherence")
+          .median();
 
         // Adjust coherence to constrain it within [0.12, 0.50]
         if (kMedian > 0.5) {
@@ -558,7 +560,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     trial.data.trialStartTime = performance.now();
 
     nextStimulus();
-  };
-};
+  }
+}
 
 export default DotGamePlugin;

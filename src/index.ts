@@ -36,7 +36,7 @@ i18next.init({
   lng: "en",
   debug: true,
   resources: {
-    en: en_us
+    en: en_us,
   },
 });
 
@@ -56,8 +56,8 @@ const jsPsych = initJsPsych({
         allowParticipantContact: false,
         contact: "henry.burgess@wustl.edu",
         seed: 0.3723,
-      }
-    }
+      },
+    },
   ],
 });
 
@@ -80,13 +80,28 @@ const InputConfigurations = {
 
 // Experimental parameters, defining the number of trials and other experiment behavior
 export const Manipulations = {
-  numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation("numTutorialTrials", 10),
-  numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation("numPracticeTrials", 10),
-  numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation("numCalibrationOneTrials", 120),
-  numMainTrials: jsPsych.extensions.Neurocog.getManipulation("numMainTrials", 200),
+  numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation(
+    "numTutorialTrials",
+    10
+  ),
+  numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation(
+    "numPracticeTrials",
+    10
+  ),
+  numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation(
+    "numCalibrationOneTrials",
+    120
+  ),
+  numMainTrials: jsPsych.extensions.Neurocog.getManipulation(
+    "numMainTrials",
+    200
+  ),
   nGap: jsPsych.extensions.Neurocog.getManipulation("nGap", 2),
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", true),
-  showInstructions: jsPsych.extensions.Neurocog.getManipulation("showInstructions", false),
+  showInstructions: jsPsych.extensions.Neurocog.getManipulation(
+    "showInstructions",
+    false
+  ),
 };
 
 /**
@@ -120,8 +135,7 @@ timeline.push({
 });
 
 // -------------------- Instructions --------------------
-let instructionContinueText =
-  `<div id="instructions-navigation">
+let instructionContinueText = `<div id="instructions-navigation">
     <br>
     <hr>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
@@ -130,7 +144,10 @@ let instructionContinueText =
     </div>
   </div>`;
 
-if (_.isEqual(Manipulations.showInstructions, true) && !_.isEqual(keyLayout.name, "spectrometer")) {
+if (
+  _.isEqual(Manipulations.showInstructions, true) &&
+  !_.isEqual(keyLayout.name, "spectrometer")
+) {
   // Display video
   timeline.push({
     type: InstructionsPlugin,
@@ -139,7 +156,7 @@ if (_.isEqual(Manipulations.showInstructions, true) && !_.isEqual(keyLayout.name
       <h2>Instructions - Video</h2>
       <iframe src="https://wustl.box.com/embed/s/chdrca09riebeka65hzhpljrqv7gzj9p?sortColumn=date" class="video-container" frameborder="0" allowfullscreen webkitallowfullscreen msallowfullscreen></iframe>
       <p><i>This video is best viewed in fullscreen mode.</i></p>` +
-      instructionContinueText,
+        instructionContinueText,
     ],
     allow_keys: !keyLayout.showButtons,
     key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
@@ -276,18 +293,14 @@ for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
 // -------------------- Calibration games --------------------
 const main = [];
 
-if (
-  Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials >
-  0
-) {
+if (Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials > 0) {
   main.push(
     `<h1>RDK Task</h1>` +
       `<p>That concludes all the practice games.</p>` +
       `<p>Take a short break now.</p>` +
       `<p>When you are ready to continue, you will play ` +
       `${
-        Manipulations.numCalibrationOneTrials +
-        Manipulations.numMainTrials
+        Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials
       } ` +
       `games.</p>` +
       `<p>You will not be shown if you have correctly ` +
@@ -303,7 +316,7 @@ if (
     `<h1>RDK Task</h1>` +
       `<p>That concludes all the practice games.</p>` +
       `<p>When you are ready, press <b>Right</b> to continue with the main games.</p>` +
-      instructionContinueText,
+      instructionContinueText
   );
 }
 
@@ -343,11 +356,7 @@ if (_.isEqual(keyLayout.name, "spectrometer")) {
 }
 
 // -------------------- Phase one calibration games --------------------
-for (
-  let t = 0;
-  t < Manipulations.numCalibrationOneTrials;
-  t++
-) {
+for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
   let trialName = "calibration";
   if (t === 0 || t === 1) trialName = "calibration-constant";
 

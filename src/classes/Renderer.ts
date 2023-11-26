@@ -231,7 +231,7 @@ export class Renderer {
     }
   }
 
-  addButton(buttonText: string, offset = 'none'): HTMLDivElement {
+  addButton(buttonText: string, offset = "none"): HTMLDivElement {
     // Create container
     const buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
