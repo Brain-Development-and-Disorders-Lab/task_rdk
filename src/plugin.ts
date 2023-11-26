@@ -178,7 +178,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
-      } else if (currentStimulus.getParameters().name === "confidence") {
+      } else if (currentStimulus.getParameters().name === "forced_confidence") {
         // Start a timer if a confidence stimuli is run.
         trial.data.confidenceStartTime = performance.now();
 
@@ -222,45 +222,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         )
       ) {
         // Handle the decision if a valid key has been pressed for this stage
-        if (currentStimulus.getParameters().name === "confidence") {
-          // Handle 'confidence' stimuli
-          const slider = document.getElementById(
-            "confidence-slider"
-          ) as HTMLInputElement;
-          if (slider) {
-            // Show the thumb if it is currently hidden when adjusting confidence
-            if (
-              slider.className === "confidence-slider-hidden" &&
-              (keycode === keyLayout.left || keycode === keyLayout.right)
-            ) {
-              slider.className = "confidence-slider";
-            }
-
-            // Handle incrementing and decrementing slider
-            if (keycode === keyLayout.left) {
-              slider.stepDown(1);
-            } else if (keycode === keyLayout.right) {
-              slider.stepUp(1);
-            }
-
-            // Finally, we ignore any submissions if the slider is hidden, only submit if slider is visible
-            if (
-              keycode === keyLayout.submit &&
-              slider.className === "confidence-slider"
-            ) {
-              // Calculate and store confidence data
-              trial.data.confidenceEndTime = performance.now();
-              trial.data.confidenceTotalTime =
-                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
-              trial.data.confidenceSelection = slider.value;
-
-              // Continue to the next Stimulus
-              Runner.post(currentStimulus);
-            }
-          } else {
-            console.warn("Did not get reference to slider element");
-          }
-        } else if (
+        if (
           currentStimulus.getParameters().name === "forced_confidence"
         ) {
           // Handle 'reference' stimuli
