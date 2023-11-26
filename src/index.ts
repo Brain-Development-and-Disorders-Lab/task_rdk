@@ -126,8 +126,8 @@ if (_.isEqual(Manipulations.demoMode, false)) {
       <br>
       <hr>
       <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <p><b>\< Back (Left)</b></p>
-        <p><b>(Right) Next \></b></p>
+        <p style="font-weight: bold; font-size: large;">\< Back (Left)</p>
+        <p style="font-weight: bold; font-size: large;">(Right) Next \></p>
       </div>
     </div>`;
 

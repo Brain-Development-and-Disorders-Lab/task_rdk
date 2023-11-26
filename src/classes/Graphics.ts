@@ -157,6 +157,20 @@ export class Graphics {
   }
 
   /**
+   * Append the left label to the graphics area
+   */
+  addLeftLabel(): void {
+    this.renderer.addLabel("left");
+  }
+
+  /**
+   * Append the right label to the graphics area
+   */
+  addRightLabel(): void {
+    this.renderer.addLabel("right");
+  }
+
+  /**
    * Add small rectangle to indicate the position of the reference angle
    */
   addReferenceIndicator(): void {

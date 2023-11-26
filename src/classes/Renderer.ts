@@ -232,6 +232,71 @@ export class Renderer {
   }
 
   /**
+   * Add a label onto the target
+   * @param {string} labelType the type of label to add
+   */
+  addLabel(labelType: string): void {
+    if (labelType === "left") {
+      // Access the graphics container
+      const graphicsCanvasDiv =
+        document.getElementsByClassName("graphics-container")[0];
+
+      // Create the left label container and the left label
+      const leftContainer = document.createElement("div");
+      leftContainer.style.display = "flex";
+      leftContainer.style.justifyContent = "center";
+      leftContainer.style.alignItems = "center";
+      leftContainer.style.width = "8%";
+      leftContainer.style.height = "6%";
+      leftContainer.style.padding = "2px";
+      leftContainer.style.border = "4px solid black";
+      leftContainer.style.borderRadius = "12px";
+      leftContainer.style.backgroundColor = "white";
+      leftContainer.style.position = "absolute";
+      leftContainer.style.marginRight = "50%";
+
+      const leftLabel = document.createElement("p");
+      leftLabel.textContent = "Left";
+      leftLabel.style.fontWeight = "bold";
+      leftLabel.style.fontSize = "xx-large";
+      leftContainer.appendChild(leftLabel);
+
+      // Prepend the left label container to the graphics container
+      graphicsCanvasDiv.prepend(leftContainer);
+    } else if (labelType === "right") {
+      // Access the graphics container
+      const graphicsCanvasDiv =
+        document.getElementsByClassName("graphics-container")[0];
+
+      // Create the right label container and the right label
+      const rightContainer = document.createElement("div");
+      rightContainer.style.display = "flex";
+      rightContainer.style.justifyContent = "center";
+      rightContainer.style.alignItems = "center";
+      rightContainer.style.width = "8%";
+      rightContainer.style.height = "6%";
+      rightContainer.style.padding = "2px";
+      rightContainer.style.border = "4px solid black";
+      rightContainer.style.borderRadius = "12px";
+      rightContainer.style.backgroundColor = "white";
+      rightContainer.style.position = "absolute";
+      rightContainer.style.marginLeft = "50%";
+
+      const rightLabel = document.createElement("p");
+      rightLabel.innerText = "Right";
+      rightLabel.style.fontWeight = "bold";
+      rightLabel.style.fontSize = "xx-large";
+      rightContainer.appendChild(rightLabel);
+
+      // Prepend the right label container to the graphics container
+      graphicsCanvasDiv.append(rightContainer);
+    } else {
+      // Warning unknown
+      console.warn(`Unknown label type: '${labelType}'`);
+    }
+  }
+
+  /**
    * Create a line
    * @param {number} x1 starting x-coordinate
    * @param {number} y1 starting y-coordinate

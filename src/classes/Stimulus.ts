@@ -155,9 +155,9 @@ export class Stimulus {
       } else if (component === "forced_confidence") {
         graphics.addForcedConfidence(parameters);
       } else if (component === "left") {
-        graphics.addLeftKey();
+        graphics.addLeftLabel();
       } else if (component === "right") {
-        graphics.addRightKey();
+        graphics.addRightLabel();
       } else {
         console.warn(`Unknown component: '${component}'`);
       }
