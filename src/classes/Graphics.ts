@@ -237,41 +237,90 @@ export class Graphics {
   }
 
   /**
-   * Setup HTML elements for confidence "forced-choice" element
+   * Setup HTML elements for confidence selection element
    * @param parameters configuration information for confidence selection
    */
-  addForcedConfidence(parameters: any): void {
+  addConfidence(parameters: any): void {
     // Confidence instructions
     let html = "";
 
-    // Confidence prompt
+    // Key images for target
+    if (__TARGET__ === "spectrometer") {
+      html +=
+        `<div><img class="keyboard-graphic" src="` +
+        `${this.jsPsych.extensions.Neurocog.getStimulus(
+          "ControlsConfidenceSpectrometer.png"
+          )}"></div>`;
+    } else {
+      html +=
+        `<div><img src="` +
+        `${this.jsPsych.extensions.Neurocog.getStimulus(
+          "ControlsConfidenceDesktop.png"
+        )}" ` +
+        `style="width: 90vw"></div>`;
+    }
+
+    // Confidence slider
+    const labels = ["50%", "60%", "70%", "80%", "90%", "100%"];
     html += `<div>`;
-    html += `<p style="font-size: x-large;">Between the previous trial and this trial, did you feel more confident about your response to:</p>`;
-    html += `<p style="font-size: x-large;">The previous trial or this trial?</p>`;
-    html += `<br>`;
+    html += `<div style="margin: 50px 0px; ` + `width: 100%;">`;
+    html +=
+      `<div style="position: relative; width: 60vw;">` +
+      `<input type="range" value="70" min="50" max="100" ` +
+      `step="10" style="width: 100%;" ` +
+      `class="confidence-slider-hidden"` +
+      `id="confidence-slider">` +
+      `</input>`;
+    html += `<div>`;
+    // Add labels
+    for (let i = 0; i < labels.length; i++) {
+      const width = 100 / (labels.length - 1);
+      const offset = i * width - width / 2;
+      html +=
+        `<div style="display: inline-block; position: absolute; ` +
+        `left:${offset}%; text-align: center; ` +
+        `margin-top: 4vh; width: ${width}%;">`;
+      html +=
+        `<span style="text-align: center; ` +
+        `font-size: 1.5em;">${labels[i]}</span>`;
+      html += `</div>`;
+    }
+    html += `</div></div></div></div><br><hr>`;
+
+    // Button to notify of a mistake
+    html += `<div id="mistake-button-container">`;
+    if (__TARGET__ === "spectrometer") {
+      html +=
+        `<img src="${this.jsPsych.extensions.Neurocog.getStimulus("1.png")}" class="keyboard-graphic">`;
+      html += `<p style="font-size: x-large; font-weight: bold">`;
+      html += `I made a mistake`;
+      html += `</p>`;
+    } else {
+      html +=
+        `<img src="${this.jsPsych.extensions.Neurocog.getStimulus("D.png")}" class="keyboard-graphic">`;
+      html += `<button id="mistake-button" class="jspsych-btn">`;
+      html += `I made a mistake`;
+      html += `</button>`;
+    }
     html += `</div>`;
 
-    // Confidence buttons
-    html += `<div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">`;
-    html +=
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      `<p style="font-weight: bold; font-size: x-large;">Previous trial</p>` +
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      this.renderer.addButton("Left").outerHTML +
-      `</div>` +
-      `</div>`;
-    html +=
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      `<p style="font-weight: bold; font-size: x-large;">This trial</p>` +
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      this.renderer.addButton("Right").outerHTML +
-      `</div>` +
-      `</div>`;
-    html += `</div>`;
     this.renderer.getDisplayElement().parentNode.innerHTML = html;
+
+    // Try to hide the thumb?
+    document
+      .getElementById("confidence-slider")
+      .addEventListener("click", () => {
+        const slider = document.getElementById("confidence-slider");
+        slider.className = "confidence-slider";
+      });
 
     // Bind appropriate event listeners to actions
     document.addEventListener("keyup", parameters.eventHandler);
+    if (__TARGET__ === "desktop") {
+      document
+        .getElementById("mistake-button")
+        .addEventListener("click", parameters.eventHandler);
+    }
   }
 
   /**

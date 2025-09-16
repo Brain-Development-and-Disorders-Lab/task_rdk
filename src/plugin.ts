@@ -178,7 +178,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
-      } else if (currentStimulus.getParameters().name === "forced_confidence") {
+      } else if (currentStimulus.getParameters().name === "confidence") {
         // Start a timer if a confidence stimuli is run.
         trial.data.confidenceStartTime = performance.now();
 
@@ -222,22 +222,60 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         )
       ) {
         // Handle the decision if a valid key has been pressed for this stage
-        if (currentStimulus.getParameters().name === "forced_confidence") {
-          // Handle 'reference' stimuli
-          selection =
-            currentStimulus.getParameters().keybindings[keycode].choice;
-          currentStimulus.removeKeybindings();
+        if (currentStimulus.getParameters().name === "confidence") {
+          // Handle 'confidence' stimuli
+          const slider = document.getElementById(
+            "confidence-slider"
+          ) as HTMLInputElement;
+          if (slider) {
+            // Show the thumb if it is currently hidden when adjusting confidence
+            if (
+              slider.className === "confidence-slider-hidden" &&
+              (keycode === keyLayout.left || keycode === keyLayout.right)
+            ) {
+              slider.className = "confidence-slider";
+            }
 
-          // Calculate and store reference data
-          trial.data.confidenceEndTime = performance.now();
-          trial.data.confidenceTotalTime =
-            trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+            // Handle incrementing and decrementing slider
+            if (keycode === keyLayout.left) {
+              slider.stepDown(1);
+            } else if (keycode === keyLayout.right) {
+              slider.stepUp(1);
+            }
 
-          // Normalize selection data
-          trial.data.confidenceSelection = selection === "left" ? 1 : 2;
+            // Ensure we handle a mistake notification
+            if (keycode === keyLayout.alt || event.type === "click") {
+              // Store mistake boolean
+              trial.data.confidenceMistake = true;
 
-          // Continue to the next Stimulus
-          Runner.post(currentStimulus);
+              // Calculate and store confidence data
+              trial.data.confidenceEndTime = Date.now();
+              trial.data.confidenceTotalTime =
+                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+              trial.data.confidenceSelection = slider.value;
+
+              // Continue to the next Stimulus
+              console.warn("Mistake stored in trial data");
+              Runner.post(currentStimulus);
+            }
+
+            // Finally, we ignore any submissions if the slider is hidden, only submit if slider is visible
+            if (
+              keycode === keyLayout.submit &&
+              slider.className === "confidence-slider"
+            ) {
+              // Calculate and store confidence data
+              trial.data.confidenceEndTime = Date.now();
+              trial.data.confidenceTotalTime =
+                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
+              trial.data.confidenceSelection = slider.value;
+
+              // Continue to the next Stimulus
+              Runner.post(currentStimulus);
+            }
+          } else {
+            console.warn("Did not get reference to slider element");
+          }
         } else if (currentStimulus.getParameters().name === "reference") {
           // Handle 'reference' stimuli
           selection =
@@ -511,36 +549,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       postTrialHandler: nextStimulus,
     };
 
-    const forced_confidence = {
-      name: "forced_confidence",
-      components: ["forced_confidence"],
-      two: two,
-      renderer: renderer,
-      graphics: graphics,
-      interactive: true,
-      selected: false,
-      timing: {
-        pre: 0,
-        run: -1,
-        post: 0,
-      },
-      keybindings: {
-        [keyLayout.left]: {
-          choice: "left",
-          handler: decisionHandler,
-        },
-        [keyLayout.right]: {
-          choice: "right",
-          handler: decisionHandler,
-        },
-      },
-      target: display_element,
-      trial: trial,
-      rendererParameters: rendererParameters,
-      eventHandler: decisionHandler,
-      postTrialHandler: nextStimulus,
-    };
-
     // Construct a list of the stimuli.
     const stimuli = [];
     stimuli.push(
@@ -553,7 +561,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     if (trial.checkConfidence === true) {
       // Exception for tutorial trials, confidence should be shown
       // for all trials
-      stimuli.push(new Stimulus(forced_confidence));
+      stimuli.push(new Stimulus(confidence));
     }
 
     let currentStimulus = null;

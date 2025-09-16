@@ -65,15 +65,19 @@ const jsPsych = initJsPsych({
 const InputConfigurations = {
   desktop: {
     name: "desktop",
-    left: "2",
-    right: "7",
+    left: "f",
+    right: "j",
+    submit: "k",
+    alt: "d",
     showButtons: false,
   },
   spectrometer: {
     name: "spectrometer",
-    left: "2",
-    right: "7",
-    trigger: "t",
+    left: "4",
+    right: "1",
+    submit: "2",
+    alt: "3",
+    trigger: "5",
     showButtons: false,
   },
 };
@@ -96,7 +100,6 @@ export const Manipulations = {
     "numMainTrials",
     200
   ),
-  nGap: jsPsych.extensions.Neurocog.getManipulation("nGap", 2),
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", true),
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
     "showInstructions",
@@ -374,7 +377,7 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: (t + 1) % Manipulations.nGap === 0 && t > 0,
+    checkConfidence: true,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -413,7 +416,7 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: (t + 1) % Manipulations.nGap === 0 && t > 0,
+    checkConfidence:true,
     keyLayout: keyLayout,
     data: {
       name: trialName,
