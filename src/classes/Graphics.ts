@@ -244,69 +244,91 @@ export class Graphics {
     // Confidence instructions
     let html = "";
 
-    // Key images for target
+    // Controls for confidence slider and submission
     if (__TARGET__ === "spectrometer") {
-      html +=
-        `<div><img class="keyboard-graphic" src="` +
-        `${this.jsPsych.extensions.Neurocog.getStimulus(
-          "ControlsConfidenceSpectrometer.png"
-          )}"></div>`;
+      html += `<div id="confidence-controls-container">`;
+      // Decrease confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += this.renderer.addEmbeddedControllerButton(1);
+      html += `<p style="font-size: large; font-weight: bold;">Decrease Confidence</p>`;
+      html += `</div>`;
+
+      // Submit
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Continue</p>`;
+      html += this.renderer.addEmbeddedControllerButton(2);
+      html += `</div>`;
+
+      // Increase confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Increase Confidence</p>`;
+      html += this.renderer.addEmbeddedControllerButton(4);
+      html += `</div>`;
+      html += `</div>`;
     } else {
-      html +=
-        `<div><img src="` +
-        `${this.jsPsych.extensions.Neurocog.getStimulus(
-          "ControlsConfidenceDesktop.png"
-        )}" ` +
-        `style="width: 90vw"></div>`;
+      html += `<div id="confidence-controls-container">`;
+      // Decrease confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += this.renderer.addEmbeddedKeyboardButton("F");
+      html += `<p style="font-size: large; font-weight: bold;">Decrease Confidence</p>`;
+      html += `</div>`;
+
+      // Submit
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Continue</p>`;
+      html += this.renderer.addEmbeddedKeyboardButton("K");
+      html += `</div>`;
+
+      // Increase confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Increase Confidence</p>`;
+      html += this.renderer.addEmbeddedKeyboardButton("J");
+      html += `</div>`;
+      html += `</div>`;
     }
 
     // Confidence slider
+    html += `<div>`;
+    html += `<div style="margin: 50px 0px;width: 100%;">`;
+    html += `<div style="position: relative; width: 60vw;">`;
+    html += `<input type="range" value="70" min="50" max="100" step="10" style="width: 100%;" class="confidence-slider-hidden" id="confidence-slider">`;
+    html += `</input>`;
+
+    // Add labels
     const labels = ["50%", "60%", "70%", "80%", "90%", "100%"];
     html += `<div>`;
-    html += `<div style="margin: 50px 0px; ` + `width: 100%;">`;
-    html +=
-      `<div style="position: relative; width: 60vw;">` +
-      `<input type="range" value="70" min="50" max="100" ` +
-      `step="10" style="width: 100%;" ` +
-      `class="confidence-slider-hidden"` +
-      `id="confidence-slider">` +
-      `</input>`;
-    html += `<div>`;
-    // Add labels
     for (let i = 0; i < labels.length; i++) {
       const width = 100 / (labels.length - 1);
       const offset = i * width - width / 2;
-      html +=
-        `<div style="display: inline-block; position: absolute; ` +
-        `left:${offset}%; text-align: center; ` +
-        `margin-top: 4vh; width: ${width}%;">`;
-      html +=
-        `<span style="text-align: center; ` +
-        `font-size: 1.5em;">${labels[i]}</span>`;
+      html += `<div style="display: inline-block; position: absolute; left:${offset}%; text-align: center; margin-top: 4vh; width: ${width}%;">`;
+      html += `<span style="text-align: center; font-size: 1.5em;">${labels[i]}</span>`;
       html += `</div>`;
     }
-    html += `</div></div></div></div><br><hr>`;
+    html += `</div>`;
+    html += `</div>`;
+    html += `</div>`;
+    html += `<br>`;
+    html += `</div>`;
 
     // Button to notify of a mistake
     html += `<div id="mistake-button-container">`;
     if (__TARGET__ === "spectrometer") {
-      html +=
-        `<img src="${this.jsPsych.extensions.Neurocog.getStimulus("1.png")}" class="keyboard-graphic">`;
-      html += `<p style="font-size: x-large; font-weight: bold">`;
+      html += this.renderer.addEmbeddedControllerButton(3);
+      html += `<p style="font-size: large; font-weight: bold">`;
       html += `I made a mistake`;
       html += `</p>`;
     } else {
-      html +=
-        `<img src="${this.jsPsych.extensions.Neurocog.getStimulus("D.png")}" class="keyboard-graphic">`;
+      html += this.renderer.addEmbeddedKeyboardButton("D");
       html += `<button id="mistake-button" class="jspsych-btn">`;
       html += `I made a mistake`;
       html += `</button>`;
     }
     html += `</div>`;
 
+    // Add the HTML to the display element
     this.renderer.getDisplayElement().parentNode.innerHTML = html;
 
-    // Try to hide the thumb?
+    // Try to hide the thumb
     document
       .getElementById("confidence-slider")
       .addEventListener("click", () => {

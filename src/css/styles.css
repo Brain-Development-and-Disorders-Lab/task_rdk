@@ -112,9 +112,28 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   text-align: center;
 }
 
+#confidence-controls-container {
+  display: flex;
+  flex-direction: row;
+  width: 90vw;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#confidence-controls-container-element {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 #mistake-button-container {
   display: flex;
   flex-direction: row;
+  gap: 10px;
+  margin-top: 24px;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -123,7 +142,6 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
 #mistake-button-container button {
   font-size: 18px;
   font-weight: bold;
-  margin: 24px 0px 0px;
 }
 
 /* Base control button class */
