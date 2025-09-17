@@ -78,8 +78,8 @@ export class Graphics {
       this.renderer.getHeight(),
       false
     );
-    viewCircle.fill = this.renderer.getInvertedColor("white");
-    dotLayer.fill = this.renderer.getInvertedColor("white");
+    viewCircle.fill = Renderer.getInvertedColor("white");
+    dotLayer.fill = Renderer.getInvertedColor("white");
     this.renderer.setRenderLayer(this.renderer.getTarget().makeGroup(dotLayer));
     this.renderer.getRenderLayer().mask = viewCircle;
 
@@ -90,7 +90,7 @@ export class Graphics {
       false
     );
     viewCircleOutline.noFill();
-    viewCircleOutline.stroke = this.renderer.getInvertedColor("black");
+    viewCircleOutline.stroke = Renderer.getInvertedColor("black");
     viewCircleOutline.linewidth = 5;
   }
 
@@ -106,20 +106,20 @@ export class Graphics {
       this.trial.data.referenceSelection !== ""
     ) {
       if (this.trial.data.correct === 1) {
-        this.renderer.createFixation(0, 0, fixationDiameter, false, this.renderer.getInvertedColor("green"));
+        this.renderer.createFixation(0, 0, fixationDiameter, false, Renderer.getInvertedColor("green"));
       } else {
-        this.renderer.createFixation(0, 0, fixationDiameter, false, this.renderer.getInvertedColor("red"));
+        this.renderer.createFixation(0, 0, fixationDiameter, false, Renderer.getInvertedColor("red"));
       }
     } else {
       const fixationCircle = this.renderer.createCircle(
         0,
         0,
         fixationDiameter * 0.8,
-        true, // Set to true to ensure it's tracked
-        "white", // Pass white so it gets inverted to black background circle
+        true,
+        "white",
         "white"
       );
-      this.renderer.createFixation(0, 0, fixationDiameter, false, "black"); // Pass black so it gets inverted to white fixation cross
+      this.renderer.createFixation(0, 0, fixationDiameter, false, "black");
     }
   }
 
@@ -129,8 +129,8 @@ export class Graphics {
   addClockwiseArc(): void {
     const startAngle = 2 * Math.PI - this.trial.dotDirection;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, this.renderer.getInvertedColor("white"));
-    this.renderer.createArc(startAngle, endAngle, this.renderer.getInvertedColor("#d78000"));
+    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, Renderer.getInvertedColor("white"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#d78000"));
   }
 
   /**
@@ -139,7 +139,7 @@ export class Graphics {
   addLeftArc(): void {
     const startAngle = Math.PI / 2;
     const endAngle = 2 * Math.PI - Math.PI / 2;
-    this.renderer.createArc(startAngle, endAngle, this.renderer.getInvertedColor("#d78000"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#d78000"));
   }
 
   /**
@@ -149,8 +149,8 @@ export class Graphics {
     const reference = 2 * Math.PI - this.trial.dotDirection;
     const startAngle = reference - Math.PI / 4;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, this.renderer.getInvertedColor("white"));
-    this.renderer.createArc(startAngle, endAngle, this.renderer.getInvertedColor("#3ea3a3"));
+    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, Renderer.getInvertedColor("white"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#3ea3a3"));
   }
 
   /**
@@ -159,7 +159,7 @@ export class Graphics {
   addRightArc(): void {
     const startAngle = -Math.PI / 2;
     const endAngle = Math.PI / 2;
-    this.renderer.createArc(startAngle, endAngle, this.renderer.getInvertedColor("#3ea3a3"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#3ea3a3"));
   }
 
   /**

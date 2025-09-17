@@ -53,7 +53,7 @@ export class Renderer {
    * @param {string} defaultColor the default color to use
    * @return {string} the color to use (inverted if enabled)
    */
-  public getInvertedColor(defaultColor: string): string {
+  static getInvertedColor(defaultColor: string): string {
     if (!Manipulations.invertColors) {
       return defaultColor;
     }
@@ -89,8 +89,8 @@ export class Renderer {
   ): Circle {
     const coordinates = Renderer.translate(x, y, this.width, this.height);
     const circle = this.target.makeCircle(coordinates[0], coordinates[1], r);
-    circle.fill = this.getInvertedColor(fill);
-    circle.stroke = this.getInvertedColor(stroke);
+    circle.fill = Renderer.getInvertedColor(fill);
+    circle.stroke = Renderer.getInvertedColor(stroke);
     if (update) this.addElement(circle);
     return circle;
   }
@@ -120,7 +120,7 @@ export class Renderer {
       w,
       h
     );
-    rectangle.fill = this.getInvertedColor(fill);
+    rectangle.fill = Renderer.getInvertedColor(fill);
     if (update) this.addElement(rectangle);
     return rectangle;
   }
@@ -148,8 +148,8 @@ export class Renderer {
       d / 4,
       d
     );
-    rectangleHorizontal.fill = this.getInvertedColor(fill);
-    rectangleVertical.fill = this.getInvertedColor(fill);
+    rectangleHorizontal.fill = Renderer.getInvertedColor(fill);
+    rectangleVertical.fill = Renderer.getInvertedColor(fill);
     rectangleHorizontal.noStroke();
     rectangleVertical.noStroke();
     if (update) {
@@ -178,7 +178,7 @@ export class Renderer {
       coordinates[1],
       this.dotRadius
     );
-    circle.fill = this.getInvertedColor(fill);
+    circle.fill = Renderer.getInvertedColor(fill);
     dot.setDot(circle);
     this.renderLayer.add(circle);
     if (update) this.addElement(dot);
@@ -202,7 +202,7 @@ export class Renderer {
       startAngle,
       endAngle
     );
-    arc.stroke = this.getInvertedColor(fill);
+    arc.stroke = Renderer.getInvertedColor(fill);
     arc.linewidth = 10;
     this.target.add(arc);
     this.addElement(arc);
@@ -265,9 +265,9 @@ export class Renderer {
     buttonContainer.style.width = "100px";
     buttonContainer.style.height = "50px";
     buttonContainer.style.padding = "2px";
-    buttonContainer.style.border = "4px solid " + this.getInvertedColor("black");
+    buttonContainer.style.border = "4px solid " + Renderer.getInvertedColor("black");
     buttonContainer.style.borderRadius = "12px";
-    buttonContainer.style.backgroundColor = this.getInvertedColor("white");
+    buttonContainer.style.backgroundColor = Renderer.getInvertedColor("white");
 
     // Add label text for the button
     const buttonLabel = document.createElement("p");
@@ -377,7 +377,7 @@ export class Renderer {
           return `
             <circle cx="${centerX}" cy="${centerY}" r="${radius}"
                     fill="${isHighlighted ? 'red' : 'none'}"
-                    stroke="black" stroke-width="1"/>
+                    stroke="${Renderer.getInvertedColor('black')}" stroke-width="1"/>
           `;
         }).join('')}
       </svg>
@@ -441,7 +441,7 @@ export class Renderer {
       endCoordinates[0],
       endCoordinates[1]
     );
-    line.stroke = this.getInvertedColor(fill);
+    line.stroke = Renderer.getInvertedColor(fill);
     line.linewidth = width;
     this.target.add(line);
     return line;

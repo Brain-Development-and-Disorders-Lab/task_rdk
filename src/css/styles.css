@@ -221,7 +221,8 @@ body.inverted svg rect {
   stroke: white !important;
 }
 
-body.inverted svg circle {
+/* Only invert circles that are not highlighted controller buttons */
+body.inverted svg circle:not([fill="red"]) {
   fill: white !important;
   stroke: white !important;
 }
