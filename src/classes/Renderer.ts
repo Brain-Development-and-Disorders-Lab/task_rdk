@@ -11,6 +11,9 @@ import { ArcSegment } from "two.js/src/shapes/arc-segment";
 // Custom types
 import { IRenderer } from "../../types";
 
+// Import manipulations
+import { Manipulations } from "../index";
+
 /**
  * Renderer abstraction that interfaces directly with the
  * Two.js graphics library
@@ -46,6 +49,27 @@ export class Renderer {
   }
 
   /**
+   * Check if color inversion is enabled and return appropriate colors
+   * @param {string} defaultColor the default color to use
+   * @return {string} the color to use (inverted if enabled)
+   */
+  static getInvertedColor(defaultColor: string): string {
+    if (!Manipulations.invertColors) {
+      return defaultColor;
+    }
+
+    // Invert common colors for MRI context
+    switch (defaultColor) {
+      case "black":
+        return "white";
+      case "white":
+        return "black";
+      default:
+        return defaultColor;
+    }
+  }
+
+  /**
    * Create a circle
    * @param {number} x x-coordinate of the circle center
    * @param {number} y y-coordinate of the circle center
@@ -65,8 +89,8 @@ export class Renderer {
   ): Circle {
     const coordinates = Renderer.translate(x, y, this.width, this.height);
     const circle = this.target.makeCircle(coordinates[0], coordinates[1], r);
-    circle.fill = fill;
-    circle.stroke = stroke;
+    circle.fill = Renderer.getInvertedColor(fill);
+    circle.stroke = Renderer.getInvertedColor(stroke);
     if (update) this.addElement(circle);
     return circle;
   }
@@ -96,7 +120,7 @@ export class Renderer {
       w,
       h
     );
-    rectangle.fill = fill;
+    rectangle.fill = Renderer.getInvertedColor(fill);
     if (update) this.addElement(rectangle);
     return rectangle;
   }
@@ -124,8 +148,8 @@ export class Renderer {
       d / 4,
       d
     );
-    rectangleHorizontal.fill = fill;
-    rectangleVertical.fill = fill;
+    rectangleHorizontal.fill = Renderer.getInvertedColor(fill);
+    rectangleVertical.fill = Renderer.getInvertedColor(fill);
     rectangleHorizontal.noStroke();
     rectangleVertical.noStroke();
     if (update) {
@@ -154,7 +178,7 @@ export class Renderer {
       coordinates[1],
       this.dotRadius
     );
-    circle.fill = fill;
+    circle.fill = Renderer.getInvertedColor(fill);
     dot.setDot(circle);
     this.renderLayer.add(circle);
     if (update) this.addElement(dot);
@@ -178,9 +202,10 @@ export class Renderer {
       startAngle,
       endAngle
     );
-    arc.stroke = fill;
+    arc.stroke = Renderer.getInvertedColor(fill);
     arc.linewidth = 10;
     this.target.add(arc);
+    this.addElement(arc);
     return arc;
   }
 
@@ -237,20 +262,12 @@ export class Renderer {
     buttonContainer.style.display = "flex";
     buttonContainer.style.justifyContent = "center";
     buttonContainer.style.alignItems = "center";
-    buttonContainer.style.width = "8%";
-    buttonContainer.style.height = "6%";
+    buttonContainer.style.width = "100px";
+    buttonContainer.style.height = "50px";
     buttonContainer.style.padding = "2px";
-    buttonContainer.style.border = "4px solid black";
+    buttonContainer.style.border = "4px solid " + Renderer.getInvertedColor("black");
     buttonContainer.style.borderRadius = "12px";
-    buttonContainer.style.backgroundColor = "white";
-    buttonContainer.style.position = "absolute";
-
-    // Apply offset if specified
-    if (offset === "left") {
-      buttonContainer.style.marginRight = "50%";
-    } else if (offset === "right") {
-      buttonContainer.style.marginLeft = "50%";
-    }
+    buttonContainer.style.backgroundColor = Renderer.getInvertedColor("white");
 
     // Add label text for the button
     const buttonLabel = document.createElement("p");
@@ -272,21 +289,125 @@ export class Renderer {
       const graphicsCanvasDiv =
         document.getElementsByClassName("graphics-container")[0];
 
-      // Prepend the left label container to the graphics container
+      // Create the left label container
+      const leftContainer = document.createElement("div");
+      leftContainer.style.display = "flex";
+      leftContainer.style.justifyContent = "center";
+      leftContainer.style.alignItems = "center";
+      leftContainer.style.flexDirection = "column";
+      leftContainer.style.gap = "10px";
+      leftContainer.style.position = "absolute";
+      leftContainer.style.marginRight = "60%";
+      leftContainer.style.marginTop = "40px";
+
+      // Add the left button to the left label container
       const leftButton = this.addButton("Left", "left");
-      graphicsCanvasDiv.prepend(leftButton);
+      leftContainer.append(leftButton);
+
+      // Add the input indicators
+      const leftButtonContainer = document.createElement("div");
+      if (__TARGET__ === "spectrometer") {
+        leftButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(1);
+      } else {
+        leftButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("F");
+      }
+      leftContainer.append(leftButtonContainer);
+
+      // Prepend the left label container to the graphics container
+      graphicsCanvasDiv.prepend(leftContainer);
     } else if (labelType === "right") {
       // Access the graphics container
       const graphicsCanvasDiv =
         document.getElementsByClassName("graphics-container")[0];
 
-      // Prepend the right label container to the graphics container
+      // Create the right label container
+      const rightContainer = document.createElement("div");
+      rightContainer.style.display = "flex";
+      rightContainer.style.justifyContent = "center";
+      rightContainer.style.alignItems = "center";
+      rightContainer.style.flexDirection = "column";
+      rightContainer.style.gap = "10px";
+      rightContainer.style.position = "absolute";
+      rightContainer.style.marginLeft = "60%";
+      rightContainer.style.marginTop = "40px";
+
+      // Add the right button to the right label container
       const rightButton = this.addButton("Right", "right");
-      graphicsCanvasDiv.append(rightButton);
+      rightContainer.append(rightButton);
+
+      // Add the input indicators
+      const rightButtonContainer = document.createElement("div");
+      if (__TARGET__ === "spectrometer") {
+        rightButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(4);
+      } else {
+        rightButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("J");
+      }
+      rightContainer.append(rightButtonContainer);
+
+      // Append the right label container to the graphics container
+      graphicsCanvasDiv.append(rightContainer);
     } else {
       // Warning unknown
       console.warn(`Unknown label type: '${labelType}'`);
     }
+  }
+
+  /**
+   * Generate and and return a HTML string depicting the controller layout with the
+   * specified button index highlighted.
+   * @param buttonIndex index of the controller button (1-4)
+   * @return {string} the HTML string for the controller button representation
+   */
+  static getEmbeddedControllerButton(buttonIndex: number): string {
+    // Validate button index (1-4)
+    const validIndex = Math.max(1, Math.min(4, buttonIndex));
+
+    // Create SVG with 4 circles representing the controller buttons
+    const svg = `
+      <svg width="80" height="40" style="display: inline-block; vertical-align: middle;">
+        <rect x="2" y="2" width="76" height="36"
+              fill="none" stroke="black" stroke-width="1"
+              rx="4" ry="4"/>
+        ${[1, 2, 3, 4].map((index) => {
+          const centerX = 16 * index;
+          const centerY = 20;
+          const radius = 6;
+          const isHighlighted = index === validIndex;
+
+          return `
+            <circle cx="${centerX}" cy="${centerY}" r="${radius}"
+                    fill="${isHighlighted ? 'red' : 'none'}"
+                    stroke="${Renderer.getInvertedColor('black')}" stroke-width="1"/>
+          `;
+        }).join('')}
+      </svg>
+    `;
+
+    return svg;
+  }
+
+  /**
+   * Generate and return a HTML string depicting a keyboard key with the
+   * specified key text in the middle.
+   * @param key the key text to display (e.g., "D", "F", "J", "K")
+   * @return {string} the HTML string for the keyboard key representation
+   */
+  static getEmbeddedKeyboardButton(key: string): string {
+    // Create SVG with a rounded square containing the key text
+    const svg = `
+      <svg width="60" height="60" style="display: inline-block; vertical-align: middle;">
+        <rect x="2" y="2" width="56" height="56"
+              fill="none" stroke="black" stroke-width="2"
+              rx="5" ry="5"/>
+        <text x="30" y="38" text-anchor="middle"
+              font-family="Arial, sans-serif"
+              font-size="20"
+              font-weight="bold"
+              fill="black">${key}</text>
+      </svg>
+    `;
+
+    return svg;
   }
 
   /**
@@ -320,7 +441,7 @@ export class Renderer {
       endCoordinates[0],
       endCoordinates[1]
     );
-    line.stroke = fill;
+    line.stroke = Renderer.getInvertedColor(fill);
     line.linewidth = width;
     this.target.add(line);
     return line;
@@ -352,6 +473,25 @@ export class Renderer {
     }
     this.elements = [];
     this.target.clear();
+  }
+
+  /**
+   * Clear all HTML elements from the display
+   * This removes HTML elements like confidence sliders, labels, etc.
+   */
+  clearHTMLElements(): void {
+    const graphicsContainer = document.getElementsByClassName("graphics-container")[0];
+    if (graphicsContainer) {
+      // Remove all child elements except the Two.js canvas div
+      const children = Array.from(graphicsContainer.children);
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        // Keep the Two.js canvas div (it should be the first child)
+        if (i > 0) {
+          graphicsContainer.removeChild(child);
+        }
+      }
+    }
   }
 
   /**

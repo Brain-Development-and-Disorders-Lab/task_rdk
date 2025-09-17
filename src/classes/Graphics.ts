@@ -11,6 +11,9 @@ import _ from "lodash";
 // Type definitions
 import { IDot } from "../../types";
 
+// Import manipulations
+import { Manipulations } from "../index";
+
 /**
  * Graphics class used to interface with the plugin and the renderer class
  */
@@ -29,6 +32,23 @@ export class Graphics {
     this.jsPsych = jsPsych;
     this.trial = trial;
     this.renderer = renderer;
+
+    // Apply color inversion if enabled
+    this.applyColorInversion();
+  }
+
+  /**
+   * Apply color inversion if the `invertColors` manipulation is enabled
+   */
+  private applyColorInversion(): void {
+    if (Manipulations.invertColors) {
+      const graphicsContainer = document.getElementsByClassName("graphics-container")[0];
+      if (graphicsContainer) {
+        graphicsContainer.classList.add("inverted");
+      } else {
+        console.warn("Graphics container not found for color inversion");
+      }
+    }
   }
 
   /**
@@ -58,8 +78,8 @@ export class Graphics {
       this.renderer.getHeight(),
       false
     );
-    viewCircle.fill = "white";
-    dotLayer.fill = "white";
+    viewCircle.fill = Renderer.getInvertedColor("white");
+    dotLayer.fill = Renderer.getInvertedColor("white");
     this.renderer.setRenderLayer(this.renderer.getTarget().makeGroup(dotLayer));
     this.renderer.getRenderLayer().mask = viewCircle;
 
@@ -70,7 +90,7 @@ export class Graphics {
       false
     );
     viewCircleOutline.noFill();
-    viewCircleOutline.stroke = "black";
+    viewCircleOutline.stroke = Renderer.getInvertedColor("black");
     viewCircleOutline.linewidth = 5;
   }
 
@@ -86,20 +106,20 @@ export class Graphics {
       this.trial.data.referenceSelection !== ""
     ) {
       if (this.trial.data.correct === 1) {
-        this.renderer.createFixation(0, 0, fixationDiameter, false, "green");
+        this.renderer.createFixation(0, 0, fixationDiameter, false, Renderer.getInvertedColor("green"));
       } else {
-        this.renderer.createFixation(0, 0, fixationDiameter, false, "red");
+        this.renderer.createFixation(0, 0, fixationDiameter, false, Renderer.getInvertedColor("red"));
       }
     } else {
-      this.renderer.createCircle(
+      const fixationCircle = this.renderer.createCircle(
         0,
         0,
         fixationDiameter * 0.8,
-        false,
+        true,
         "white",
         "white"
       );
-      this.renderer.createFixation(0, 0, fixationDiameter, false);
+      this.renderer.createFixation(0, 0, fixationDiameter, false, "black");
     }
   }
 
@@ -109,8 +129,8 @@ export class Graphics {
   addClockwiseArc(): void {
     const startAngle = 2 * Math.PI - this.trial.dotDirection;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, "white");
-    this.renderer.createArc(startAngle, endAngle, "#d78000");
+    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, Renderer.getInvertedColor("white"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#d78000"));
   }
 
   /**
@@ -119,7 +139,7 @@ export class Graphics {
   addLeftArc(): void {
     const startAngle = Math.PI / 2;
     const endAngle = 2 * Math.PI - Math.PI / 2;
-    this.renderer.createArc(startAngle, endAngle, "#d78000");
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#d78000"));
   }
 
   /**
@@ -129,8 +149,8 @@ export class Graphics {
     const reference = 2 * Math.PI - this.trial.dotDirection;
     const startAngle = reference - Math.PI / 4;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, "white");
-    this.renderer.createArc(startAngle, endAngle, "#3ea3a3");
+    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, Renderer.getInvertedColor("white"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#3ea3a3"));
   }
 
   /**
@@ -139,7 +159,7 @@ export class Graphics {
   addRightArc(): void {
     const startAngle = -Math.PI / 2;
     const endAngle = Math.PI / 2;
-    this.renderer.createArc(startAngle, endAngle, "#3ea3a3");
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#3ea3a3"));
   }
 
   /**
@@ -237,47 +257,134 @@ export class Graphics {
   }
 
   /**
-   * Setup HTML elements for confidence "forced-choice" element
+   * Setup HTML elements for confidence selection element
    * @param parameters configuration information for confidence selection
    */
-  addForcedConfidence(parameters: any): void {
+  addConfidence(parameters: any): void {
     // Confidence instructions
     let html = "";
 
-    // Confidence prompt
+    // Controls for confidence slider and submission
+    if (__TARGET__ === "spectrometer") {
+      html += `<div id="confidence-controls-container">`;
+      // Decrease confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += Renderer.getEmbeddedControllerButton(1);
+      html += `<p style="font-size: large; font-weight: bold;">Decrease Confidence</p>`;
+      html += `</div>`;
+
+      // Submit
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Continue</p>`;
+      html += Renderer.getEmbeddedControllerButton(3);
+      html += `</div>`;
+
+      // Increase confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Increase Confidence</p>`;
+      html += Renderer.getEmbeddedControllerButton(4);
+      html += `</div>`;
+      html += `</div>`;
+    } else {
+      html += `<div id="confidence-controls-container">`;
+      // Decrease confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += Renderer.getEmbeddedKeyboardButton("F");
+      html += `<p style="font-size: large; font-weight: bold;">Decrease Confidence</p>`;
+      html += `</div>`;
+
+      // Submit
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Continue</p>`;
+      html += Renderer.getEmbeddedKeyboardButton("K");
+      html += `</div>`;
+
+      // Increase confidence
+      html += `<div id="confidence-controls-container-element">`;
+      html += `<p style="font-size: large; font-weight: bold;">Increase Confidence</p>`;
+      html += Renderer.getEmbeddedKeyboardButton("J");
+      html += `</div>`;
+      html += `</div>`;
+    }
+
+    // Confidence slider
+    html += `<div style="margin: 50px 0px; height: 80px; width: 100%; display: flex; justify-content: center; align-items: center;">`;
+    html += `<div style="position: relative; width: 60vw;">`;
+    html += `<input type="range" value="70" min="50" max="100" step="10" style="width: 100%;" class="confidence-slider-hidden" id="confidence-slider">`;
+    html += `</input>`;
+
+    // Add labels
+    const labels = ["50%", "60%", "70%", "80%", "90%", "100%"];
     html += `<div>`;
-    html += `<p style="font-size: x-large;">Between the previous trial and this trial, did you feel more confident about your response to:</p>`;
-    html += `<p style="font-size: x-large;">The previous trial or this trial?</p>`;
+    for (let i = 0; i < labels.length; i++) {
+      const width = 100 / (labels.length - 1);
+      const offset = i * width - width / 2;
+      html += `<div style="display: inline-block; position: absolute; left:${offset}%; text-align: center; margin-top: 4vh; width: ${width}%;">`;
+      html += `<span style="text-align: center; font-size: 1.5em;">${labels[i]}</span>`;
+      html += `</div>`;
+    }
+    html += `</div>`;
+    html += `</div>`;
     html += `<br>`;
     html += `</div>`;
 
-    // Confidence buttons
-    html += `<div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">`;
-    html +=
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      `<p style="font-weight: bold; font-size: x-large;">Previous trial</p>` +
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      this.renderer.addButton("Left").outerHTML +
-      `</div>` +
-      `</div>`;
-    html +=
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      `<p style="font-weight: bold; font-size: x-large;">This trial</p>` +
-      `<div style="display: flex; flex-direction: column; align-items: center;">` +
-      this.renderer.addButton("Right").outerHTML +
-      `</div>` +
-      `</div>`;
+    // Button to notify of a mistake
+    html += `<div id="mistake-button-container">`;
+    if (__TARGET__ === "spectrometer") {
+      html += `<p style="font-size: large; font-weight: bold">`;
+      html += `I made a mistake`;
+      html += `</p>`;
+      html += Renderer.getEmbeddedControllerButton(2);
+    } else {
+      html += `<button id="mistake-button" class="jspsych-btn">`;
+      html += `I made a mistake`;
+      html += `</button>`;
+      html += Renderer.getEmbeddedKeyboardButton("D");
+    }
     html += `</div>`;
+
+    // Add the HTML to the display element
     this.renderer.getDisplayElement().parentNode.innerHTML = html;
+
+    // Try to hide the thumb
+    document
+      .getElementById("confidence-slider")
+      .addEventListener("click", () => {
+        const slider = document.getElementById("confidence-slider");
+        slider.className = "confidence-slider";
+      });
 
     // Bind appropriate event listeners to actions
     document.addEventListener("keyup", parameters.eventHandler);
+    if (__TARGET__ === "desktop") {
+      document
+        .getElementById("mistake-button")
+        .addEventListener("click", parameters.eventHandler);
+    }
   }
 
   /**
    * Clear all elements from the renderer
+   * This removes everything including aperture outline and fixation cross
+   * Should only be called at the end of a trial
    */
   clear(): void {
     this.renderer.clearElements();
+    this.renderer.clearHTMLElements();
+  }
+
+  /**
+   * Reset the renderer display to the aperture with the fixation cross
+   * This removes all stimuli except the aperture outline and central fixation
+   * to prevent flickering between stimulus transitions
+   */
+  reset(): void {
+    // Get all tracked elements
+    const trackedElements = this.renderer.getElements();
+
+    // Remove all tracked elements
+    for (let i = 0; i < trackedElements.length; i++) {
+      this.renderer.getTarget().remove(trackedElements[i]);
+    }
   }
 }

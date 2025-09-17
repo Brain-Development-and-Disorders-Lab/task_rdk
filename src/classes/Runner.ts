@@ -61,7 +61,7 @@ export class Runner {
    * @param {Stimulus} stimulus stimulus to display
    */
   static finish(stimulus: Stimulus): void {
-    stimulus.getParameters().graphics.renderer.target.clear();
+    stimulus.getParameters().graphics.reset();
     window.clearTimeout(stimulus.getTimer());
     stimulus.getPostTrialHandler()();
   }

@@ -150,8 +150,8 @@ export class Stimulus {
         graphics.addRightArc();
       } else if (component === "indicator") {
         graphics.addReferenceIndicator();
-      } else if (component === "forced_confidence") {
-        graphics.addForcedConfidence(parameters);
+      } else if (component === "confidence") {
+        graphics.addConfidence(parameters);
       } else if (component === "left") {
         graphics.addLeftLabel();
       } else if (component === "right") {
@@ -165,7 +165,9 @@ export class Stimulus {
       .bind("update", (frameCount: number) => {
         for (let d = 0; d < renderer.getElements().length; d++) {
           const element = renderer.getElements()[d];
-          element.step(frameCount);
+          if (element.step) {
+            element.step(frameCount);
+          }
         }
       })
       .play();

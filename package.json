@@ -8,6 +8,7 @@
     "build:spectrometer": "webpack build --env target=spectrometer && gulp artefacts",
     "clean": "gulp clean",
     "start": "webpack serve --env target=desktop",
+    "start:spectrometer": "webpack serve --env target=spectrometer",
     "style": "yarn prettier --write .",
     "test": "jest"
   },

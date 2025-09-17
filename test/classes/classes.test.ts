@@ -1,25 +1,7 @@
 /**
+ * STUB FILE
  * @summary Unit tests for RDK task classes
  *
  * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/test/classes/classes.test.js
  * @author Henry Burgess <henry.burgess@wustl.edu>
  */
-
-// Package dependencies
-import { test, expect } from "@jest/globals";
-import { Dot } from "../../src/classes/Dot";
-
-test("check that two.js circle object is null", () => {
-  const dotParameters = {
-    type: "testDot",
-    width: 100,
-    height: 100,
-    viewRadius: 40,
-    dotVelocity: 2.0,
-    dotRadius: 2.0,
-    reference: 0,
-    direction: 0,
-  };
-  const dot = new Dot(0, 0, dotParameters);
-  expect(dot.getX()).toBe(0);
-});

@@ -29,6 +29,7 @@ import DotGamePlugin from "./plugin";
 
 // Additional functions and variables
 import { scaling } from "./functions";
+import { Renderer } from "./classes/Renderer";
 
 // Load translations
 import * as en_us from "../locales/en-us.json";
@@ -65,15 +66,19 @@ const jsPsych = initJsPsych({
 const InputConfigurations = {
   desktop: {
     name: "desktop",
-    left: "2",
-    right: "7",
+    left: "f",
+    right: "j",
+    submit: "k",
+    alt: "d",
     showButtons: false,
   },
   spectrometer: {
     name: "spectrometer",
-    left: "2",
-    right: "7",
-    trigger: "t",
+    left: "4",
+    right: "1",
+    submit: "2",
+    alt: "3",
+    trigger: "5",
     showButtons: false,
   },
 };
@@ -96,13 +101,19 @@ export const Manipulations = {
     "numMainTrials",
     200
   ),
-  nGap: jsPsych.extensions.Neurocog.getManipulation("nGap", 2),
-  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", true),
+  invertColors: jsPsych.extensions.Neurocog.getManipulation("invertColors", false),
+  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
+  enableFullscreen: jsPsych.extensions.Neurocog.getManipulation("enableFullscreen", false),
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
     "showInstructions",
     false
   ),
 };
+
+// Apply color inversion
+if (Manipulations.invertColors) {
+  document.body.classList.add("inverted");
+}
 
 /**
  * Create the experiment timeline
@@ -127,20 +138,27 @@ if (_.isEqual(Manipulations.requireID, true)) {
   });
 }
 
-// Set the experiment to run in fullscreen mode
-timeline.push({
-  type: FullscreenPlugin,
-  fullscreen_mode: true,
-  message: `<p>Enable fullscreen view</p>`,
-});
+// Run in fullscreen mode
+if (_.isEqual(Manipulations.enableFullscreen, true)) {
+  timeline.push({
+    type: FullscreenPlugin,
+    fullscreen_mode: true,
+    message: `<p>Enable fullscreen to continue.</p>`,
+  });
+}
 
 // -------------------- Instructions --------------------
 let instructionContinueText = `<div id="instructions-navigation">
-    <br>
     <hr>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-      <p style="font-weight: bold; font-size: large;">\< Back (Left)</p>
-      <p style="font-weight: bold; font-size: large;">(Right) Next \></p>
+      <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
+        <p style="font-weight: bold; font-size: large;">\< Back</p>
+        ${__TARGET__ === "spectrometer" ? Renderer.getEmbeddedControllerButton(1) : Renderer.getEmbeddedKeyboardButton("F")}
+      </div>
+      <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
+        ${__TARGET__ === "spectrometer" ? Renderer.getEmbeddedControllerButton(4) : Renderer.getEmbeddedKeyboardButton("J")}
+        <p style="font-weight: bold; font-size: large;">Next \></p>
+      </div>
     </div>
   </div>`;
 
@@ -154,7 +172,7 @@ if (
     pages: [
       `<h1>RDK Task</h1>
       <h2>Instructions - Video</h2>
-      <iframe src="https://wustl.box.com/embed/s/chdrca09riebeka65hzhpljrqv7gzj9p?sortColumn=date" class="video-container" frameborder="0" allowfullscreen webkitallowfullscreen msallowfullscreen></iframe>
+      <iframe src="https://wustl.box.com/embed/v/rdk-instructions-video" class="video-container" frameborder="0" allowfullscreen webkitallowfullscreen msallowfullscreen></iframe>
       <p><i>This video is best viewed in fullscreen mode.</i></p>` +
         instructionContinueText,
     ],
@@ -374,7 +392,7 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: (t + 1) % Manipulations.nGap === 0 && t > 0,
+    checkConfidence: true,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -413,7 +431,7 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: (t + 1) % Manipulations.nGap === 0 && t > 0,
+    checkConfidence:true,
     keyLayout: keyLayout,
     data: {
       name: trialName,

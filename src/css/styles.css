@@ -13,9 +13,9 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
 }
 
 .video-container {
-  width: 35vw;
-  height: 50vh;
-  margin: auto;
+  width: 500px;
+  height: 350px;
+  margin: 4px;
 }
 
 .image-graphic {
@@ -34,24 +34,6 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   margin: 5%;
 }
 
-.confidence-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 2.5rem;
-  height: 75px;
-  border-radius: 5px;
-  background: grey;
-  cursor: pointer;
-}
-
-.confidence-slider::-moz-range-thumb {
-  width: 5rem;
-  height: 100px;
-  border-radius: 5px;
-  background: grey;
-  cursor: pointer;
-}
-
 .confidence-slider {
   -webkit-appearance: none;
   margin-top: 10px;
@@ -65,24 +47,22 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   transition: opacity 0.2s;
 }
 
-.confidence-slider-hidden::-webkit-slider-thumb {
+.confidence-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 10px;
-  height: 75px;
-  border-radius: 5px;
-  background: grey;
+  width: 1.5rem;
+  height: 64px;
+  border-radius: 10px;
+  background: #ff70ff;
   cursor: pointer;
-  visibility: hidden;
 }
 
-.confidence-slider-hidden::-moz-range-thumb {
-  width: 25px;
-  height: 100px;
-  border-radius: 5px;
-  background: grey;
+.confidence-slider::-moz-range-thumb {
+  width: 1.5rem;
+  height: 64px;
+  border-radius: 10px;
+  background: ff70ff;
   cursor: pointer;
-  visibility: hidden;
 }
 
 .confidence-slider-hidden {
@@ -95,6 +75,26 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   opacity: 0.7;
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
+}
+
+.confidence-slider-hidden::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5rem;
+  height: 64px;
+  border-radius: 10px;
+  background: ff70ff;
+  cursor: pointer;
+  visibility: hidden;
+}
+
+.confidence-slider-hidden::-moz-range-thumb {
+  width: 1.5rem;
+  height: 64px;
+  border-radius: 10px;
+  background: ff70ff;
+  cursor: pointer;
+  visibility: hidden;
 }
 
 .reference-instructions-container {
@@ -112,9 +112,28 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   text-align: center;
 }
 
+#confidence-controls-container {
+  display: flex;
+  flex-direction: row;
+  width: 90vw;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#confidence-controls-container-element {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 #mistake-button-container {
   display: flex;
   flex-direction: row;
+  gap: 10px;
+  margin-top: 24px;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -123,7 +142,6 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
 #mistake-button-container button {
   font-size: 18px;
   font-weight: bold;
-  margin: 24px 0px 0px;
 }
 
 /* Base control button class */
@@ -169,4 +187,46 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   background-color: #71e466;
   border: 2px solid #67d15e;
   box-shadow: 3px 3px #62c759;
+}
+
+/* Color inversion classes for MRI context */
+body.inverted {
+  background-color: black;
+  color: white;
+}
+
+.graphics-container.inverted {
+  background-color: black;
+  color: white;
+}
+
+.graphics-container.inverted .confidence-slider {
+  background: #ffffff;
+}
+
+.graphics-container.inverted .confidence-slider-hidden {
+  background: #ffffff;
+}
+
+/* Invert label borders */
+body.inverted .addButton {
+  border-color: white !important;
+  background-color: black !important;
+  color: white !important;
+}
+
+/* Invert keyboard/button icons */
+body.inverted svg rect {
+  fill: none !important;
+  stroke: white !important;
+}
+
+/* Only invert circles that are not highlighted controller buttons */
+body.inverted svg circle:not([fill="red"]) {
+  fill: white !important;
+  stroke: white !important;
+}
+
+body.inverted svg text {
+  fill: white !important;
 }

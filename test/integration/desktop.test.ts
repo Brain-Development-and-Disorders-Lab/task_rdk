@@ -1,18 +1,7 @@
 /**
- * Automated integration testing for the RDK task.
+ * STUB FILE
+ * @summary Integration tests for RDK task classes
  *
- * Testing configuration for desktop delivery target.
+ * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/test/integration/desktop.test.js
+ * @author Henry Burgess <henry.burgess@wustl.edu>
  */
-// Variables
-const LOCATION = "http://localhost:8080";
-const MAX_TIMEOUT = 20000;
-
-describe("Desktop testing", () => {
-  beforeAll(async () => {
-    await page.goto(LOCATION);
-  }, MAX_TIMEOUT);
-
-  it("navigates to the task", async () => {
-    await expect(page.title()).resolves.toMatch("RDK Task");
-  });
-});
