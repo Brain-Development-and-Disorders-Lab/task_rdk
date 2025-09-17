@@ -249,7 +249,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
               trial.data.confidenceMistake = true;
 
               // Calculate and store confidence data
-              trial.data.confidenceEndTime = Date.now();
+              trial.data.confidenceEndTime = performance.now();
               trial.data.confidenceTotalTime =
                 trial.data.confidenceEndTime - trial.data.confidenceStartTime;
               trial.data.confidenceSelection = slider.value;
@@ -265,7 +265,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
               slider.className === "confidence-slider"
             ) {
               // Calculate and store confidence data
-              trial.data.confidenceEndTime = Date.now();
+              trial.data.confidenceEndTime = performance.now();
               trial.data.confidenceTotalTime =
                 trial.data.confidenceEndTime - trial.data.confidenceStartTime;
               trial.data.confidenceSelection = slider.value;
