@@ -29,6 +29,7 @@ import DotGamePlugin from "./plugin";
 
 // Additional functions and variables
 import { scaling } from "./functions";
+import { Renderer } from "./classes/Renderer";
 
 // Load translations
 import * as en_us from "../locales/en-us.json";
@@ -142,8 +143,14 @@ let instructionContinueText = `<div id="instructions-navigation">
     <br>
     <hr>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-      <p style="font-weight: bold; font-size: large;">\< Back (Left)</p>
-      <p style="font-weight: bold; font-size: large;">(Right) Next \></p>
+      <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
+        <p style="font-weight: bold; font-size: large;">\< Back</p>
+        ${__TARGET__ === "spectrometer" ? Renderer.getEmbeddedControllerButton(1) : Renderer.getEmbeddedKeyboardButton("F")}
+      </div>
+      <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
+        ${__TARGET__ === "spectrometer" ? Renderer.getEmbeddedControllerButton(4) : Renderer.getEmbeddedKeyboardButton("J")}
+        <p style="font-weight: bold; font-size: large;">Next \></p>
+      </div>
     </div>
   </div>`;
 

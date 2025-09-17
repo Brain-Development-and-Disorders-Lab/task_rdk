@@ -282,9 +282,9 @@ export class Renderer {
       // Add the input indicators
       const leftButtonContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        leftButtonContainer.innerHTML = this.addEmbeddedControllerButton(1);
+        leftButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(1);
       } else {
-        leftButtonContainer.innerHTML = this.addEmbeddedKeyboardButton("F");
+        leftButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("F");
       }
       leftContainer.append(leftButtonContainer);
 
@@ -313,9 +313,9 @@ export class Renderer {
       // Add the input indicators
       const rightButtonContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        rightButtonContainer.innerHTML = this.addEmbeddedControllerButton(4);
+        rightButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(4);
       } else {
-        rightButtonContainer.innerHTML = this.addEmbeddedKeyboardButton("J");
+        rightButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("J");
       }
       rightContainer.append(rightButtonContainer);
 
@@ -333,7 +333,7 @@ export class Renderer {
    * @param buttonIndex index of the controller button (1-4)
    * @return {string} the HTML string for the controller button representation
    */
-  addEmbeddedControllerButton(buttonIndex: number): string {
+  static getEmbeddedControllerButton(buttonIndex: number): string {
     // Validate button index (1-4)
     const validIndex = Math.max(1, Math.min(4, buttonIndex));
 
@@ -367,7 +367,7 @@ export class Renderer {
    * @param key the key text to display (e.g., "D", "F", "J", "K")
    * @return {string} the HTML string for the keyboard key representation
    */
-  addEmbeddedKeyboardButton(key: string): string {
+  static getEmbeddedKeyboardButton(key: string): string {
     // Create SVG with a rounded square containing the key text
     const svg = `
       <svg width="60" height="60" style="display: inline-block; vertical-align: middle;">

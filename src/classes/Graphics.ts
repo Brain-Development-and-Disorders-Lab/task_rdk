@@ -249,40 +249,40 @@ export class Graphics {
       html += `<div id="confidence-controls-container">`;
       // Decrease confidence
       html += `<div id="confidence-controls-container-element">`;
-      html += this.renderer.addEmbeddedControllerButton(1);
+      html += Renderer.getEmbeddedControllerButton(1);
       html += `<p style="font-size: large; font-weight: bold;">Decrease Confidence</p>`;
       html += `</div>`;
 
       // Submit
       html += `<div id="confidence-controls-container-element">`;
       html += `<p style="font-size: large; font-weight: bold;">Continue</p>`;
-      html += this.renderer.addEmbeddedControllerButton(2);
+      html += Renderer.getEmbeddedControllerButton(3);
       html += `</div>`;
 
       // Increase confidence
       html += `<div id="confidence-controls-container-element">`;
       html += `<p style="font-size: large; font-weight: bold;">Increase Confidence</p>`;
-      html += this.renderer.addEmbeddedControllerButton(4);
+      html += Renderer.getEmbeddedControllerButton(4);
       html += `</div>`;
       html += `</div>`;
     } else {
       html += `<div id="confidence-controls-container">`;
       // Decrease confidence
       html += `<div id="confidence-controls-container-element">`;
-      html += this.renderer.addEmbeddedKeyboardButton("F");
+      html += Renderer.getEmbeddedKeyboardButton("F");
       html += `<p style="font-size: large; font-weight: bold;">Decrease Confidence</p>`;
       html += `</div>`;
 
       // Submit
       html += `<div id="confidence-controls-container-element">`;
       html += `<p style="font-size: large; font-weight: bold;">Continue</p>`;
-      html += this.renderer.addEmbeddedKeyboardButton("K");
+      html += Renderer.getEmbeddedKeyboardButton("K");
       html += `</div>`;
 
       // Increase confidence
       html += `<div id="confidence-controls-container-element">`;
       html += `<p style="font-size: large; font-weight: bold;">Increase Confidence</p>`;
-      html += this.renderer.addEmbeddedKeyboardButton("J");
+      html += Renderer.getEmbeddedKeyboardButton("J");
       html += `</div>`;
       html += `</div>`;
     }
@@ -314,12 +314,12 @@ export class Graphics {
       html += `<p style="font-size: large; font-weight: bold">`;
       html += `I made a mistake`;
       html += `</p>`;
-      html += this.renderer.addEmbeddedControllerButton(3);
+      html += Renderer.getEmbeddedControllerButton(2);
     } else {
       html += `<button id="mistake-button" class="jspsych-btn">`;
       html += `I made a mistake`;
       html += `</button>`;
-      html += this.renderer.addEmbeddedKeyboardButton("D");
+      html += Renderer.getEmbeddedKeyboardButton("D");
     }
     html += `</div>`;
 
