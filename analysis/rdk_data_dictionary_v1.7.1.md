@@ -13,13 +13,13 @@ Browse files: [https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/t
 - `trialNumber`: Number of elapsed trials, indexed from `0`.
 - `score`: Total number of correct responses, counting `dot-game`-type `main` trials only (not calibration or practice trials).
 - `deviation`: The direction of the coherent dots, either `left` or `right`.
-- `correct`: Whether the participant selected the correct direction of the coherent dots, either `true` or `false`.
+- `correct`: Whether the participant selected the correct direction of the coherent dots, either `1` or `0`.
 - `coherence`: The current proportion of coherent dots being presented during the moving dots stimulus. Example: A value of `0.13` indicates 13% of dots on-screen will be coherent, the remaining 87% will be random distractor dots.
 - `coherences`: Generated low and high coherence pairs, `[low, high]`. Calculated as `[kMedian * 0.5, kMedian * 2.0]`, where `kMedian <= 0.5 && kMedian >= 0.12`.
 
 ### Confidence
 
-- `confidenceSelection`: The selected slider value, between `0.5` and `1.0`.
+- `confidenceSelection`: The selected slider value, between `50` and `100`.
 - `confidenceMistake`: `true` or `false`, representing the participant pressing the mistake button on the confidence slider screen.
 
 ### Timing
