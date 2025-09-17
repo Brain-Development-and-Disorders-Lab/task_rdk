@@ -13,9 +13,9 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
 }
 
 .video-container {
-  width: 35vw;
-  height: 50vh;
-  margin: auto;
+  width: 500px;
+  height: 350px;
+  margin: 4px;
 }
 
 .image-graphic {

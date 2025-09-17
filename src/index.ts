@@ -143,7 +143,6 @@ if (_.isEqual(Manipulations.enableFullscreen, true)) {
 
 // -------------------- Instructions --------------------
 let instructionContinueText = `<div id="instructions-navigation">
-    <br>
     <hr>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
@@ -167,7 +166,7 @@ if (
     pages: [
       `<h1>RDK Task</h1>
       <h2>Instructions - Video</h2>
-      <iframe src="https://wustl.box.com/embed/s/chdrca09riebeka65hzhpljrqv7gzj9p?sortColumn=date" class="video-container" frameborder="0" allowfullscreen webkitallowfullscreen msallowfullscreen></iframe>
+      <iframe src="https://wustl.box.com/embed/v/rdk-instructions-video" class="video-container" frameborder="0" allowfullscreen webkitallowfullscreen msallowfullscreen></iframe>
       <p><i>This video is best viewed in fullscreen mode.</i></p>` +
         instructionContinueText,
     ],
