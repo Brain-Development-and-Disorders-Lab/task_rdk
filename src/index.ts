@@ -101,6 +101,7 @@ export const Manipulations = {
     "numMainTrials",
     200
   ),
+  invertColors: jsPsych.extensions.Neurocog.getManipulation("invertColors", false),
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
   enableFullscreen: jsPsych.extensions.Neurocog.getManipulation("enableFullscreen", false),
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
@@ -108,6 +109,11 @@ export const Manipulations = {
     false
   ),
 };
+
+// Apply color inversion
+if (Manipulations.invertColors) {
+  document.body.classList.add("inverted");
+}
 
 /**
  * Create the experiment timeline

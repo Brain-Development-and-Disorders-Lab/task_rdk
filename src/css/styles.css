@@ -53,7 +53,7 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   width: 1.5rem;
   height: 64px;
   border-radius: 10px;
-  background: darkgrey;
+  background: #ff70ff;
   cursor: pointer;
 }
 
@@ -61,7 +61,7 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   width: 1.5rem;
   height: 64px;
   border-radius: 10px;
-  background: grey;
+  background: ff70ff;
   cursor: pointer;
 }
 
@@ -83,7 +83,7 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   width: 1.5rem;
   height: 64px;
   border-radius: 10px;
-  background: grey;
+  background: ff70ff;
   cursor: pointer;
   visibility: hidden;
 }
@@ -92,7 +92,7 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   width: 1.5rem;
   height: 64px;
   border-radius: 10px;
-  background: grey;
+  background: ff70ff;
   cursor: pointer;
   visibility: hidden;
 }
@@ -187,4 +187,45 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
   background-color: #71e466;
   border: 2px solid #67d15e;
   box-shadow: 3px 3px #62c759;
+}
+
+/* Color inversion classes for MRI context */
+body.inverted {
+  background-color: black;
+  color: white;
+}
+
+.graphics-container.inverted {
+  background-color: black;
+  color: white;
+}
+
+.graphics-container.inverted .confidence-slider {
+  background: #ffffff;
+}
+
+.graphics-container.inverted .confidence-slider-hidden {
+  background: #ffffff;
+}
+
+/* Invert label borders */
+body.inverted .addButton {
+  border-color: white !important;
+  background-color: black !important;
+  color: white !important;
+}
+
+/* Invert keyboard/button icons */
+body.inverted svg rect {
+  fill: none !important;
+  stroke: white !important;
+}
+
+body.inverted svg circle {
+  fill: white !important;
+  stroke: white !important;
+}
+
+body.inverted svg text {
+  fill: white !important;
 }

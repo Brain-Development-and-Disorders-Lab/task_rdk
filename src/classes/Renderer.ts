@@ -11,6 +11,9 @@ import { ArcSegment } from "two.js/src/shapes/arc-segment";
 // Custom types
 import { IRenderer } from "../../types";
 
+// Import manipulations
+import { Manipulations } from "../index";
+
 /**
  * Renderer abstraction that interfaces directly with the
  * Two.js graphics library
@@ -46,6 +49,27 @@ export class Renderer {
   }
 
   /**
+   * Check if color inversion is enabled and return appropriate colors
+   * @param {string} defaultColor the default color to use
+   * @return {string} the color to use (inverted if enabled)
+   */
+  public getInvertedColor(defaultColor: string): string {
+    if (!Manipulations.invertColors) {
+      return defaultColor;
+    }
+
+    // Invert common colors for MRI context
+    switch (defaultColor) {
+      case "black":
+        return "white";
+      case "white":
+        return "black";
+      default:
+        return defaultColor;
+    }
+  }
+
+  /**
    * Create a circle
    * @param {number} x x-coordinate of the circle center
    * @param {number} y y-coordinate of the circle center
@@ -65,8 +89,8 @@ export class Renderer {
   ): Circle {
     const coordinates = Renderer.translate(x, y, this.width, this.height);
     const circle = this.target.makeCircle(coordinates[0], coordinates[1], r);
-    circle.fill = fill;
-    circle.stroke = stroke;
+    circle.fill = this.getInvertedColor(fill);
+    circle.stroke = this.getInvertedColor(stroke);
     if (update) this.addElement(circle);
     return circle;
   }
@@ -96,7 +120,7 @@ export class Renderer {
       w,
       h
     );
-    rectangle.fill = fill;
+    rectangle.fill = this.getInvertedColor(fill);
     if (update) this.addElement(rectangle);
     return rectangle;
   }
@@ -124,8 +148,8 @@ export class Renderer {
       d / 4,
       d
     );
-    rectangleHorizontal.fill = fill;
-    rectangleVertical.fill = fill;
+    rectangleHorizontal.fill = this.getInvertedColor(fill);
+    rectangleVertical.fill = this.getInvertedColor(fill);
     rectangleHorizontal.noStroke();
     rectangleVertical.noStroke();
     if (update) {
@@ -154,7 +178,7 @@ export class Renderer {
       coordinates[1],
       this.dotRadius
     );
-    circle.fill = fill;
+    circle.fill = this.getInvertedColor(fill);
     dot.setDot(circle);
     this.renderLayer.add(circle);
     if (update) this.addElement(dot);
@@ -178,7 +202,7 @@ export class Renderer {
       startAngle,
       endAngle
     );
-    arc.stroke = fill;
+    arc.stroke = this.getInvertedColor(fill);
     arc.linewidth = 10;
     this.target.add(arc);
     this.addElement(arc);
@@ -241,9 +265,9 @@ export class Renderer {
     buttonContainer.style.width = "100px";
     buttonContainer.style.height = "50px";
     buttonContainer.style.padding = "2px";
-    buttonContainer.style.border = "4px solid black";
+    buttonContainer.style.border = "4px solid " + this.getInvertedColor("black");
     buttonContainer.style.borderRadius = "12px";
-    buttonContainer.style.backgroundColor = "white";
+    buttonContainer.style.backgroundColor = this.getInvertedColor("white");
 
     // Add label text for the button
     const buttonLabel = document.createElement("p");
@@ -417,7 +441,7 @@ export class Renderer {
       endCoordinates[0],
       endCoordinates[1]
     );
-    line.stroke = fill;
+    line.stroke = this.getInvertedColor(fill);
     line.linewidth = width;
     this.target.add(line);
     return line;
