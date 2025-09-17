@@ -101,7 +101,8 @@ export const Manipulations = {
     "numMainTrials",
     200
   ),
-  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", true),
+  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
+  enableFullscreen: jsPsych.extensions.Neurocog.getManipulation("enableFullscreen", false),
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
     "showInstructions",
     false
@@ -131,12 +132,14 @@ if (_.isEqual(Manipulations.requireID, true)) {
   });
 }
 
-// Set the experiment to run in fullscreen mode
-timeline.push({
-  type: FullscreenPlugin,
-  fullscreen_mode: true,
-  message: `<p>Enable fullscreen view</p>`,
-});
+// Run in fullscreen mode
+if (_.isEqual(Manipulations.enableFullscreen, true)) {
+  timeline.push({
+    type: FullscreenPlugin,
+    fullscreen_mode: true,
+    message: `<p>Enable fullscreen to continue.</p>`,
+  });
+}
 
 // -------------------- Instructions --------------------
 let instructionContinueText = `<div id="instructions-navigation">
