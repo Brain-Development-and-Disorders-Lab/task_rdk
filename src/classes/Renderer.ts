@@ -181,6 +181,7 @@ export class Renderer {
     arc.stroke = fill;
     arc.linewidth = 10;
     this.target.add(arc);
+    this.addElement(arc);
     return arc;
   }
 
@@ -448,6 +449,25 @@ export class Renderer {
     }
     this.elements = [];
     this.target.clear();
+  }
+
+  /**
+   * Clear all HTML elements from the display
+   * This removes HTML elements like confidence sliders, labels, etc.
+   */
+  clearHTMLElements(): void {
+    const graphicsContainer = document.getElementsByClassName("graphics-container")[0];
+    if (graphicsContainer) {
+      // Remove all child elements except the Two.js canvas div
+      const children = Array.from(graphicsContainer.children);
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        // Keep the Two.js canvas div (it should be the first child)
+        if (i > 0) {
+          graphicsContainer.removeChild(child);
+        }
+      }
+    }
   }
 
   /**

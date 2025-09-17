@@ -345,8 +345,26 @@ export class Graphics {
 
   /**
    * Clear all elements from the renderer
+   * This removes everything including aperture outline and fixation cross
+   * Should only be called at the end of a trial
    */
   clear(): void {
     this.renderer.clearElements();
+    this.renderer.clearHTMLElements();
+  }
+
+  /**
+   * Reset the renderer display to the aperture with the fixation cross
+   * This removes all stimuli except the aperture outline and central fixation
+   * to prevent flickering between stimulus transitions
+   */
+  reset(): void {
+    // Get all tracked elements
+    const trackedElements = this.renderer.getElements();
+
+    // Remove all tracked elements
+    for (let i = 0; i < trackedElements.length; i++) {
+      this.renderer.getTarget().remove(trackedElements[i]);
+    }
   }
 }

@@ -352,7 +352,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
      */
     const endTrial = () => {
       // Clean up renderer and graphics
-      renderer.clearElements();
+      graphics.clear();
       renderer = null;
       graphics = null;
       Two.Instances.pop();

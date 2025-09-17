@@ -165,7 +165,9 @@ export class Stimulus {
       .bind("update", (frameCount: number) => {
         for (let d = 0; d < renderer.getElements().length; d++) {
           const element = renderer.getElements()[d];
-          element.step(frameCount);
+          if (element.step) {
+            element.step(frameCount);
+          }
         }
       })
       .play();
