@@ -288,8 +288,7 @@ export class Graphics {
     }
 
     // Confidence slider
-    html += `<div>`;
-    html += `<div style="margin: 50px 0px;width: 100%;">`;
+    html += `<div style="margin: 50px 0px; height: 80px; width: 100%; display: flex; justify-content: center; align-items: center;">`;
     html += `<div style="position: relative; width: 60vw;">`;
     html += `<input type="range" value="70" min="50" max="100" step="10" style="width: 100%;" class="confidence-slider-hidden" id="confidence-slider">`;
     html += `</input>`;
@@ -306,22 +305,21 @@ export class Graphics {
     }
     html += `</div>`;
     html += `</div>`;
-    html += `</div>`;
     html += `<br>`;
     html += `</div>`;
 
     // Button to notify of a mistake
     html += `<div id="mistake-button-container">`;
     if (__TARGET__ === "spectrometer") {
-      html += this.renderer.addEmbeddedControllerButton(3);
       html += `<p style="font-size: large; font-weight: bold">`;
       html += `I made a mistake`;
       html += `</p>`;
+      html += this.renderer.addEmbeddedControllerButton(3);
     } else {
-      html += this.renderer.addEmbeddedKeyboardButton("D");
       html += `<button id="mistake-button" class="jspsych-btn">`;
       html += `I made a mistake`;
       html += `</button>`;
+      html += this.renderer.addEmbeddedKeyboardButton("D");
     }
     html += `</div>`;
 
