@@ -87,19 +87,19 @@ const InputConfigurations = {
 export const Manipulations = {
   numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numTutorialTrials",
-    10
+    8
   ),
   numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numPracticeTrials",
-    10
+    8
   ),
   numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numCalibrationOneTrials",
-    120
+    36
   ),
   numMainTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numMainTrials",
-    200
+    40
   ),
   invertColors: jsPsych.extensions.Neurocog.getManipulation("invertColors", false),
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
@@ -226,7 +226,6 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: false,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -250,8 +249,7 @@ const practice = [
     `<h2>Practice Games</h2>` +
     `<p>You will now play another ${Manipulations.numPracticeTrials} ` +
     `practice games. ` +
-    `You won't have to rate your confidence after each game, ` +
-    `but you will be shown if your answer was correct or not.</p>` +
+    `You will be shown if your answer was correct or not.</p>` +
     `<p>If your answer was correct, the cross in the ` +
     `middle of the screen will briefly turn green.</p>` +
     `<p>If your answer was wrong, the cross in the ` +
@@ -288,7 +286,6 @@ for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: true,
-    checkConfidence: false,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -319,9 +316,6 @@ if (Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials > 0) {
         Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials
       } ` +
       `games.</p>` +
-      `<p>You will not be shown if you have correctly ` +
-      `answered or not, and you will be asked to rate your ` +
-      `confidence after some of the games. </p>` +
       `<br>` +
       `<p><b>Good luck!</b></p>` +
       instructionContinueText
@@ -390,7 +384,6 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: true,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -428,7 +421,6 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence:true,
     keyLayout: keyLayout,
     data: {
       name: trialName,

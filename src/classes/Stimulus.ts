@@ -170,8 +170,6 @@ export class Stimulus {
         graphics.addRightArc();
       } else if (component === "indicator") {
         graphics.addReferenceIndicator();
-      } else if (component === "confidence") {
-        graphics.addConfidence(parameters);
       } else if (component === "left") {
         graphics.addLeftLabel();
       } else if (component === "right") {

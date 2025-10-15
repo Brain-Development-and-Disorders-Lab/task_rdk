@@ -618,7 +618,7 @@ export class Renderer {
 
   /**
    * Clear all HTML elements from the display
-   * This removes HTML elements like confidence sliders, labels, etc.
+   * This removes HTML elements like labels, etc.
    */
   clearHTMLElements(): void {
     const graphicsContainer = document.getElementsByClassName("graphics-container")[0];
