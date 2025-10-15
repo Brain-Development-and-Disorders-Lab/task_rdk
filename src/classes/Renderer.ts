@@ -352,6 +352,7 @@ export class Renderer {
 
       // Create the left container
       const leftContainer = document.createElement("div");
+      leftContainer.id = "left-container";
       leftContainer.style.display = "flex";
       leftContainer.style.flexDirection = "column";
       leftContainer.style.alignItems = "center";
@@ -422,6 +423,7 @@ export class Renderer {
 
       // Create the right container
       const rightContainer = document.createElement("div");
+      rightContainer.id = "right-container";
       rightContainer.style.display = "flex";
       rightContainer.style.flexDirection = "column";
       rightContainer.style.alignItems = "center";
@@ -630,6 +632,22 @@ export class Renderer {
           graphicsContainer.removeChild(child);
         }
       }
+    }
+  }
+
+  /**
+   * Clear the left and right decision containers
+   * This removes only the decision UI elements without affecting other HTML elements
+   */
+  clearDecisionContainers(): void {
+    const leftContainer = document.getElementById("left-container");
+    if (leftContainer) {
+      leftContainer.remove();
+    }
+
+    const rightContainer = document.getElementById("right-container");
+    if (rightContainer) {
+      rightContainer.remove();
     }
   }
 

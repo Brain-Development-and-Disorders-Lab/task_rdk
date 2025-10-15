@@ -386,5 +386,8 @@ export class Graphics {
     for (let i = 0; i < trackedElements.length; i++) {
       this.renderer.getTarget().remove(trackedElements[i]);
     }
+
+    // Clear decision containers if they exist
+    this.renderer.clearDecisionContainers();
   }
 }

@@ -92,6 +92,12 @@ export class Stimulus {
     if (this.name === "decision") {
       document.removeEventListener("keyup", window.decisionKeyUpHandler);
     }
+
+    // Remove post-decision keyup handler if it exists
+    if (this.name === "post-decision" && window.postDecisionKeyUpHandler) {
+      document.removeEventListener("keyup", window.postDecisionKeyUpHandler);
+      window.postDecisionKeyUpHandler = undefined;
+    }
   }
 
   /**

@@ -29,6 +29,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 declare global {
   interface Window {
     decisionKeyUpHandler?: (event: KeyboardEvent) => void;
+    postDecisionKeyUpHandler?: (event: KeyboardEvent) => void;
   }
 }
 
@@ -191,11 +192,10 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
       } else if (currentStimulus.getParameters().name === "post-decision") {
-        // Increase the run time of fixation cross to 1250ms if feedback
-        // is to be shown
-        if (trial.showFeedback === true) {
-          currentStimulus.getParameters().timing.run = 1250;
-        }
+        // Set up keyup handler to wait for all keys to be released
+        postDecisionKeyUpHandler = createPostDecisionKeyUpHandler();
+        window.postDecisionKeyUpHandler = postDecisionKeyUpHandler;
+        document.addEventListener("keyup", postDecisionKeyUpHandler);
       } else {
         // Show the mouse cursor
         graphics.cursorVisibility(true);
@@ -208,6 +208,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     // Add variables for key hold functionality
     let keyHoldTimer: number | null = null;
     let currentKey: string | null = null;
+    let postDecisionKeyUpHandler: ((event: KeyboardEvent) => void) | null = null;
 
     /**
      * An event handler for keydown during decision input
@@ -293,6 +294,43 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       }
 
       currentKey = null;
+    };
+
+    /**
+     * Handler for post-decision keyup events
+     * Finishes the post-decision stimulus when all keys are released
+     */
+    const createPostDecisionKeyUpHandler = () => {
+      const postDecisionStartTime = performance.now();
+
+      return (event: KeyboardEvent) => {
+        // Check if this is one of our decision keys
+        const keycode = event.key.toLowerCase();
+        const decisionKeys = [keyLayout["1"], keyLayout["2"], keyLayout["3"], keyLayout["4"]];
+
+        if (decisionKeys.includes(keycode)) {
+          // Check if any decision keys are still being held
+          setTimeout(() => {
+            if (currentStimulus && currentStimulus.getParameters().name === "post-decision") {
+              const elapsedTime = performance.now() - postDecisionStartTime;
+              // Minimum display time: 250ms base + 1000ms if feedback is enabled
+              const minDisplayTime = trial.showFeedback === true ? 1250 : 250;
+
+              if (elapsedTime < minDisplayTime) {
+                // Wait for the remaining time before finishing
+                setTimeout(() => {
+                  if (currentStimulus && currentStimulus.getParameters().name === "post-decision") {
+                    Runner.post(currentStimulus);
+                  }
+                }, minDisplayTime - elapsedTime);
+              } else {
+                // Already waited long enough, finish immediately
+                Runner.post(currentStimulus);
+              }
+            }
+          }, 50);
+        }
+      };
     };
 
     /**
@@ -540,7 +578,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       selected: false,
       timing: {
         pre: 0,
-        run: 250,
+        run: -1, // Wait indefinitely until all keys are released
         post: 0,
       },
       target: display_element,
