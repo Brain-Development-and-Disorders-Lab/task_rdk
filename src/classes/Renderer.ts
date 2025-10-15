@@ -265,19 +265,19 @@ export class Renderer {
       },
       orangeDark: {
         background: "#ffc20a",
-        fill: "#ffe63b",
+        fill: "#ffdb6e",
       },
       orangeLight: {
-        background: "#ffe084",
-        fill: "#ffe79d",
+        background: "#ffd75e",
+        fill: "#fce7a9",
       },
       blueDark: {
         background: "#1792fc",
-        fill: "#2c96f3",
+        fill: "#47a8fc",
       },
       blueLight: {
         background: "#7bbef8",
-        fill: "#95caf9",
+        fill: "#9dd0fc",
       },
     };
 
