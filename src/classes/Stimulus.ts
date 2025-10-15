@@ -56,11 +56,20 @@ export class Stimulus {
   createKeybindings(): void {
     // Check if the stimulus can be interacted with
     if (this.interactive) {
-      // Bind keys
+      // Bind keydown events
       for (const binding in this.keybindings) {
         if (this.keybindings[binding]) {
-          document.addEventListener("keyup", this.keybindings[binding].handler);
+          document.addEventListener("keydown", this.keybindings[binding].handler);
         }
+      }
+
+      // Also bind keyup events for decision stimulus
+      if (this.name === "decision") {
+        document.addEventListener("keyup", (event: KeyboardEvent) => {
+          if (window.decisionKeyUpHandler) {
+            window.decisionKeyUpHandler(event);
+          }
+        });
       }
     }
   }
@@ -69,14 +78,19 @@ export class Stimulus {
    * Remove keybindings for the stimulus
    */
   removeKeybindings(): void {
-    // Unbind keys
+    // Unbind keydown events
     for (const binding in this.keybindings) {
       if (this.keybindings[binding]) {
         document.removeEventListener(
-          "keyup",
+          "keydown",
           this.keybindings[binding].handler
         );
       }
+    }
+
+    // Also remove keyup events for decision stimulus
+    if (this.name === "decision") {
+      document.removeEventListener("keyup", window.decisionKeyUpHandler);
     }
   }
 

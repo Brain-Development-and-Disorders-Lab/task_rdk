@@ -25,6 +25,13 @@ import { IRenderer } from "../types";
 import Two from "two.js";
 import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
+// Global keyup handler for decision input
+declare global {
+  interface Window {
+    decisionKeyUpHandler?: (event: KeyboardEvent) => void;
+  }
+}
+
 const info = {
   name: "dot-game",
   parameters: {
@@ -198,13 +205,103 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       Runner.start(currentStimulus);
     };
 
+    // Add variables for key hold functionality
+    let keyHoldTimer: number | null = null;
+    let currentKey: string | null = null;
+
+    /**
+     * An event handler for keydown during decision input
+     */
+    const decisionKeyDownHandler = (event: KeyboardEvent) => {
+      const keycode = event.key.toLowerCase(); // Convert to lowercase for consistent comparison
+
+      // Filter out invalid keycodes
+      if (!Object.keys(currentStimulus.getParameters().keybindings).includes(keycode)) {
+        return;
+      }
+
+      // Prevent default to avoid key repeat
+      event.preventDefault();
+
+      // If already holding a key, ignore (prevents multiple simultaneous key holds)
+      if (currentKey !== null) {
+        return;
+      }
+
+      currentKey = keycode;
+
+      // Find the corresponding button element
+      const buttonMapping = {
+        [keyLayout["1"]]: "vc_l",
+        [keyLayout["2"]]: "sc_l",
+        [keyLayout["3"]]: "sc_r",
+        [keyLayout["4"]]: "vc_r"
+      };
+
+      const buttonId = buttonMapping[keycode];
+      if (buttonId) {
+        const buttonElement = document.querySelector(`[data-button-id="${buttonId}"]`) as HTMLDivElement;
+        if (buttonElement) {
+          // Start the progress bar animation
+          renderer.startProgress(buttonElement);
+        }
+      }
+
+      // Set timer for 2 seconds
+      keyHoldTimer = window.setTimeout(() => {
+        if (currentKey === keycode) {
+          // After 2 seconds, process the decision
+          decisionHandler(event);
+          resetKeyHold();
+        }
+      }, 2000);
+    };
+
+    /**
+     * An event handler for keyup during decision input
+     */
+    const decisionKeyUpHandler = (event: KeyboardEvent) => {
+      if (currentKey === event.key.toLowerCase()) {
+        resetKeyHold();
+      }
+    };
+
+    const resetKeyHold = () => {
+      // Clear the timer
+      if (keyHoldTimer) {
+        clearTimeout(keyHoldTimer);
+        keyHoldTimer = null;
+      }
+
+      // Reset progress bar if there's a current key
+      if (currentKey) {
+        const buttonMapping = {
+          [keyLayout["1"]]: "vc_l",
+          [keyLayout["2"]]: "sc_l",
+          [keyLayout["3"]]: "sc_r",
+          [keyLayout["4"]]: "vc_r"
+        };
+
+        const buttonId = buttonMapping[currentKey];
+        if (buttonId) {
+          const buttonElement = document.querySelector(`[data-button-id="${buttonId}"]`) as HTMLDivElement;
+          if (buttonElement) {
+            // Stop and reset the progress bar
+            renderer.stopProgress(buttonElement);
+          }
+        }
+      }
+
+      currentKey = null;
+    };
+
     /**
      * An event handler for decision made during a trial
      * @param {KeyboardEvent} event the particular event or keypress
      */
     const decisionHandler = (event: KeyboardEvent) => {
       // Record the keycode to process the event
-      const keycode = event.key;
+      const keycode = event.key.toLowerCase();
 
       // Filter out invalid keycodes
       if (!Object.keys(currentStimulus.getParameters().keybindings).includes(
@@ -223,8 +320,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         selection =
           currentStimulus.getParameters().keybindings[keycode].choice;
         currentStimulus.removeKeybindings();
-
-        console.log("decision", selection);
 
         // Calculate and store reference data
         trial.data.referenceEndTime = performance.now();
@@ -412,25 +507,25 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       keybindings: {
         [keyLayout["1"]]: {
           choice: "vc_l",
-          handler: decisionHandler,
+          handler: decisionKeyDownHandler,
         },
         [keyLayout["2"]]: {
           choice: "sc_l",
-          handler: decisionHandler,
+          handler: decisionKeyDownHandler,
         },
         [keyLayout["3"]]: {
           choice: "sc_r",
-          handler: decisionHandler,
+          handler: decisionKeyDownHandler,
         },
         [keyLayout["4"]]: {
           choice: "vc_r",
-          handler: decisionHandler,
+          handler: decisionKeyDownHandler,
         },
       },
       target: display_element,
       trial: trial,
       rendererParameters: rendererParameters,
-      eventHandler: decisionHandler,
+      eventHandler: decisionKeyDownHandler,
       postTrialHandler: nextStimulus,
     };
 
@@ -466,6 +561,9 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
     let currentStimulus = null;
     trial.data.trialStartTime = performance.now();
+
+    // Make the keyup handler globally accessible
+    window.decisionKeyUpHandler = decisionKeyUpHandler;
 
     nextStimulus();
   }

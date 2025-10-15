@@ -291,15 +291,53 @@ export class Renderer {
     buttonContainer.style.padding = "4px";
     buttonContainer.style.borderRadius = "8px";
     buttonContainer.style.backgroundColor = colorscheme[variant].background;
+    buttonContainer.style.position = "relative";
+    buttonContainer.style.overflow = "hidden";
+
+    // Create progress bar
+    const progressBar = document.createElement("div");
+    progressBar.style.position = "absolute";
+    progressBar.style.bottom = "0";
+    progressBar.style.left = "0";
+    progressBar.style.width = "0%";
+    progressBar.style.height = "100%";
+    progressBar.style.backgroundColor = colorscheme[variant].fill;
+    progressBar.style.transition = "width 2s linear";
+    progressBar.className = "progress-bar";
+    buttonContainer.appendChild(progressBar);
 
     // Add label text for the button
     const buttonLabel = document.createElement("p");
     buttonLabel.textContent = buttonText;
     buttonLabel.style.fontWeight = "bold";
     buttonLabel.style.fontSize = "x-large";
+    buttonLabel.style.position = "relative";
+    buttonLabel.style.zIndex = "1";
     buttonContainer.appendChild(buttonLabel);
 
     return buttonContainer;
+  }
+
+  /**
+   * Start progress animation for a button
+   * @param {HTMLDivElement} buttonElement the button element to animate
+   */
+  startProgress(buttonElement: HTMLDivElement): void {
+    const progressBar = buttonElement.querySelector('.progress-bar') as HTMLElement;
+    if (progressBar) {
+      progressBar.style.width = "100%";
+    }
+  }
+
+  /**
+   * Stop progress animation for a button
+   * @param {HTMLDivElement} buttonElement the button element to reset
+   */
+  stopProgress(buttonElement: HTMLDivElement): void {
+    const progressBar = buttonElement.querySelector('.progress-bar') as HTMLElement;
+    if (progressBar) {
+      progressBar.style.width = "0%";
+    }
   }
 
   /**
@@ -337,7 +375,6 @@ export class Renderer {
       leftButtonContainer.style.gap = "16px";
       leftContainer.append(leftButtonContainer);
 
-      // To-Do: 2-second hold to select
       // Left "Very Confident" button
       const leftVeryConfidentButtonContainer = document.createElement("div");
       leftVeryConfidentButtonContainer.style.display = "flex";
@@ -346,6 +383,7 @@ export class Renderer {
       leftVeryConfidentButtonContainer.style.flexDirection = "column";
       leftVeryConfidentButtonContainer.style.gap = "16px";
       const leftVeryConfidentButton = this.addButton("Very Confident", "orangeDark");
+      leftVeryConfidentButton.setAttribute("data-button-id", "vc_l");
       leftVeryConfidentButtonContainer.append(leftVeryConfidentButton);
       const leftVeryConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
@@ -364,6 +402,7 @@ export class Renderer {
       leftSomewhatConfidentButtonContainer.style.flexDirection = "column";
       leftSomewhatConfidentButtonContainer.style.gap = "16px";
       const leftSomewhatConfidentButton = this.addButton("Somewhat Confident", "orangeLight");
+      leftSomewhatConfidentButton.setAttribute("data-button-id", "sc_l");
       leftSomewhatConfidentButtonContainer.append(leftSomewhatConfidentButton);
       const leftSomewhatConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
@@ -406,7 +445,6 @@ export class Renderer {
       rightButtonContainer.style.gap = "16px";
       rightContainer.append(rightButtonContainer);
 
-      // To-Do: 2-second hold to select
       // Right "Somewhat Confident" button
       const rightSomewhatConfidentButtonContainer = document.createElement("div");
       rightSomewhatConfidentButtonContainer.style.display = "flex";
@@ -415,6 +453,7 @@ export class Renderer {
       rightSomewhatConfidentButtonContainer.style.flexDirection = "column";
       rightSomewhatConfidentButtonContainer.style.gap = "16px";
       const rightSomewhatConfidentButton = this.addButton("Somewhat Confident", "blueLight");
+      rightSomewhatConfidentButton.setAttribute("data-button-id", "sc_r");
       rightSomewhatConfidentButtonContainer.append(rightSomewhatConfidentButton);
       const rightSomewhatConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
@@ -433,6 +472,7 @@ export class Renderer {
       rightVeryConfidentButtonContainer.style.flexDirection = "column";
       rightVeryConfidentButtonContainer.style.gap = "16px";
       const rightVeryConfidentButton = this.addButton("Very Confident", "blueDark");
+      rightVeryConfidentButton.setAttribute("data-button-id", "vc_r");
       rightVeryConfidentButtonContainer.append(rightVeryConfidentButton);
       const rightVeryConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
