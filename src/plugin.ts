@@ -61,10 +61,6 @@ const info = {
       type: ParameterType.INT,
       default: undefined,
     },
-    checkConfidence: {
-      type: ParameterType.BOOL,
-      default: false,
-    },
   },
 };
 
@@ -172,18 +168,12 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       currentStimulus = stimuli.shift();
 
       // Configure stimulus-specific parameters
-      if (currentStimulus.getParameters().name === "reference") {
+      if (currentStimulus.getParameters().name === "decision") {
         // Reference stimulus
         trial.data.referenceStartTime = performance.now();
 
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
-      } else if (currentStimulus.getParameters().name === "confidence") {
-        // Start a timer if a confidence stimuli is run.
-        trial.data.confidenceStartTime = performance.now();
-
-        // Show the mouse cursor
-        graphics.cursorVisibility(true);
       } else if (currentStimulus.getParameters().name === "motion") {
         trial.data.stimulusDuration =
           currentStimulus.getParameters().timing.run;
@@ -193,7 +183,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       } else if (currentStimulus.getParameters().name === "initial") {
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
-      } else if (currentStimulus.getParameters().name === "decision") {
+      } else if (currentStimulus.getParameters().name === "post-decision") {
         // Increase the run time of fixation cross to 1250ms if feedback
         // is to be shown
         if (trial.showFeedback === true) {
@@ -216,97 +206,44 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       // Record the keycode to process the event
       const keycode = event.key;
 
-      if (
-        Object.keys(currentStimulus.getParameters().keybindings).includes(
-          keycode
-        )
-      ) {
-        // Handle the decision if a valid key has been pressed for this stage
-        if (currentStimulus.getParameters().name === "confidence") {
-          // Handle 'confidence' stimuli
-          const slider = document.getElementById(
-            "confidence-slider"
-          ) as HTMLInputElement;
-          if (slider) {
-            // Show the thumb if it is currently hidden when adjusting confidence
-            if (
-              slider.className === "confidence-slider-hidden" &&
-              (keycode === keyLayout.left || keycode === keyLayout.right)
-            ) {
-              slider.className = "confidence-slider";
-            }
-
-            // Handle incrementing and decrementing slider
-            if (keycode === keyLayout.left) {
-              slider.stepDown(1);
-            } else if (keycode === keyLayout.right) {
-              slider.stepUp(1);
-            }
-
-            // Ensure we handle a mistake notification
-            if (keycode === keyLayout.alt || event.type === "click") {
-              // Store mistake boolean
-              trial.data.confidenceMistake = true;
-
-              // Calculate and store confidence data
-              trial.data.confidenceEndTime = performance.now();
-              trial.data.confidenceTotalTime =
-                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
-              trial.data.confidenceSelection = slider.value;
-
-              // Continue to the next Stimulus
-              console.warn("Mistake stored in trial data");
-              Runner.post(currentStimulus);
-            }
-
-            // Finally, we ignore any submissions if the slider is hidden, only submit if slider is visible
-            if (
-              keycode === keyLayout.submit &&
-              slider.className === "confidence-slider"
-            ) {
-              // Calculate and store confidence data
-              trial.data.confidenceEndTime = performance.now();
-              trial.data.confidenceTotalTime =
-                trial.data.confidenceEndTime - trial.data.confidenceStartTime;
-              trial.data.confidenceSelection = slider.value;
-
-              // Continue to the next Stimulus
-              Runner.post(currentStimulus);
-            }
-          } else {
-            console.warn("Did not get reference to slider element");
-          }
-        } else if (currentStimulus.getParameters().name === "reference") {
-          // Handle 'reference' stimuli
-          selection =
-            currentStimulus.getParameters().keybindings[keycode].choice;
-          currentStimulus.removeKeybindings();
-
-          // Calculate and store reference data
-          trial.data.referenceEndTime = performance.now();
-          trial.data.referenceTotalTime =
-            trial.data.referenceEndTime - trial.data.referenceStartTime;
-
-          // Normalize selection data
-          trial.data.referenceSelection = selection === "left" ? 1 : 2;
-
-          // Normalize correct data
-          trial.data.correct = selection === trial.data.deviation ? 1 : 0;
-
-          // Increment score if correct
-          if (trial.data.correct === 1 && trial.name === "main") {
-            trial.data.score++;
-          }
-
-          // Continue to the next Stimulus
-          Runner.post(currentStimulus);
-        }
-      } else {
+      // Filter out invalid keycodes
+      if (!Object.keys(currentStimulus.getParameters().keybindings).includes(
+        keycode
+      )) {
         console.warn(
           `Invalid key "${keycode}" for stimulus type "${
             currentStimulus.getParameters().name
           }"`
         );
+        return;
+      }
+
+      if (currentStimulus.getParameters().name === "decision") {
+        // Handle 'decision' stimuli
+        selection =
+          currentStimulus.getParameters().keybindings[keycode].choice;
+        currentStimulus.removeKeybindings();
+
+        console.log("decision", selection);
+
+        // Calculate and store reference data
+        trial.data.referenceEndTime = performance.now();
+        trial.data.referenceTotalTime =
+          trial.data.referenceEndTime - trial.data.referenceStartTime;
+
+        // Normalize selection data
+        trial.data.selection = selection;
+
+        // Normalize correct data
+        trial.data.correct = selection.endsWith(trial.data.deviation) ? 1 : 0;
+
+        // Increment score if correct
+        if (trial.data.correct === 1 && trial.name === "main") {
+          trial.data.score++;
+        }
+
+        // Continue to the next Stimulus
+        Runner.post(currentStimulus);
       }
     };
 
@@ -452,8 +389,8 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
     // Display of the reference angle and the coloured arcs for
     // user selection.
-    const reference = {
-      name: "reference",
+    const decision = {
+      name: "decision",
       components: [
         "outline",
         "fixation",
@@ -473,12 +410,20 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         post: 0,
       },
       keybindings: {
-        [keyLayout.left]: {
-          choice: "left",
+        [keyLayout["1"]]: {
+          choice: "vc_l",
           handler: decisionHandler,
         },
-        [keyLayout.right]: {
-          choice: "right",
+        [keyLayout["2"]]: {
+          choice: "sc_l",
+          handler: decisionHandler,
+        },
+        [keyLayout["3"]]: {
+          choice: "sc_r",
+          handler: decisionHandler,
+        },
+        [keyLayout["4"]]: {
+          choice: "vc_r",
           handler: decisionHandler,
         },
       },
@@ -490,8 +435,8 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     };
 
     // Brief display of the fixation cross.
-    const decision = {
-      name: "decision",
+    const postDecision = {
+      name: "post-decision",
       components: ["outline", "fixation"],
       two: two,
       renderer: renderer,
@@ -510,59 +455,14 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       postTrialHandler: nextStimulus,
     };
 
-    // Display of the confidence slider used to rate confidence.
-    const confidence = {
-      name: "confidence",
-      components: ["confidence"],
-      two: two,
-      renderer: renderer,
-      graphics: graphics,
-      interactive: true,
-      selected: false,
-      timing: {
-        pre: 0,
-        run: -1,
-        post: 0,
-      },
-      keybindings: {
-        [keyLayout.submit]: {
-          choice: "submit",
-          handler: decisionHandler,
-        },
-        [keyLayout.left]: {
-          choice: "decrease",
-          handler: decisionHandler,
-        },
-        [keyLayout.right]: {
-          choice: "increase",
-          handler: decisionHandler,
-        },
-        [keyLayout.alt]: {
-          choice: "mistake",
-          handler: decisionHandler,
-        },
-      },
-      target: display_element,
-      trial: trial,
-      rendererParameters: rendererParameters,
-      eventHandler: decisionHandler,
-      postTrialHandler: nextStimulus,
-    };
-
     // Construct a list of the stimuli.
     const stimuli = [];
     stimuli.push(
       new Stimulus(initial),
       new Stimulus(motion),
-      new Stimulus(reference),
-      new Stimulus(decision)
+      new Stimulus(decision),
+      new Stimulus(postDecision)
     );
-
-    if (trial.checkConfidence === true) {
-      // Exception for tutorial trials, confidence should be shown
-      // for all trials
-      stimuli.push(new Stimulus(confidence));
-    }
 
     let currentStimulus = null;
     trial.data.trialStartTime = performance.now();

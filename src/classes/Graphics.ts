@@ -103,7 +103,7 @@ export class Graphics {
     );
     if (
       this.trial.showFeedback === true &&
-      this.trial.data.referenceSelection !== ""
+      this.trial.data.selection !== ""
     ) {
       if (this.trial.data.correct === 1) {
         this.renderer.createFixation(0, 0, fixationDiameter, false, Renderer.getInvertedColor("green"));
