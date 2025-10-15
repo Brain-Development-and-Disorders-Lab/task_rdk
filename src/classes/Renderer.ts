@@ -463,13 +463,13 @@ export class Renderer {
 
     // Create SVG with 4 circles representing the controller buttons
     const svg = `
-      <svg width="80" height="40" style="display: inline-block; vertical-align: middle;">
-        <rect x="2" y="2" width="76" height="36"
-              fill="none" stroke="black" stroke-width="1"
+      <svg width="90" height="45" style="display: inline-block; vertical-align: middle;">
+        <rect x="2" y="2" width="86" height="41"
+              fill="none" stroke="black" stroke-width="2"
               rx="4" ry="4"/>
         ${[1, 2, 3, 4].map((index) => {
-          const centerX = 16 * index;
-          const centerY = 20;
+          const centerX = 18 * index;
+          const centerY = 22.5;
           const radius = 6;
           const isHighlighted = index === validIndex;
 
