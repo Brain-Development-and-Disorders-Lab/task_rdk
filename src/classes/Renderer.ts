@@ -256,24 +256,47 @@ export class Renderer {
     }
   }
 
-  addButton(buttonText: string, offset = "none"): HTMLDivElement {
+  addButton(buttonText: string, variant = "default"): HTMLDivElement {
+    // Create colorscheme based on variant
+    const colorscheme = {
+      default: {
+        background: "#88919e",
+        fill: "#575d66",
+      },
+      orangeDark: {
+        background: "#ffc20a",
+        fill: "#ffe63b",
+      },
+      orangeLight: {
+        background: "#ffe084",
+        fill: "#ffe79d",
+      },
+      blueDark: {
+        background: "#1792fc",
+        fill: "#2c96f3",
+      },
+      blueLight: {
+        background: "#7bbef8",
+        fill: "#95caf9",
+      },
+    };
+
     // Create container
     const buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
     buttonContainer.style.justifyContent = "center";
     buttonContainer.style.alignItems = "center";
-    buttonContainer.style.width = "100px";
-    buttonContainer.style.height = "50px";
-    buttonContainer.style.padding = "2px";
-    buttonContainer.style.border = "4px solid " + Renderer.getInvertedColor("black");
-    buttonContainer.style.borderRadius = "12px";
-    buttonContainer.style.backgroundColor = Renderer.getInvertedColor("white");
+    buttonContainer.style.width = "140px";
+    buttonContainer.style.height = "60px";
+    buttonContainer.style.padding = "4px";
+    buttonContainer.style.borderRadius = "8px";
+    buttonContainer.style.backgroundColor = colorscheme[variant].background;
 
     // Add label text for the button
     const buttonLabel = document.createElement("p");
     buttonLabel.textContent = buttonText;
     buttonLabel.style.fontWeight = "bold";
-    buttonLabel.style.fontSize = "xx-large";
+    buttonLabel.style.fontSize = "x-large";
     buttonContainer.appendChild(buttonLabel);
 
     return buttonContainer;
@@ -294,22 +317,24 @@ export class Renderer {
       leftContainer.style.display = "flex";
       leftContainer.style.justifyContent = "center";
       leftContainer.style.alignItems = "center";
-      leftContainer.style.flexDirection = "column";
-      leftContainer.style.gap = "10px";
+      leftContainer.style.flexDirection = "row";
+      leftContainer.style.gap = "16px";
       leftContainer.style.position = "absolute";
-      leftContainer.style.marginRight = "60%";
-      leftContainer.style.marginTop = "40px";
+      leftContainer.style.marginRight = "70%";
 
-      // Add the left button to the left label container
-      const leftButton = this.addButton("Left", "left");
-      leftContainer.append(leftButton);
+      // Add the left buttons to the left label container
+      // To-Do: 2-second hold to select
+      const leftVeryConfidentButton = this.addButton("Very Confident", "orangeDark");
+      const leftSomewhatConfidentButton = this.addButton("Somewhat Confident", "orangeLight");
+      leftContainer.append(leftVeryConfidentButton);
+      leftContainer.append(leftSomewhatConfidentButton);
 
       // Add the input indicators
       const leftButtonContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        leftButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(1);
+        // leftButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(1);
       } else {
-        leftButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("F");
+        // leftButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("F");
       }
       leftContainer.append(leftButtonContainer);
 
@@ -325,22 +350,23 @@ export class Renderer {
       rightContainer.style.display = "flex";
       rightContainer.style.justifyContent = "center";
       rightContainer.style.alignItems = "center";
-      rightContainer.style.flexDirection = "column";
-      rightContainer.style.gap = "10px";
+      rightContainer.style.flexDirection = "row";
+      rightContainer.style.gap = "16px";
       rightContainer.style.position = "absolute";
-      rightContainer.style.marginLeft = "60%";
-      rightContainer.style.marginTop = "40px";
+      rightContainer.style.marginLeft = "70%";
 
       // Add the right button to the right label container
-      const rightButton = this.addButton("Right", "right");
-      rightContainer.append(rightButton);
+      const rightButtonVeryConfident = this.addButton("Very Confident", "blueDark");
+      const rightButtonSomewhatConfident = this.addButton("Somewhat Confident", "blueLight");
+      rightContainer.append(rightButtonSomewhatConfident);
+      rightContainer.append(rightButtonVeryConfident);
 
       // Add the input indicators
       const rightButtonContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        rightButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(4);
+        // rightButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(4);
       } else {
-        rightButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("J");
+        // rightButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("J");
       }
       rightContainer.append(rightButtonContainer);
 

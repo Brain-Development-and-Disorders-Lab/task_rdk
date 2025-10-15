@@ -150,7 +150,7 @@ export class Graphics {
     const startAngle = reference - Math.PI / 4;
     const endAngle = startAngle + Math.PI / 4;
     this.renderer.createArc(startAngle - Math.PI / 128, endAngle, Renderer.getInvertedColor("white"));
-    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#3ea3a3"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#1792fc"));
   }
 
   /**
@@ -159,7 +159,7 @@ export class Graphics {
   addRightArc(): void {
     const startAngle = -Math.PI / 2;
     const endAngle = Math.PI / 2;
-    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#3ea3a3"));
+    this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#1792fc"));
   }
 
   /**
