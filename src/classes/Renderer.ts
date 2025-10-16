@@ -313,6 +313,7 @@ export class Renderer {
     buttonLabel.style.fontSize = "x-large";
     buttonLabel.style.position = "relative";
     buttonLabel.style.zIndex = "1";
+    buttonLabel.style.color = "black";
     buttonContainer.appendChild(buttonLabel);
 
     return buttonContainer;

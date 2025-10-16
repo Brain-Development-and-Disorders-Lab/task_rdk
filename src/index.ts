@@ -177,8 +177,8 @@ if (
         instructionContinueText,
     ],
     allow_keys: !keyLayout.showButtons,
-    key_forward: keyLayout["3"].charAt(keyLayout["3"].length - 1),
-    key_backward: keyLayout["2"].charAt(keyLayout["2"].length - 1),
+    key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+    key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
     show_page_number: true,
     show_clickable_nav: keyLayout.showButtons,
   });
@@ -198,8 +198,8 @@ timeline.push({
   type: InstructionsPlugin,
   pages: tutorialGames,
   allow_keys: !keyLayout.showButtons,
-  key_forward: keyLayout["3"].charAt(keyLayout["3"].length - 1),
-  key_backward: keyLayout["2"].charAt(keyLayout["2"].length - 1),
+  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+  key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
   show_page_number: true,
   show_clickable_nav: keyLayout.showButtons,
 });
@@ -261,8 +261,8 @@ timeline.push({
   type: InstructionsPlugin,
   pages: practice,
   allow_keys: !keyLayout.showButtons,
-  key_forward: keyLayout["3"].charAt(keyLayout["3"].length - 1),
-  key_backward: keyLayout["2"].charAt(keyLayout["2"].length - 1),
+  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+  key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
   show_page_number: true,
   show_clickable_nav: keyLayout.showButtons,
 });
@@ -350,7 +350,7 @@ if (_.isEqual(keyLayout.name, "spectrometer")) {
     type: InstructionsPlugin,
     pages: spectrometer,
     allow_keys: !keyLayout.showButtons,
-    key_forward: keyLayout.trigger.charAt(keyLayout.trigger.length - 1),
+    key_forward: keyLayout.trigger,
     show_clickable_nav: keyLayout.showButtons,
   });
 } else {
@@ -358,8 +358,8 @@ if (_.isEqual(keyLayout.name, "spectrometer")) {
     type: InstructionsPlugin,
     pages: main,
     allow_keys: !keyLayout.showButtons,
-    key_forward: keyLayout["3"].charAt(keyLayout["3"].length - 1),
-    key_backward: keyLayout["2"].charAt(keyLayout["2"].length - 1),
+    key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+    key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
     show_page_number: true,
     show_clickable_nav: keyLayout.showButtons,
   });
@@ -450,7 +450,7 @@ timeline.push({
   allow_backward: false,
   button_label_next: "Finish",
   show_clickable_nav: false,
-  key_forward: keyLayout["3"],
+  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
 });
 
 jsPsych.run(timeline);
