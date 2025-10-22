@@ -95,15 +95,15 @@ export const Manipulations = {
   ),
   numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numCalibrationOneTrials",
-    36
+    60
   ),
   numMainTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numMainTrials",
-    40
+    100
   ),
   invertColors: __TARGET__ === "spectrometer",
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
-  enableFullscreen: jsPsych.extensions.Neurocog.getManipulation("enableFullscreen", false),
+  enableFullscreen: __TARGET__ === "spectrometer",
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
     "showInstructions",
     false
