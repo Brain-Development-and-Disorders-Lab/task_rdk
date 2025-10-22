@@ -5,6 +5,10 @@ confidence estimate.
 
 Author: Henry Burgess <henry.burgess@wustl.edu>
 */
+body {
+  font-size: 1.3rem !important;
+}
+
 .graphics-container {
   display: flex;
   flex-direction: column;

@@ -101,9 +101,9 @@ export const Manipulations = {
     "numMainTrials",
     200
   ),
-  invertColors: jsPsych.extensions.Neurocog.getManipulation("invertColors", false),
+  invertColors: __TARGET__ === "spectrometer",
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
-  enableFullscreen: jsPsych.extensions.Neurocog.getManipulation("enableFullscreen", false),
+  enableFullscreen: __TARGET__ === "spectrometer",
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
     "showInstructions",
     false
