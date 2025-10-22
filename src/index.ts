@@ -392,7 +392,7 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: true,
+    checkConfidence: t % 5 === 0,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -431,7 +431,7 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence:true,
+    checkConfidence: t % 5 === 0,
     keyLayout: keyLayout,
     data: {
       name: trialName,
