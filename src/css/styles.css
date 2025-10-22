@@ -3,6 +3,10 @@ Stylesheet for Bang et al. RDK task.
 
 Author: Henry Burgess <henry.burgess@wustl.edu>
 */
+body {
+  font-size: 1.3em !important;
+}
+
 .graphics-container {
   display: flex;
   flex-direction: column;
