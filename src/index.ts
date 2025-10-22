@@ -87,19 +87,19 @@ const InputConfigurations = {
 export const Manipulations = {
   numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numTutorialTrials",
-    10
+    8
   ),
   numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numPracticeTrials",
-    10
+    8
   ),
   numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numCalibrationOneTrials",
-    120
+    60
   ),
   numMainTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numMainTrials",
-    200
+    100
   ),
   invertColors: __TARGET__ === "spectrometer",
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
