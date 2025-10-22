@@ -367,8 +367,8 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         // Normalize selection data
         trial.data.selection = selection;
 
-        // Normalize correct data
-        trial.data.correct = selection.endsWith(trial.data.deviation) ? 1 : 0;
+        // Normalize correct data (get the direction of the selection and compare to the deviation)
+        trial.data.correct = selection.split("_")[1] === trial.data.deviation[0] ? 1 : 0;
 
         // Increment score if correct
         if (trial.data.correct === 1 && trial.name === "main") {

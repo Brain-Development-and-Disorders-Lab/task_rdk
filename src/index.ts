@@ -216,6 +216,7 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
   const k = Math.random() > 0.5 ? tutorialCoherence[0] : tutorialCoherence[1];
   let r = Math.random() > 0.5 ? 0 : Math.PI;
   r = parseFloat(r.toFixed(3));
+  const deviation = r === 0 ? "right" : "left";
 
   const trial = {
     type: DotGamePlugin,
@@ -234,7 +235,7 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
       stimulusDuration: d,
       dotDirection: r,
       selection: "",
-      deviation: "left",
+      deviation: deviation,
       correct: false,
     },
     extensions: [{ type: NeurocogExtension }],
