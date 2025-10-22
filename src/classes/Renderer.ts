@@ -256,27 +256,89 @@ export class Renderer {
     }
   }
 
-  addButton(buttonText: string, offset = "none"): HTMLDivElement {
+  addButton(buttonText: string, variant = "default"): HTMLDivElement {
+    // Create colorscheme based on variant
+    const colorscheme = {
+      default: {
+        background: "#88919e",
+        fill: "#575d66",
+      },
+      orangeDark: {
+        background: "#ffc20a",
+        fill: "#ffdb6e",
+      },
+      orangeLight: {
+        background: "#ffd75e",
+        fill: "#fce7a9",
+      },
+      blueDark: {
+        background: "#1792fc",
+        fill: "#47a8fc",
+      },
+      blueLight: {
+        background: "#7bbef8",
+        fill: "#9dd0fc",
+      },
+    };
+
     // Create container
     const buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
     buttonContainer.style.justifyContent = "center";
     buttonContainer.style.alignItems = "center";
-    buttonContainer.style.width = "100px";
-    buttonContainer.style.height = "50px";
-    buttonContainer.style.padding = "2px";
-    buttonContainer.style.border = "4px solid " + Renderer.getInvertedColor("black");
-    buttonContainer.style.borderRadius = "12px";
-    buttonContainer.style.backgroundColor = Renderer.getInvertedColor("white");
+    buttonContainer.style.width = "140px";
+    buttonContainer.style.height = "60px";
+    buttonContainer.style.padding = "4px";
+    buttonContainer.style.borderRadius = "8px";
+    buttonContainer.style.backgroundColor = colorscheme[variant].background;
+    buttonContainer.style.position = "relative";
+    buttonContainer.style.overflow = "hidden";
+
+    // Create progress bar
+    const progressBar = document.createElement("div");
+    progressBar.style.position = "absolute";
+    progressBar.style.bottom = "0";
+    progressBar.style.left = "0";
+    progressBar.style.width = "0%";
+    progressBar.style.height = "100%";
+    progressBar.style.backgroundColor = colorscheme[variant].fill;
+    progressBar.style.transition = "width 2s linear";
+    progressBar.className = "progress-bar";
+    buttonContainer.appendChild(progressBar);
 
     // Add label text for the button
     const buttonLabel = document.createElement("p");
     buttonLabel.textContent = buttonText;
     buttonLabel.style.fontWeight = "bold";
-    buttonLabel.style.fontSize = "xx-large";
+    buttonLabel.style.fontSize = "x-large";
+    buttonLabel.style.position = "relative";
+    buttonLabel.style.zIndex = "1";
+    buttonLabel.style.color = "black";
     buttonContainer.appendChild(buttonLabel);
 
     return buttonContainer;
+  }
+
+  /**
+   * Start progress animation for a button
+   * @param {HTMLDivElement} buttonElement the button element to animate
+   */
+  startProgress(buttonElement: HTMLDivElement): void {
+    const progressBar = buttonElement.querySelector('.progress-bar') as HTMLElement;
+    if (progressBar) {
+      progressBar.style.width = "100%";
+    }
+  }
+
+  /**
+   * Stop progress animation for a button
+   * @param {HTMLDivElement} buttonElement the button element to reset
+   */
+  stopProgress(buttonElement: HTMLDivElement): void {
+    const progressBar = buttonElement.querySelector('.progress-bar') as HTMLElement;
+    if (progressBar) {
+      progressBar.style.width = "0%";
+    }
   }
 
   /**
@@ -289,29 +351,69 @@ export class Renderer {
       const graphicsCanvasDiv =
         document.getElementsByClassName("graphics-container")[0];
 
-      // Create the left label container
+      // Create the left container
       const leftContainer = document.createElement("div");
+      leftContainer.id = "left-container";
       leftContainer.style.display = "flex";
-      leftContainer.style.justifyContent = "center";
-      leftContainer.style.alignItems = "center";
       leftContainer.style.flexDirection = "column";
-      leftContainer.style.gap = "10px";
+      leftContainer.style.alignItems = "center";
+      leftContainer.style.justifyContent = "center";
       leftContainer.style.position = "absolute";
-      leftContainer.style.marginRight = "60%";
-      leftContainer.style.marginTop = "40px";
+      leftContainer.style.marginRight = "70%";
 
-      // Add the left button to the left label container
-      const leftButton = this.addButton("Left", "left");
-      leftContainer.append(leftButton);
+      // Left label
+      const leftLabel = document.createElement("p");
+      leftLabel.textContent = "Left";
+      leftLabel.style.fontSize = "xx-large";
+      leftLabel.style.fontWeight = "bold";
+      leftContainer.append(leftLabel);
 
-      // Add the input indicators
+      // Create the left button container
       const leftButtonContainer = document.createElement("div");
-      if (__TARGET__ === "spectrometer") {
-        leftButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(1);
-      } else {
-        leftButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("F");
-      }
+      leftButtonContainer.style.display = "flex";
+      leftButtonContainer.style.justifyContent = "center";
+      leftButtonContainer.style.alignItems = "center";
+      leftButtonContainer.style.flexDirection = "row";
+      leftButtonContainer.style.gap = "16px";
       leftContainer.append(leftButtonContainer);
+
+      // Left "Very Confident" button
+      const leftVeryConfidentButtonContainer = document.createElement("div");
+      leftVeryConfidentButtonContainer.style.display = "flex";
+      leftVeryConfidentButtonContainer.style.justifyContent = "center";
+      leftVeryConfidentButtonContainer.style.alignItems = "center";
+      leftVeryConfidentButtonContainer.style.flexDirection = "column";
+      leftVeryConfidentButtonContainer.style.gap = "16px";
+      const leftVeryConfidentButton = this.addButton("Very Confident", "orangeDark");
+      leftVeryConfidentButton.setAttribute("data-button-id", "vc_l");
+      leftVeryConfidentButtonContainer.append(leftVeryConfidentButton);
+      const leftVeryConfidentButtonLabelContainer = document.createElement("div");
+      if (__TARGET__ === "spectrometer") {
+        leftVeryConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedControllerButton(1);
+      } else {
+        leftVeryConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("D");
+      }
+      leftVeryConfidentButtonContainer.append(leftVeryConfidentButtonLabelContainer);
+      leftButtonContainer.append(leftVeryConfidentButtonContainer);
+
+      // Left "Somewhat Confident" button
+      const leftSomewhatConfidentButtonContainer = document.createElement("div");
+      leftSomewhatConfidentButtonContainer.style.display = "flex";
+      leftSomewhatConfidentButtonContainer.style.justifyContent = "center";
+      leftSomewhatConfidentButtonContainer.style.alignItems = "center";
+      leftSomewhatConfidentButtonContainer.style.flexDirection = "column";
+      leftSomewhatConfidentButtonContainer.style.gap = "16px";
+      const leftSomewhatConfidentButton = this.addButton("Somewhat Confident", "orangeLight");
+      leftSomewhatConfidentButton.setAttribute("data-button-id", "sc_l");
+      leftSomewhatConfidentButtonContainer.append(leftSomewhatConfidentButton);
+      const leftSomewhatConfidentButtonLabelContainer = document.createElement("div");
+      if (__TARGET__ === "spectrometer") {
+        leftSomewhatConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedControllerButton(2);
+      } else {
+        leftSomewhatConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("F");
+      }
+      leftSomewhatConfidentButtonContainer.append(leftSomewhatConfidentButtonLabelContainer);
+      leftButtonContainer.append(leftSomewhatConfidentButtonContainer);
 
       // Prepend the left label container to the graphics container
       graphicsCanvasDiv.prepend(leftContainer);
@@ -320,29 +422,69 @@ export class Renderer {
       const graphicsCanvasDiv =
         document.getElementsByClassName("graphics-container")[0];
 
-      // Create the right label container
+      // Create the right container
       const rightContainer = document.createElement("div");
+      rightContainer.id = "right-container";
       rightContainer.style.display = "flex";
-      rightContainer.style.justifyContent = "center";
-      rightContainer.style.alignItems = "center";
       rightContainer.style.flexDirection = "column";
-      rightContainer.style.gap = "10px";
+      rightContainer.style.alignItems = "center";
+      rightContainer.style.justifyContent = "center";
       rightContainer.style.position = "absolute";
-      rightContainer.style.marginLeft = "60%";
-      rightContainer.style.marginTop = "40px";
+      rightContainer.style.marginLeft = "70%";
 
-      // Add the right button to the right label container
-      const rightButton = this.addButton("Right", "right");
-      rightContainer.append(rightButton);
+      // Right label
+      const rightLabel = document.createElement("p");
+      rightLabel.textContent = "Right";
+      rightLabel.style.fontSize = "xx-large";
+      rightLabel.style.fontWeight = "bold";
+      rightContainer.append(rightLabel);
 
-      // Add the input indicators
+      // Create the right button container
       const rightButtonContainer = document.createElement("div");
-      if (__TARGET__ === "spectrometer") {
-        rightButtonContainer.innerHTML = Renderer.getEmbeddedControllerButton(4);
-      } else {
-        rightButtonContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("J");
-      }
+      rightButtonContainer.style.display = "flex";
+      rightButtonContainer.style.justifyContent = "center";
+      rightButtonContainer.style.alignItems = "center";
+      rightButtonContainer.style.flexDirection = "row";
+      rightButtonContainer.style.gap = "16px";
       rightContainer.append(rightButtonContainer);
+
+      // Right "Somewhat Confident" button
+      const rightSomewhatConfidentButtonContainer = document.createElement("div");
+      rightSomewhatConfidentButtonContainer.style.display = "flex";
+      rightSomewhatConfidentButtonContainer.style.justifyContent = "center";
+      rightSomewhatConfidentButtonContainer.style.alignItems = "center";
+      rightSomewhatConfidentButtonContainer.style.flexDirection = "column";
+      rightSomewhatConfidentButtonContainer.style.gap = "16px";
+      const rightSomewhatConfidentButton = this.addButton("Somewhat Confident", "blueLight");
+      rightSomewhatConfidentButton.setAttribute("data-button-id", "sc_r");
+      rightSomewhatConfidentButtonContainer.append(rightSomewhatConfidentButton);
+      const rightSomewhatConfidentButtonLabelContainer = document.createElement("div");
+      if (__TARGET__ === "spectrometer") {
+        rightSomewhatConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedControllerButton(3);
+      } else {
+        rightSomewhatConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("J");
+      }
+      rightSomewhatConfidentButtonContainer.append(rightSomewhatConfidentButtonLabelContainer);
+      rightButtonContainer.append(rightSomewhatConfidentButtonContainer);
+
+      // Right "Very Confident" button
+      const rightVeryConfidentButtonContainer = document.createElement("div");
+      rightVeryConfidentButtonContainer.style.display = "flex";
+      rightVeryConfidentButtonContainer.style.justifyContent = "center";
+      rightVeryConfidentButtonContainer.style.alignItems = "center";
+      rightVeryConfidentButtonContainer.style.flexDirection = "column";
+      rightVeryConfidentButtonContainer.style.gap = "16px";
+      const rightVeryConfidentButton = this.addButton("Very Confident", "blueDark");
+      rightVeryConfidentButton.setAttribute("data-button-id", "vc_r");
+      rightVeryConfidentButtonContainer.append(rightVeryConfidentButton);
+      const rightVeryConfidentButtonLabelContainer = document.createElement("div");
+      if (__TARGET__ === "spectrometer") {
+        rightVeryConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedControllerButton(4);
+      } else {
+        rightVeryConfidentButtonLabelContainer.innerHTML = Renderer.getEmbeddedKeyboardButton("K");
+      }
+      rightVeryConfidentButtonContainer.append(rightVeryConfidentButtonLabelContainer);
+      rightButtonContainer.append(rightVeryConfidentButtonContainer);
 
       // Append the right label container to the graphics container
       graphicsCanvasDiv.append(rightContainer);
@@ -364,13 +506,13 @@ export class Renderer {
 
     // Create SVG with 4 circles representing the controller buttons
     const svg = `
-      <svg width="80" height="40" style="display: inline-block; vertical-align: middle;">
-        <rect x="2" y="2" width="76" height="36"
-              fill="none" stroke="black" stroke-width="1"
+      <svg width="90" height="45" style="display: inline-block; vertical-align: middle;">
+        <rect x="2" y="2" width="86" height="41"
+              fill="none" stroke="black" stroke-width="2"
               rx="4" ry="4"/>
         ${[1, 2, 3, 4].map((index) => {
-          const centerX = 16 * index;
-          const centerY = 20;
+          const centerX = 18 * index;
+          const centerY = 22.5;
           const radius = 6;
           const isHighlighted = index === validIndex;
 
@@ -477,7 +619,7 @@ export class Renderer {
 
   /**
    * Clear all HTML elements from the display
-   * This removes HTML elements like confidence sliders, labels, etc.
+   * This removes HTML elements like labels, etc.
    */
   clearHTMLElements(): void {
     const graphicsContainer = document.getElementsByClassName("graphics-container")[0];
@@ -491,6 +633,22 @@ export class Renderer {
           graphicsContainer.removeChild(child);
         }
       }
+    }
+  }
+
+  /**
+   * Clear the left and right decision containers
+   * This removes only the decision UI elements without affecting other HTML elements
+   */
+  clearDecisionContainers(): void {
+    const leftContainer = document.getElementById("left-container");
+    if (leftContainer) {
+      leftContainer.remove();
+    }
+
+    const rightContainer = document.getElementById("right-container");
+    if (rightContainer) {
+      rightContainer.remove();
     }
   }
 

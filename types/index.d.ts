@@ -9,7 +9,6 @@ export type RDKTrial = {
   dotDirection: number;
   dotVelocity: number;
   showFeedback: boolean;
-  checkConfidence: boolean;
   keyLayout: IKeys;
   data: {
     name: string;
@@ -17,10 +16,9 @@ export type RDKTrial = {
     coherence: number;
     stimulusDuration: number;
     dotDirection: number;
-    referenceSelection: string;
+    selection: "vc_l" | "sc_l" | "sc_r" | "vc_r";
     deviation: "left" | "right";
     correct: boolean;
-    confidenceSelection: number;
   };
 };
 

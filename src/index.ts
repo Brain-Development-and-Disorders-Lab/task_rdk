@@ -66,18 +66,18 @@ const jsPsych = initJsPsych({
 const InputConfigurations = {
   desktop: {
     name: "desktop",
-    left: "f",
-    right: "j",
-    submit: "k",
-    alt: "d",
+    1: "d",
+    2: "f",
+    3: "j",
+    4: "k",
     showButtons: false,
   },
   spectrometer: {
     name: "spectrometer",
-    left: "4",
-    right: "1",
-    submit: "2",
-    alt: "3",
+    1: "1",
+    2: "2",
+    3: "3",
+    4: "4",
     trigger: "5",
     showButtons: false,
   },
@@ -87,21 +87,21 @@ const InputConfigurations = {
 export const Manipulations = {
   numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numTutorialTrials",
-    10
+    8
   ),
   numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numPracticeTrials",
-    10
+    8
   ),
   numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numCalibrationOneTrials",
-    120
+    36
   ),
   numMainTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numMainTrials",
-    200
+    40
   ),
-  invertColors: jsPsych.extensions.Neurocog.getManipulation("invertColors", false),
+  invertColors: __TARGET__ === "spectrometer",
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
   enableFullscreen: jsPsych.extensions.Neurocog.getManipulation("enableFullscreen", false),
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
@@ -177,8 +177,8 @@ if (
         instructionContinueText,
     ],
     allow_keys: !keyLayout.showButtons,
-    key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
-    key_backward: keyLayout.left.charAt(keyLayout.left.length - 1),
+    key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+    key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
     show_page_number: true,
     show_clickable_nav: keyLayout.showButtons,
   });
@@ -198,8 +198,8 @@ timeline.push({
   type: InstructionsPlugin,
   pages: tutorialGames,
   allow_keys: !keyLayout.showButtons,
-  key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
-  key_backward: keyLayout.left.charAt(keyLayout.left.length - 1),
+  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+  key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
   show_page_number: true,
   show_clickable_nav: keyLayout.showButtons,
 });
@@ -226,7 +226,6 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: false,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -234,10 +233,9 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
       coherence: k,
       stimulusDuration: d,
       dotDirection: r,
-      referenceSelection: "",
+      selection: "",
       deviation: "left",
       correct: false,
-      confidenceSelection: 0,
     },
     extensions: [{ type: NeurocogExtension }],
   };
@@ -251,8 +249,7 @@ const practice = [
     `<h2>Practice Games</h2>` +
     `<p>You will now play another ${Manipulations.numPracticeTrials} ` +
     `practice games. ` +
-    `You won't have to rate your confidence after each game, ` +
-    `but you will be shown if your answer was correct or not.</p>` +
+    `You will be shown if your answer was correct or not.</p>` +
     `<p>If your answer was correct, the cross in the ` +
     `middle of the screen will briefly turn green.</p>` +
     `<p>If your answer was wrong, the cross in the ` +
@@ -264,8 +261,8 @@ timeline.push({
   type: InstructionsPlugin,
   pages: practice,
   allow_keys: !keyLayout.showButtons,
-  key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
-  key_backward: keyLayout.left.charAt(keyLayout.left.length - 1),
+  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+  key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
   show_page_number: true,
   show_clickable_nav: keyLayout.showButtons,
 });
@@ -289,7 +286,6 @@ for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: true,
-    checkConfidence: false,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -297,10 +293,9 @@ for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
       coherence: k,
       stimulusDuration: 1500,
       dotDirection: r,
-      referenceSelection: "",
+      selection: "",
       deviation: deviation,
       correct: false,
-      confidenceSelection: 0,
     },
     extensions: [{ type: NeurocogExtension }],
   };
@@ -321,9 +316,6 @@ if (Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials > 0) {
         Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials
       } ` +
       `games.</p>` +
-      `<p>You will not be shown if you have correctly ` +
-      `answered or not, and you will be asked to rate your ` +
-      `confidence after some of the games. </p>` +
       `<br>` +
       `<p><b>Good luck!</b></p>` +
       instructionContinueText
@@ -358,7 +350,7 @@ if (_.isEqual(keyLayout.name, "spectrometer")) {
     type: InstructionsPlugin,
     pages: spectrometer,
     allow_keys: !keyLayout.showButtons,
-    key_forward: keyLayout.trigger.charAt(keyLayout.trigger.length - 1),
+    key_forward: keyLayout.trigger,
     show_clickable_nav: keyLayout.showButtons,
   });
 } else {
@@ -366,8 +358,8 @@ if (_.isEqual(keyLayout.name, "spectrometer")) {
     type: InstructionsPlugin,
     pages: main,
     allow_keys: !keyLayout.showButtons,
-    key_forward: keyLayout.right.charAt(keyLayout.right.length - 1),
-    key_backward: keyLayout.left.charAt(keyLayout.left.length - 1),
+    key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+    key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
     show_page_number: true,
     show_clickable_nav: keyLayout.showButtons,
   });
@@ -392,7 +384,6 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence: true,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -400,10 +391,9 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
       coherence: k,
       stimulusDuration: 1500,
       dotDirection: r,
-      referenceSelection: "",
+      selection: "",
       deviation: deviation,
       correct: false,
-      confidenceSelection: 0,
     },
     extensions: [{ type: NeurocogExtension }],
   };
@@ -431,7 +421,6 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
     dotDirection: r,
     dotVelocity: 2.0,
     showFeedback: false,
-    checkConfidence:true,
     keyLayout: keyLayout,
     data: {
       name: trialName,
@@ -439,10 +428,9 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
       coherence: k,
       stimulusDuration: 1500,
       dotDirection: r,
-      referenceSelection: "",
+      selection: "",
       deviation: deviation,
       correct: false,
-      confidenceSelection: 0,
     },
     extensions: [{ type: NeurocogExtension }],
   };
@@ -462,7 +450,7 @@ timeline.push({
   allow_backward: false,
   button_label_next: "Finish",
   show_clickable_nav: false,
-  key_forward: keyLayout.right,
+  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
 });
 
 jsPsych.run(timeline);
