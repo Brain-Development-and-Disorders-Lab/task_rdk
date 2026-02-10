@@ -8,7 +8,7 @@ Unit tests are defined in the `test` directory, and the TypeScript type definiti
 
 ## Versions
 
-All versions prior to `v1.9.x` utilize the same slider-style confidence input. Each major `v.1.8.x` version has been documented under the [Releases](https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/releases) tab of this repository. Any updates made to prior versions (primarily v1.8.x versions) will be made to the corresponding `maintenance/v1.8.x` branch.
+All versions prior to `v1.9.x` utilize the same slider-style confidence input. Each major `v1.8.x` version has been documented under the [Releases](https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/releases) tab of this repository. Any updates made to prior versions (primarily `v1.8.x` and earlier versions) will be made to the corresponding `maintenance/v1.8.x` branch.
 
 ## Development
 

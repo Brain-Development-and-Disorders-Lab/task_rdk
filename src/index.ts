@@ -9,7 +9,6 @@
  */
 // Utility libraries
 import _ from "lodash";
-import i18next from "i18next";
 
 // Import jsPsych to ensure it is bundled when compiled
 import { initJsPsych } from "jspsych";
@@ -30,16 +29,6 @@ import DotGamePlugin from "./plugin";
 // Additional functions and variables
 import { scaling } from "./functions";
 import { Renderer } from "./classes/Renderer";
-
-// Load translations
-import * as en_us from "../locales/en-us.json";
-i18next.init({
-  lng: "en",
-  debug: true,
-  resources: {
-    en: en_us,
-  },
-});
 
 /**
  * Initialize jsPsych
@@ -133,7 +122,7 @@ const practiceCoherence = [0.3, 0.6];
 if (_.isEqual(Manipulations.requireID, true)) {
   timeline.push({
     type: SurveyHtmlFormPlugin,
-    preamble: `<p>${i18next.t("enter_identifier")}</p>`,
+    preamble: `<p>Please enter the 8 digit participant LUID.</p>`,
     html: `<input name="participantIdentifier" type="text" required /></br></br>`,
   });
 }

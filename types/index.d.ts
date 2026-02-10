@@ -1,27 +1,3 @@
-import DotGamePlugin from "../src/plugin";
-
-export type RDKTrial = {
-  type: DotGamePlugin;
-  name: string;
-  distance: number;
-  coherence: number;
-  stimulusDuration: number;
-  dotDirection: number;
-  dotVelocity: number;
-  showFeedback: boolean;
-  keyLayout: IKeys;
-  data: {
-    name: string;
-    number: number;
-    coherence: number;
-    stimulusDuration: number;
-    dotDirection: number;
-    selection: "vc_l" | "sc_l" | "sc_r" | "vc_r";
-    deviation: "left" | "right";
-    correct: boolean;
-  };
-};
-
 // Renderer parameters
 export type IRenderer = {
   distanceFromScreen: number;
