@@ -248,14 +248,13 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         }
       }
 
-      // Set timer for 2 seconds
       keyHoldTimer = window.setTimeout(() => {
         if (currentKey === keycode) {
-          // After 2 seconds, process the decision
+          // After 1 second, process the decision
           decisionHandler(event);
           resetKeyHold();
         }
-      }, 2000);
+      }, 1000);
     };
 
     /**

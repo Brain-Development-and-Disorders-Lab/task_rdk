@@ -302,7 +302,7 @@ export class Renderer {
     progressBar.style.width = "0%";
     progressBar.style.height = "100%";
     progressBar.style.backgroundColor = colorscheme[variant].fill;
-    progressBar.style.transition = "width 2s linear";
+    progressBar.style.transition = "width 1s linear";
     progressBar.className = "progress-bar";
     buttonContainer.appendChild(progressBar);
 
