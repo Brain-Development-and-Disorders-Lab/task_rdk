@@ -6,6 +6,10 @@ The experimental and Neurocog.js configuration is defined in `index.ts`, and oth
 
 Unit tests are defined in the `test` directory, and the TypeScript type definitions are contained in the `types` directory.
 
+## Versions
+
+All versions prior to `v1.9.x` utilize the same slider-style confidence input. Each major `v.1.8.x` version has been documented under the [Releases](https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/releases) tab of this repository. Any updates made to prior versions (primarily v1.8.x versions) will be made to the corresponding `maintenance/v1.8.x` branch.
+
 ## Development
 
 This project uses `yarn` to manage dependencies. Install dependencies using the `yarn` command.
