@@ -693,14 +693,6 @@ export class Renderer {
   }
 
   /**
-   * Get the display element
-   * @return {any} HTML element
-   */
-  getDisplayElement(): any {
-    return this.displayElement;
-  }
-
-  /**
    * Get the Two.js target instance
    * @return {any} Two.js instance
    */

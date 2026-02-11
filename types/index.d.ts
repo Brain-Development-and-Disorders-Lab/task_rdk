@@ -1,3 +1,8 @@
+// Class imports for type definitions
+import Two from "two.js";
+import { Graphics } from "../src/classes/Graphics";
+import { Renderer } from "../src/classes/Renderer";
+
 // Global keyup handler for decision input
 declare global {
   interface Window {
@@ -5,6 +10,26 @@ declare global {
     postDecisionKeyUpHandler?: (event: KeyboardEvent) => void;
   }
 }
+
+export type SelectionOptions = "vc_l" | "sc_l" | "sc_r" | "vc_r";
+
+// Data frame
+export type IData = {
+  trialName: string;
+  trialNumber: number;
+  score: number;
+  trialStart: number;
+  trialEnd: number;
+  trialDuration: number;
+  decisionStart: number;
+  decisionEnd: number;
+  decisionDuration: number;
+  motionDuration: number;
+  selection: SelectionOptions;
+  correct: 0 | 1;
+  activeCoherence: number;
+  coherences: number[];
+};
 
 // Renderer parameters
 export type IRenderer = {
@@ -31,13 +56,14 @@ export type IDot = {
 export type IStimulus = {
   name: string;
   interactive: boolean;
-  selected: any;
   keybindings?: any;
+  components: string[];
   timing: any;
-  target: any;
-  trial: any;
-  postTrialHandler: any;
-  rendererParameters: IRenderer;
+  two: Two;
+  renderer: Renderer,
+  graphics: Graphics;
+  eventHandler: (event: KeyboardEvent) => void;
+  postTrialHandler: () => void;
 };
 
 // Keyboard layout

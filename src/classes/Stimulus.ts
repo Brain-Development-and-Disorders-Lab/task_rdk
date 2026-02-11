@@ -1,8 +1,5 @@
-// Core modules
-import { Graphics } from "./Graphics";
-
 // Type definitions
-import { IRenderer, IStimulus } from "../../types";
+import { IStimulus } from "../../types";
 
 /**
  * Stimulus abstraction
@@ -11,14 +8,10 @@ export class Stimulus {
   private parameters: IStimulus;
   private name: string;
   private interactive: boolean;
-  private selected: any;
   private keybindings: any;
-  private timing: any;
-  private target: any;
-  private trial: any;
   private postTrialHandler: any;
-  private rendererParameters: IRenderer;
   private timer: number;
+
   /**
    * Default constructor for Stimulus
    * @param {IStimulus} parameters configuration information
@@ -30,13 +23,8 @@ export class Stimulus {
     // Unpack parameters
     this.name = parameters.name;
     this.interactive = parameters.interactive;
-    this.selected = parameters.selected;
     this.keybindings = parameters.keybindings;
-    this.timing = parameters.timing;
-    this.target = parameters.target;
-    this.trial = parameters.trial;
     this.postTrialHandler = parameters.postTrialHandler;
-    this.rendererParameters = parameters.rendererParameters;
 
     // Timer
     this.timer = null;
@@ -44,9 +32,9 @@ export class Stimulus {
 
   /**
    * Get the parameters of the renderer
-   * @return {any}
+   * @return {IStimulus}
    */
-  getParameters(): any {
+  getParameters(): IStimulus {
     return this.parameters;
   }
 
@@ -127,14 +115,6 @@ export class Stimulus {
   }
 
   /**
-   * Retrieve the target element
-   * @return {any}
-   */
-  getTarget(): any {
-    return this.target;
-  }
-
-  /**
    * Get the handler called after each trial
    * @return {any}
    */
@@ -146,11 +126,11 @@ export class Stimulus {
    * Run the stimuli animations
    * @param {any} parameters runner properties
    */
-  static run(parameters: any): void {
+  static run(parameters: IStimulus): void {
     // Instantiate graphics.
     const two = parameters.two;
     const renderer = parameters.renderer;
-    const graphics = parameters.graphics as Graphics;
+    const graphics = parameters.graphics;
 
     for (let c = 0; c < parameters.components.length; c++) {
       const component = parameters.components[c];

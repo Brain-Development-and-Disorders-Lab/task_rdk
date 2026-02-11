@@ -245,7 +245,7 @@ export class Graphics {
           (j * this.renderer.getHeight()) / dotRowCount +
           (delta * this.renderer.getHeight()) / dotRowCount;
 
-        if (delta > this.trial.data.activeCoherence) {
+        if (delta > this.trial.activeCoherence) {
           // Non-dynamic dot that is just moving in random paths
           randomDotParameters.dotAngle = 2 * Math.PI * Math.random();
           this.renderer.createDot(new Dot(x, y, randomDotParameters), true);

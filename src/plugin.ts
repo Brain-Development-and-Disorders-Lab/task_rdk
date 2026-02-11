@@ -20,7 +20,7 @@ import { Stimulus } from "./classes/Stimulus";
 import { Runner } from "./classes/Runner";
 
 // Custom types
-import { IRenderer } from "../types";
+import { IData, IRenderer, IStimulus, SelectionOptions } from "../types";
 
 // Additional functions
 import { scaling } from "./functions";
@@ -28,38 +28,61 @@ import { scaling } from "./functions";
 const info = {
   name: "rdk-task",
   parameters: {
-    name: {
+    trialName: {
       type: ParameterType.STRING,
       default: undefined,
+      pretty_name: "Name of the trial type",
     },
-    distance: {
+    trialNumber: {
+      type: ParameterType.INT,
+      default: undefined,
+      pretty_name: "Trial number within the experiment block",
+    },
+    viewDistance: {
       type: ParameterType.FLOAT,
       default: undefined,
+      pretty_name: "Typical viewing distance of participant (cm)",
+    },
+    dotAngle: {
+      type: ParameterType.FLOAT,
+      default: undefined,
+      pretty_name: "Angle of coherent dot movement (radians)",
+    },
+    dotVelocity: {
+      type: ParameterType.FLOAT,
+      default: undefined,
+      pretty_name: "Rate of dot motion",
+    },
+    dotDirection: {
+      type: ParameterType.STRING,
+      default: undefined,
+      pretty_name: "Direction of coherent dot movement, either \"left\" or \"right\"",
     },
     activeCoherence: {
       type: ParameterType.FLOAT,
       default: undefined,
+      pretty_name: "Proportion of coherent dots shown to participant during dot motion"
     },
     coherences: {
       type: ParameterType.COMPLEX,
       default: undefined,
       readonly: false,
+      pretty_name: "Pair of coherence values (low and high) used in main trials"
     },
     motionDuration: {
       type: ParameterType.INT,
       default: undefined,
+      pretty_name: "Duration of motion presented to participants (ms)"
     },
     showFeedback: {
       type: ParameterType.BOOL,
       default: false,
+      pretty_name: "Show feedback post-decision using fixation cross color"
     },
     keyLayout: {
       type: ParameterType.COMPLEX,
       default: undefined,
-    },
-    data: {
-      type: ParameterType.COMPLEX,
-      default: undefined,
+      pretty_name: "Mapping of keyboard or other inputs to decision responses"
     },
   },
 };
@@ -72,14 +95,35 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
+    // Create data frame and merge in trial parameters
+    let data: IData = {
+      trialName: trial.trialName,
+      trialNumber: 0,
+      score: 0,
+      // Timing data
+      trialStart: 0,
+      trialEnd: 0,
+      trialDuration: 0,
+      decisionStart: 0,
+      decisionEnd: 0,
+      decisionDuration: 0,
+      motionDuration: trial.motionDuration,
+      // Selection data
+      selection: "vc_l",
+      correct: 0,
+      // Coherence data
+      activeCoherence: trial.activeCoherence,
+      coherences: trial.coherences,
+    };
+    
     // Setup variables
-    const distanceFromScreen = trial.distance;
+    const distanceFromScreen = trial.viewDistance;
+    const keyLayout = trial.keyLayout;
+    let selection = "";
 
     // Setup distance-related variables
     let viewRadius = Math.ceil(Math.abs(distanceFromScreen * Math.tan(8)));
     let dotRadius = Math.ceil(Math.abs(distanceFromScreen * Math.tan(0.12)));
-
-    // Setup Two.js.
     let width = viewRadius * 2 + 10;
     let height = viewRadius * 2 + 10;
 
@@ -91,8 +135,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       dotRadius *= scaling();
     }
 
-    const keyLayout = trial.keyLayout;
-
     // Instantiate new <div> container for graphics elements
     const containerDiv = document.createElement("div");
     containerDiv.className = "graphics-container";
@@ -100,7 +142,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const childDiv = document.createElement("div");
     containerDiv.appendChild(childDiv);
 
-    // Setup the renderer parameters.
+    // Setup the renderer and Two.js parameters
     const rendererParameters: IRenderer = {
       distanceFromScreen: distanceFromScreen,
       viewRadius: viewRadius,
@@ -109,7 +151,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       height: height,
       target: childDiv,
     };
-
     const twoParameters = {
       type: Two.Types.webgl,
       width: rendererParameters.width,
@@ -118,31 +159,24 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
     // Instantiate Two.js with parameters and place in DOM
     const two = new Two(twoParameters).appendTo(childDiv);
-
     let renderer = new Renderer(this.jsPsych, two, rendererParameters);
     let graphics = new Graphics(this.jsPsych, trial, renderer);
 
-    // Setup data-related variables.
-    let selection = "";
-
-    // Compute the trial number
-    trial.data.trialNumber = 0;
-    const previousTrialCollection = this.jsPsych.data.get().values();
-    previousTrialCollection.forEach((storedTrial) => {
-      if (storedTrial.trial_type === "rdk-task") {
-        trial.data.trialNumber = storedTrial.trialNumber + 1;
+    // Determine the trial number
+    data.trialNumber = 0;
+    const trialDataCollection = this.jsPsych.data.get().values();
+    trialDataCollection.forEach((trial) => {
+      if (trial.trial_type === "rdk-task") {
+        data.trialNumber = trial.trialNumber + 1;
       }
     });
 
-    // Compute the trial score
-    if (trial.name === "main") {
-      trial.data.score = 0;
-      previousTrialCollection.forEach((storedTrial) => {
-        if (
-          storedTrial.trial_type === "rdk-task" &&
-          storedTrial.name === "main"
-        ) {
-          trial.data.score = storedTrial.score;
+    // NOTE: Compute the score for "main" trials only
+    if (trial.trialName === "main") {
+      data.score = 0;
+      trialDataCollection.forEach((storedTrial) => {
+        if (storedTrial.trial_type === "rdk-task" && storedTrial.trialName === "main") {
+          data.score = storedTrial.score;
         }
       });
     }
@@ -156,30 +190,24 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const nextStimulus = () => {
       if (stimuli.length === 0) {
         // End the trial if there are no more stimuli to display
-        trial.data.trialEnd = performance.now();
-        trial.data.trialDuration = trial.data.trialEnd - trial.data.trialStart;
+        data.trialEnd = performance.now();
+        data.trialDuration = data.trialEnd - data.trialStart;
 
         endTrial();
         return;
       }
 
-      // Clear display before retrieving the next stimuli to display.
       currentStimulus = stimuli.shift();
 
       // Configure stimulus-specific parameters
       if (currentStimulus.getParameters().name === "decision") {
         // Decision stimulus
-        trial.data.decisionStart = performance.now();
-
-        // Hide the mouse cursor
+        data.decisionStart = performance.now();
         graphics.cursorVisibility(false);
       } else if (currentStimulus.getParameters().name === "motion") {
-        trial.data.motionDuration = currentStimulus.getParameters().timing.run;
-
-        // Hide the mouse cursor
+        data.motionDuration = currentStimulus.getParameters().timing.run;
         graphics.cursorVisibility(false);
       } else if (currentStimulus.getParameters().name === "initial") {
-        // Hide the mouse cursor
         graphics.cursorVisibility(false);
       } else if (currentStimulus.getParameters().name === "post-decision") {
         // Set up keyup handler to wait for all keys to be released
@@ -187,7 +215,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         window.postDecisionKeyUpHandler = postDecisionKeyUpHandler;
         document.addEventListener("keyup", postDecisionKeyUpHandler);
       } else {
-        // Show the mouse cursor
         graphics.cursorVisibility(true);
       }
 
@@ -348,18 +375,18 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         currentStimulus.removeKeybindings();
 
         // Calculate and store selection data
-        trial.data.decisionEnd = performance.now();
-        trial.data.decisionDuration = trial.data.decisionEnd - trial.data.decisionStart;
-        trial.data.selection = selection;
+        data.decisionEnd = performance.now();
+        data.decisionDuration = data.decisionEnd - data.decisionStart;
+        data.selection = selection as SelectionOptions;
 
         // Normalize correct data
         // NOTE: Format of selection is `<confidence>_<direction>`, split by `_`
         // then compare to first letter of `dotDirection` (`left` or `right`)
-        trial.data.correct = selection.split("_")[1] === trial.data.dotDirection[0] ? 1 : 0;
+        data.correct = selection.split("_")[1] === trial.dotDirection[0] ? 1 : 0;
 
         // Increment score if correct
-        if (trial.data.correct === 1 && trial.name === "main") {
-          trial.data.score++;
+        if (data.correct === 1 && trial.trialName === "main") {
+          data.score++;
         }
 
         // Continue to the next Stimulus
@@ -370,36 +397,24 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     /**
      * Adjusts coherence level based on calibration data
      */
-    const adjustCalibrationCoherence = () => {
-      // Get the previous data from trials
-      const previousTrialData = this.jsPsych.data.get().last(2).values();
-
+    const adjustCalibrationCoherence = (priorTrialPair: IData[]) => {
       // Determine how many trials have elapsed
-      if (previousTrialData[0] !== undefined) {
+      if (priorTrialPair[0] !== undefined) {
         // One trial must have elapsed, retrieve the most recent coherence
-        trial.data.activeCoherence = previousTrialData[1].activeCoherence;
+        data.activeCoherence = priorTrialPair[1].activeCoherence;
 
         // Check previous two calibration trials
-        if (
-          previousTrialData[0].correct === 1 &&
-          previousTrialData[1].correct === 1
-        ) {
+        if (priorTrialPair[0].correct === 1 && priorTrialPair[1].correct === 1) {
           // If both of the two previous trials are correct, check if the
           // coherence value was adjusted
-          if (
-            previousTrialData[0].activeCoherence === previousTrialData[1].activeCoherence
-          ) {
+          if (priorTrialPair[0].activeCoherence === priorTrialPair[1].activeCoherence) {
             // If the coherence value hasn't been adjusted, decrease it.
-            trial.data.activeCoherence = parseFloat(
-              (previousTrialData[1].activeCoherence - 0.01).toFixed(3)
-            );
+            data.activeCoherence = parseFloat((priorTrialPair[1].activeCoherence - 0.01).toFixed(3));
           }
-        } else if (previousTrialData[1].correct === 0) {
+        } else if (priorTrialPair[1].correct === 0) {
           // Else increase coherence value if the previous trial was
           // incorrect
-          trial.data.activeCoherence = parseFloat(
-            (previousTrialData[1].activeCoherence + 0.01).toFixed(3)
-          );
+          data.activeCoherence = parseFloat((priorTrialPair[1].activeCoherence + 0.01).toFixed(3));
         }
       }
     };
@@ -416,23 +431,21 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       display_element.innerHTML = "";
 
       // Finalise the trial
-      this.jsPsych.finishTrial();
+      this.jsPsych.finishTrial(data);
     };
 
-    const previousData = this.jsPsych.data.get().last(2).values();
-    if (trial.name === "calibration") {
-      if (
-        previousData[0].name === "calibration" &&
-        previousData[1].name === "calibration"
-      ) {
-        adjustCalibrationCoherence();
+    const priorTrialPair: IData[] = this.jsPsych.data.get().last(2).values();
+    if (trial.trialName === "calibration") {
+      // NOTE: Only apply adjustments to coherence values if at least 2 calibration trials have elapsed
+      if (priorTrialPair[0].trialName === "calibration" && priorTrialPair[1].trialName === "calibration") {
+        adjustCalibrationCoherence(priorTrialPair);
       }
-    } else if (trial.name === "main") {
+    } else if (trial.trialName === "main") {
       // Check if this is the first main trial
-      const previousTrial = previousData[0];
+      const previousTrial = priorTrialPair[0];
 
       // Calculate the median coherence to use in the coming trials
-      if (previousTrial.name !== "main" && trial.data.number === 0) {
+      if (previousTrial.trialName !== "main" && data.trialNumber === 0) {
         // If this is the first, compute the median of the last 20 trials
         let kMedian = this.jsPsych.data
           .get()
@@ -448,68 +461,55 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         }
 
         // Generate the list of coherences
-        trial.data.coherences = [kMedian * 0.5, kMedian * 2.0];
+        data.coherences = [kMedian * 0.5, kMedian * 2.0];
       } else {
         // Else re-use the coherence from previous main calibration
         // trials
-        trial.data.coherences = previousData[1].coherences;
-        trial.coherences = previousData[1].coherences;
+        data.coherences = priorTrialPair[1].coherences;
       }
 
       // Pick either high or low coherence
-      trial.data.activeCoherence =
-        trial.data.coherences[
-          Math.floor(Math.random() * trial.data.coherences.length)
-        ];
-      trial.activeCoherence = trial.data.activeCoherence;
+      data.activeCoherence = data.coherences[Math.floor(Math.random() * data.coherences.length)];
     }
 
-    // Setup the properties of each stimulus used in the trial.
-    // Initial display of the fixation cross.
-    const initial = {
+    // Setup the properties of each stimulus used in the trial
+    // Initial display of the fixation cross
+    const initial: IStimulus = {
       name: "initial",
       components: ["outline", "fixation"],
       two: two,
       renderer: renderer,
       graphics: graphics,
       interactive: false,
-      selected: false,
       timing: {
         pre: 0,
         run: 1000,
         post: 0,
       },
-      target: display_element,
-      trial: trial,
-      rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
       postTrialHandler: nextStimulus,
     };
 
-    // Display of the dots in motion.
-    const motion = {
+    // Display of the dots in motion
+    const motion: IStimulus = {
       name: "motion",
       components: ["outline", "fixation", "dots"],
       two: two,
       renderer: renderer,
       graphics: graphics,
       interactive: false,
-      selected: false,
       timing: {
         pre: 0,
         run: trial.motionDuration,
         post: 0,
       },
-      target: display_element,
-      trial: trial,
-      rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
       postTrialHandler: nextStimulus,
     };
 
     // Display of the reference angle and the coloured arcs for
-    // user selection.
-    const decision = {
+    // user selection
+    const decision: IStimulus = {
       name: "decision",
       components: [
         "outline",
@@ -523,7 +523,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       renderer: renderer,
       graphics: graphics,
       interactive: true,
-      selected: false,
       timing: {
         pre: 0,
         run: -1,
@@ -547,36 +546,29 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
           handler: decisionKeyDownHandler,
         },
       },
-      target: display_element,
-      trial: trial,
-      rendererParameters: rendererParameters,
       eventHandler: decisionKeyDownHandler,
       postTrialHandler: nextStimulus,
     };
 
     // Brief display of the fixation cross.
-    const postDecision = {
+    const postDecision: IStimulus = {
       name: "post-decision",
       components: ["outline", "fixation"],
       two: two,
       renderer: renderer,
       graphics: graphics,
       interactive: false,
-      selected: false,
       timing: {
         pre: 0,
         run: -1, // Wait indefinitely until all keys are released
         post: 0,
       },
-      target: display_element,
-      trial: trial,
-      rendererParameters: rendererParameters,
       eventHandler: decisionHandler,
       postTrialHandler: nextStimulus,
     };
 
     // Construct a list of the stimuli.
-    const stimuli = [];
+    const stimuli: Stimulus[] = [];
     stimuli.push(
       new Stimulus(initial),
       new Stimulus(motion),
@@ -584,8 +576,8 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       new Stimulus(postDecision)
     );
 
-    let currentStimulus = null;
-    trial.data.trialStart = performance.now();
+    let currentStimulus: Stimulus = null;
+    data.trialStart = performance.now();
 
     // Make the keyup handler globally accessible
     window.decisionKeyUpHandler = decisionKeyUpHandler;
