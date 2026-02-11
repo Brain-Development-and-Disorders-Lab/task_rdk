@@ -1,9 +1,9 @@
-// Core modules
-import { Renderer } from "./Renderer";
-
 // Type definitions
-import { IDot } from "../../types";
+import { DotParameters } from "../../types";
 import { Circle } from "two.js/src/shapes/circle";
+
+// Custom functions
+import { renderable, translate, visible } from "../functions";
 
 /**
  * Dot class used to abstract the positioning of moving dots.
@@ -15,9 +15,9 @@ export class Dot {
 
   // Dot parameters
   private type: any;
-  private width: number;
-  private height: number;
-  private viewRadius: number;
+  private viewWidth: number;
+  private viewHeight: number;
+  private apertureRadius: number;
   private dotVelocity: number;
   private dotRadius: number;
   private dotAngle: number;
@@ -32,16 +32,16 @@ export class Dot {
    * @param {number} y the y cartesian coordinate of the dot
    * @param {IDot} parameters a parameters object containing properties
    */
-  constructor(x: number, y: number, parameters: IDot) {
+  constructor(x: number, y: number, parameters: DotParameters) {
     // Cartesian coordinates
     this.x = x;
     this.y = y;
 
     // Unpack parameters
     this.type = parameters.type;
-    this.width = parameters.width;
-    this.height = parameters.height;
-    this.viewRadius = parameters.viewRadius;
+    this.viewWidth = parameters.viewWidth;
+    this.viewHeight = parameters.viewHeight;
+    this.apertureRadius = parameters.apertureRadius;
     this.dotVelocity = parameters.dotVelocity;
     this.dotRadius = parameters.dotRadius;
     this.dotAngle = parameters.dotAngle;
@@ -93,17 +93,17 @@ export class Dot {
 
     if (this.type === "reference") {
       // Check if the dot is currently visible within the circle.
-      if (Math.sqrt(x ** 2 + y ** 2) < this.viewRadius) {
+      if (Math.sqrt(x ** 2 + y ** 2) < this.apertureRadius) {
         this.shown = true;
       }
 
       // Check if the new coordinates are within region.
       if (
-        !Renderer.visible(x, y, this.viewRadius + this.dotRadius * 2) &&
+        !visible(x, y, this.apertureRadius + this.dotRadius * 2) &&
         this.shown === true
       ) {
-        x = x - 2 * this.viewRadius * Math.cos(this.dotAngle);
-        y = y - 2 * this.viewRadius * Math.sin(this.dotAngle);
+        x = x - 2 * this.apertureRadius * Math.cos(this.dotAngle);
+        y = y - 2 * this.apertureRadius * Math.sin(this.dotAngle);
         this.shown = false;
       }
     } else if (this.type === "random") {
@@ -116,7 +116,7 @@ export class Dot {
         }
       }
 
-      if (!Renderer.visible(x, y, this.viewRadius)) {
+      if (!visible(x, y, this.apertureRadius)) {
         x = -x;
         y = -y;
       }
@@ -129,18 +129,18 @@ export class Dot {
     this.y = y;
 
     // Perform coordinate translate for renderer, only if dot is within the view
-    const coordinates = Renderer.translate(
+    const coordinates = translate(
       this.x,
       this.y,
-      this.width,
-      this.height
+      this.viewWidth,
+      this.viewHeight
     );
     if (
-      Renderer.renderable(
+      renderable(
         coordinates[0],
         coordinates[1],
-        this.width,
-        this.height
+        this.viewWidth,
+        this.viewHeight
       )
     ) {
       this.dot.translation.x = coordinates[0];

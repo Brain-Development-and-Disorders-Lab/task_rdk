@@ -15,12 +15,11 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 // Core modules
 import { Graphics } from "./classes/Graphics";
-import { Renderer } from "./classes/Renderer";
 import { Stimulus } from "./classes/Stimulus";
 import { Runner } from "./classes/Runner";
 
 // Custom types
-import { IData, IRenderer, IStimulus, SelectionOptions } from "../types";
+import { GraphicsParameters, IData, IStimulus, SelectionOptions } from "../types";
 
 // Additional functions
 import { scaling } from "./functions";
@@ -142,25 +141,24 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const childDiv = document.createElement("div");
     containerDiv.appendChild(childDiv);
 
-    // Setup the renderer and Two.js parameters
-    const rendererParameters: IRenderer = {
-      distanceFromScreen: distanceFromScreen,
-      viewRadius: viewRadius,
-      dotRadius: dotRadius,
-      width: width,
-      height: height,
-      target: childDiv,
-    };
+    // Setup the Graphics and Two.js parameters
     const twoParameters = {
       type: Two.Types.webgl,
-      width: rendererParameters.width,
-      height: rendererParameters.height,
+      width: width,
+      height: height,
     };
-
-    // Instantiate Two.js with parameters and place in DOM
     const two = new Two(twoParameters).appendTo(childDiv);
-    let renderer = new Renderer(this.jsPsych, two, rendererParameters);
-    let graphics = new Graphics(this.jsPsych, trial, renderer);
+
+    const graphicsParameters: GraphicsParameters = {
+      two: two,
+      displayElement: childDiv,
+      distanceFromScreen: distanceFromScreen,
+      apertureRadius: viewRadius,
+      dotRadius: dotRadius,
+      viewWidth: width,
+      viewHeight: height,
+    };
+    let graphics = new Graphics(this.jsPsych, trial, graphicsParameters);
 
     // Determine the trial number
     data.trialNumber = 0;
@@ -261,7 +259,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         const buttonElement = document.querySelector(`[data-button-id="${buttonId}"]`) as HTMLDivElement;
         if (buttonElement) {
           // Start the progress bar animation
-          renderer.startProgress(buttonElement);
+          graphics.startProgress(buttonElement);
         }
       }
 
@@ -304,7 +302,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
           const buttonElement = document.querySelector(`[data-button-id="${buttonId}"]`) as HTMLDivElement;
           if (buttonElement) {
             // Stop and reset the progress bar
-            renderer.stopProgress(buttonElement);
+            graphics.stopProgress(buttonElement);
           }
         }
       }
@@ -425,7 +423,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const endTrial = () => {
       // Clean up renderer and graphics
       graphics.clear();
-      renderer = null;
       graphics = null;
       Two.Instances.pop();
       display_element.innerHTML = "";
@@ -478,7 +475,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       name: "initial",
       components: ["outline", "fixation"],
       two: two,
-      renderer: renderer,
       graphics: graphics,
       interactive: false,
       timing: {
@@ -495,7 +491,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       name: "motion",
       components: ["outline", "fixation", "dots"],
       two: two,
-      renderer: renderer,
       graphics: graphics,
       interactive: false,
       timing: {
@@ -520,7 +515,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         "right_arc",
       ],
       two: two,
-      renderer: renderer,
       graphics: graphics,
       interactive: true,
       timing: {
@@ -555,7 +549,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       name: "post-decision",
       components: ["outline", "fixation"],
       two: two,
-      renderer: renderer,
       graphics: graphics,
       interactive: false,
       timing: {

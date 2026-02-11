@@ -16,6 +16,9 @@ import InstructionsPlugin from "@jspsych/plugin-instructions";
 import FullscreenPlugin from "@jspsych/plugin-fullscreen";
 import SurveyHtmlFormPlugin from "@jspsych/plugin-survey-html-form";
 
+// Graphics component
+import { Graphics } from "./classes/Graphics";
+
 // Attention check plugin
 // November 26, 2023: Removed for testing new MRI controllers
 // import jsPsychAttentionCheck from "jspsych-attention-check";
@@ -28,7 +31,6 @@ import DotGamePlugin from "./plugin";
 
 // Additional functions and variables
 import { scaling } from "./functions";
-import { Renderer } from "./classes/Renderer";
 
 /**
  * Initialize jsPsych
@@ -130,10 +132,10 @@ let instructionContinueText = `<div id="instructions-navigation">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
         <p style="font-weight: bold; font-size: large;">\< Back</p>
-        ${__TARGET__ === "spectrometer" ? Renderer.getEmbeddedControllerButton(1) : Renderer.getEmbeddedKeyboardButton("F")}
+        ${__TARGET__ === "spectrometer" ? Graphics.getEmbeddedControllerButton(1) : Graphics.getEmbeddedKeyboardButton("F")}
       </div>
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
-        ${__TARGET__ === "spectrometer" ? Renderer.getEmbeddedControllerButton(4) : Renderer.getEmbeddedKeyboardButton("J")}
+        ${__TARGET__ === "spectrometer" ? Graphics.getEmbeddedControllerButton(4) : Graphics.getEmbeddedKeyboardButton("J")}
         <p style="font-weight: bold; font-size: large;">Next \></p>
       </div>
     </div>

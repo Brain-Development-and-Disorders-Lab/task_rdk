@@ -1,7 +1,6 @@
 // Class imports for type definitions
 import Two from "two.js";
 import { Graphics } from "../src/classes/Graphics";
-import { Renderer } from "../src/classes/Renderer";
 
 // Global keyup handler for decision input
 declare global {
@@ -31,22 +30,25 @@ export type IData = {
   coherences: number[];
 };
 
-// Renderer parameters
-export type IRenderer = {
+// Graphics parameters
+export type GraphicsParameters = {
+  displayElement: HTMLElement;
+  two: Two;
   distanceFromScreen: number;
-  viewRadius: number;
+  // View dimensions
+  viewWidth: number;
+  viewHeight: number;
+  // Stimuli dimensions
+  apertureRadius: number;
   dotRadius: number;
-  width: number;
-  height: number;
-  target: HTMLElement;
 };
 
 // Dot parameters
-export type IDot = {
-  type: string;
-  width: number;
-  height: number;
-  viewRadius: number;
+export type DotParameters = {
+  type: "reference" | "random";
+  viewWidth: number;
+  viewHeight: number;
+  apertureRadius: number;
   dotVelocity: number;
   dotRadius: number;
   dotAngle: number;
@@ -60,7 +62,6 @@ export type IStimulus = {
   components: string[];
   timing: any;
   two: Two;
-  renderer: Renderer,
   graphics: Graphics;
   eventHandler: (event: KeyboardEvent) => void;
   postTrialHandler: () => void;

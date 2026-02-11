@@ -1,3 +1,11 @@
+/**
+ * @summary `Stimulus` class to handle abstraction of stimuli specification. Calls functions
+ * from the `Graphics` class build stimuli from sub-components. Handles keybindings and timers.
+ *
+ * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/classes/Stimulus.ts
+ * @author Henry Burgess <henry.burgess@wustl.edu>
+ */
+
 // Type definitions
 import { IStimulus } from "../../types";
 
@@ -129,7 +137,6 @@ export class Stimulus {
   static run(parameters: IStimulus): void {
     // Instantiate graphics.
     const two = parameters.two;
-    const renderer = parameters.renderer;
     const graphics = parameters.graphics;
 
     for (let c = 0; c < parameters.components.length; c++) {
@@ -161,8 +168,8 @@ export class Stimulus {
 
     two
       .bind("update", (frameCount: number) => {
-        for (let d = 0; d < renderer.getElements().length; d++) {
-          const element = renderer.getElements()[d];
+        for (let d = 0; d < graphics.getElements().length; d++) {
+          const element = graphics.getElements()[d];
           if (element.step) {
             element.step(frameCount);
           }
