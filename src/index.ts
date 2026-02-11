@@ -51,6 +51,9 @@ const jsPsych = initJsPsych({
   ],
 });
 
+// Configure variable alias for Neurocog extension
+const Neurocog = jsPsych.extensions.Neurocog;
+
 // Input configurations, mapping device inputs to task actions
 const InputConfigurations = {
   desktop: {
@@ -74,29 +77,14 @@ const InputConfigurations = {
 
 // Experimental parameters, defining the number of trials and other experiment behavior
 export const Manipulations = {
-  numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation(
-    "numTutorialTrials",
-    8
-  ),
-  numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation(
-    "numPracticeTrials",
-    8
-  ),
-  numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation(
-    "numCalibrationOneTrials",
-    60
-  ),
-  numMainTrials: jsPsych.extensions.Neurocog.getManipulation(
-    "numMainTrials",
-    100
-  ),
+  numTutorialTrials: Neurocog.getManipulation("numTutorialTrials", 8),
+  numPracticeTrials: Neurocog.getManipulation("numPracticeTrials", 8),
+  numCalibrationOneTrials: Neurocog.getManipulation("numCalibrationOneTrials", 60),
+  numMainTrials: Neurocog.getManipulation("numMainTrials", 100),
   invertColors: __TARGET__ === "spectrometer",
-  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
+  requireID: Neurocog.getManipulation("requireID", false),
   enableFullscreen: __TARGET__ === "spectrometer",
-  showInstructions: jsPsych.extensions.Neurocog.getManipulation(
-    "showInstructions",
-    false
-  ),
+  showInstructions: Neurocog.getManipulation("showInstructions", false),
 };
 
 // Apply color inversion
@@ -113,10 +101,10 @@ const keyLayout = InputConfigurations[__TARGET__];
 
 // Tutorial trial properties
 const tutorialDuration = [1, 5];
-const tutorialCoherence = [0.3, 0.6];
+const tutorialCoherences = [0.3, 0.6];
 
 // Practice trial properties
-const practiceCoherence = [0.3, 0.6];
+const practiceCoherences = [0.3, 0.6];
 
 // Require the ID input
 if (_.isEqual(Manipulations.requireID, true)) {
@@ -202,29 +190,27 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
       1000
     ).toFixed(2)
   );
-  const k = Math.random() > 0.5 ? tutorialCoherence[0] : tutorialCoherence[1];
-  let r = Math.random() > 0.5 ? 0 : Math.PI;
-  r = parseFloat(r.toFixed(3));
-  const deviation = r === 0 ? "right" : "left";
+  const k = Math.random() > 0.5 ? tutorialCoherences[0] : tutorialCoherences[1];
+  let a = Math.random() > 0.5 ? 0 : Math.PI;
+  a = parseFloat(a.toFixed(3));
 
   const trial = {
     type: DotGamePlugin,
     name: trialName,
     distance: 50 * scaling(),
-    coherence: k,
-    stimulusDuration: d,
-    dotDirection: r,
+    activeCoherence: k,
+    motionDuration: d,
+    dotAngle: a,
     dotVelocity: 2.0,
     showFeedback: false,
     keyLayout: keyLayout,
     data: {
       name: trialName,
       number: t,
-      coherence: k,
-      stimulusDuration: d,
-      dotDirection: r,
+      activeCoherence: k,
+      motionDuration: d,
       selection: "",
-      deviation: deviation,
+      dotDirection: a === 0 ? "right" : "left",
       correct: false,
     },
     extensions: [{ type: NeurocogExtension }],
@@ -262,29 +248,27 @@ timeline.push({
 
 for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
   const trialName = "practice";
-  let r = Math.random() > 0.5 ? 0 : Math.PI;
-  r = parseFloat(r.toFixed(3));
-  const k = Math.random() > 0.5 ? practiceCoherence[0] : practiceCoherence[1];
-  const deviation = r === 0 ? "right" : "left";
+  let a = Math.random() > 0.5 ? 0 : Math.PI;
+  a = parseFloat(a.toFixed(3));
+  const k = Math.random() > 0.5 ? practiceCoherences[0] : practiceCoherences[1];
 
   const trial = {
     type: DotGamePlugin,
     name: trialName,
     distance: 50 * scaling(),
-    coherence: k,
-    stimulusDuration: 1500,
-    dotDirection: r,
+    activeCoherence: k,
+    motionDuration: 1500,
+    dotAngle: a,
     dotVelocity: 2.0,
     showFeedback: true,
     keyLayout: keyLayout,
     data: {
       name: trialName,
       number: t,
-      coherence: k,
-      stimulusDuration: 1500,
-      dotDirection: r,
+      activeCoherence: k,
+      motionDuration: 1500,
       selection: "",
-      deviation: deviation,
+      dotDirection: a === 0 ? "right" : "left",
       correct: false,
     },
     extensions: [{ type: NeurocogExtension }],
@@ -361,28 +345,26 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
   if (t === 0 || t === 1) trialName = "calibration-constant";
 
   const k = 0.2;
-  let r = Math.random() > 0.5 ? 0 : Math.PI;
-  r = parseFloat(r.toFixed(3));
-  const deviation = r === 0 ? "right" : "left";
+  let a = Math.random() > 0.5 ? 0 : Math.PI;
+  a = parseFloat(a.toFixed(3));
 
   const trial = {
     type: DotGamePlugin,
     name: trialName,
     distance: 50 * scaling(),
-    coherence: k,
-    stimulusDuration: 1500,
-    dotDirection: r,
+    activeCoherence: k,
+    motionDuration: 1500,
+    dotAngle: a,
     dotVelocity: 2.0,
     showFeedback: false,
     keyLayout: keyLayout,
     data: {
       name: trialName,
       number: t,
-      coherence: k,
-      stimulusDuration: 1500,
-      dotDirection: r,
+      activeCoherence: k,
+      motionDuration: 1500,
       selection: "",
-      deviation: deviation,
+      dotDirection: a === 0 ? "right" : "left",
       correct: false,
     },
     extensions: [{ type: NeurocogExtension }],
@@ -398,28 +380,26 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
 for (let t = 0; t < Manipulations.numMainTrials; t++) {
   const trialName = "main";
   const k = 0.2;
-  let r = Math.random() > 0.5 ? 0 : Math.PI;
-  r = parseFloat(r.toFixed(3));
-  const deviation = r === 0 ? "right" : "left";
+  let a = Math.random() > 0.5 ? 0 : Math.PI;
+  a = parseFloat(a.toFixed(3));
 
   const trial = {
     type: DotGamePlugin,
     name: trialName,
     distance: 50 * scaling(),
-    coherence: k,
-    stimulusDuration: 1500,
-    dotDirection: r,
+    activeCoherence: k,
+    motionDuration: 1500,
+    dotAngle: a,
     dotVelocity: 2.0,
     showFeedback: false,
     keyLayout: keyLayout,
     data: {
       name: trialName,
       number: t,
-      coherence: k,
-      stimulusDuration: 1500,
-      dotDirection: r,
+      activeCoherence: k,
+      motionDuration: 1500,
       selection: "",
-      deviation: deviation,
+      dotDirection: a === 0 ? "right" : "left",
       correct: false,
     },
     extensions: [{ type: NeurocogExtension }],

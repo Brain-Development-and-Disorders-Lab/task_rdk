@@ -1,3 +1,11 @@
+// Global keyup handler for decision input
+declare global {
+  interface Window {
+    decisionKeyUpHandler?: (event: KeyboardEvent) => void;
+    postDecisionKeyUpHandler?: (event: KeyboardEvent) => void;
+  }
+}
+
 // Renderer parameters
 export type IRenderer = {
   distanceFromScreen: number;
@@ -16,7 +24,7 @@ export type IDot = {
   viewRadius: number;
   dotVelocity: number;
   dotRadius: number;
-  direction: number;
+  dotAngle: number;
 };
 
 // Stimulus parameters

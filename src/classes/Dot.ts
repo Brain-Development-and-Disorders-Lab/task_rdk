@@ -20,7 +20,7 @@ export class Dot {
   private viewRadius: number;
   private dotVelocity: number;
   private dotRadius: number;
-  private direction: any;
+  private dotAngle: number;
 
   // Dot-specific attributes
   private dot: Circle;
@@ -44,7 +44,7 @@ export class Dot {
     this.viewRadius = parameters.viewRadius;
     this.dotVelocity = parameters.dotVelocity;
     this.dotRadius = parameters.dotRadius;
-    this.direction = parameters.direction;
+    this.dotAngle = parameters.dotAngle;
 
     // Dot-specific attributes
     this.dot = null;
@@ -102,17 +102,17 @@ export class Dot {
         !Renderer.visible(x, y, this.viewRadius + this.dotRadius * 2) &&
         this.shown === true
       ) {
-        x = x - 2 * this.viewRadius * Math.cos(this.direction);
-        y = y - 2 * this.viewRadius * Math.sin(this.direction);
+        x = x - 2 * this.viewRadius * Math.cos(this.dotAngle);
+        y = y - 2 * this.viewRadius * Math.sin(this.dotAngle);
         this.shown = false;
       }
     } else if (this.type === "random") {
       if (frameCount % 6 === 0) {
         const delta = Math.random();
         if (delta > 0.5) {
-          this.direction -= (Math.PI / 8) * delta;
+          this.dotAngle -= (Math.PI / 8) * delta;
         } else {
-          this.direction += (Math.PI / 8) * delta;
+          this.dotAngle += (Math.PI / 8) * delta;
         }
       }
 
@@ -123,8 +123,8 @@ export class Dot {
     }
 
     // Modify the dot position.
-    x = x + this.dotVelocity * Math.cos(this.direction);
-    y = y + this.dotVelocity * Math.sin(this.direction);
+    x = x + this.dotVelocity * Math.cos(this.dotAngle);
+    y = y + this.dotVelocity * Math.sin(this.dotAngle);
     this.x = x;
     this.y = y;
 

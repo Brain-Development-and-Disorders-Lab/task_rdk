@@ -127,7 +127,7 @@ export class Graphics {
    * Create the orange clockwise arc
    */
   addClockwiseArc(): void {
-    const startAngle = 2 * Math.PI - this.trial.dotDirection;
+    const startAngle = 2 * Math.PI - this.trial.dotAngle;
     const endAngle = startAngle + Math.PI / 4;
     this.renderer.createArc(startAngle, endAngle + Math.PI / 128, Renderer.getInvertedColor("white"));
     this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#d78000"));
@@ -146,7 +146,7 @@ export class Graphics {
    * Create the blue counterclockwise arc
    */
   addCounterclockwiseArc(): void {
-    const reference = 2 * Math.PI - this.trial.dotDirection;
+    const reference = 2 * Math.PI - this.trial.dotAngle;
     const startAngle = reference - Math.PI / 4;
     const endAngle = startAngle + Math.PI / 4;
     this.renderer.createArc(startAngle - Math.PI / 128, endAngle, Renderer.getInvertedColor("white"));
@@ -194,7 +194,7 @@ export class Graphics {
    * Add small rectangle to indicate the position of the reference angle
    */
   addReferenceIndicator(): void {
-    const reference = this.trial.dotDirection;
+    const reference = this.trial.dotAngle;
     const length = Math.ceil(Math.abs(Math.tan(0.8))) * 6;
     const width = Math.ceil(Math.abs(Math.tan(0.08))) * 6;
     const x1 =
@@ -218,7 +218,7 @@ export class Graphics {
       viewRadius: this.renderer.getViewRadius(),
       dotVelocity: this.trial.dotVelocity,
       dotRadius: this.renderer.getDotRadius(),
-      direction: this.trial.dotDirection,
+      dotAngle: this.trial.dotAngle,
     };
 
     const randomDotParameters: IDot = {
@@ -228,7 +228,7 @@ export class Graphics {
       viewRadius: this.renderer.getViewRadius(),
       dotVelocity: this.trial.dotVelocity,
       dotRadius: this.renderer.getDotRadius(),
-      direction: this.trial.dotDirection,
+      dotAngle: this.trial.dotAngle,
     };
 
     // Setup dots
@@ -245,9 +245,9 @@ export class Graphics {
           (j * this.renderer.getHeight()) / dotRowCount +
           (delta * this.renderer.getHeight()) / dotRowCount;
 
-        if (delta > this.trial.data.coherence) {
+        if (delta > this.trial.data.activeCoherence) {
           // Non-dynamic dot that is just moving in random paths
-          randomDotParameters.direction = 2 * Math.PI * Math.random();
+          randomDotParameters.dotAngle = 2 * Math.PI * Math.random();
           this.renderer.createDot(new Dot(x, y, randomDotParameters), true);
         } else {
           this.renderer.createDot(new Dot(x, y, referenceDotParameters), true);

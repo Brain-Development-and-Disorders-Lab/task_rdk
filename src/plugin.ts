@@ -9,8 +9,9 @@
 import "jspsych/css/jspsych.css";
 import "./css/styles.css";
 
-// Additional functions
-import { scaling } from "./functions";
+// External libraries
+import Two from "two.js";
+import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 
 // Core modules
 import { Graphics } from "./classes/Graphics";
@@ -21,20 +22,11 @@ import { Runner } from "./classes/Runner";
 // Custom types
 import { IRenderer } from "../types";
 
-// External libraries
-import Two from "two.js";
-import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
-
-// Global keyup handler for decision input
-declare global {
-  interface Window {
-    decisionKeyUpHandler?: (event: KeyboardEvent) => void;
-    postDecisionKeyUpHandler?: (event: KeyboardEvent) => void;
-  }
-}
+// Additional functions
+import { scaling } from "./functions";
 
 const info = {
-  name: "dot-game",
+  name: "rdk-task",
   parameters: {
     name: {
       type: ParameterType.STRING,
@@ -44,19 +36,7 @@ const info = {
       type: ParameterType.FLOAT,
       default: undefined,
     },
-    keyLayout: {
-      type: ParameterType.COMPLEX,
-      default: undefined,
-    },
-    data: {
-      type: ParameterType.COMPLEX,
-      default: undefined,
-    },
-    showFeedback: {
-      type: ParameterType.BOOL,
-      default: false,
-    },
-    coherence: {
+    activeCoherence: {
       type: ParameterType.FLOAT,
       default: undefined,
     },
@@ -65,8 +45,20 @@ const info = {
       default: undefined,
       readonly: false,
     },
-    stimulusDuration: {
+    motionDuration: {
       type: ParameterType.INT,
+      default: undefined,
+    },
+    showFeedback: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+    keyLayout: {
+      type: ParameterType.COMPLEX,
+      default: undefined,
+    },
+    data: {
+      type: ParameterType.COMPLEX,
       default: undefined,
     },
   },
@@ -80,10 +72,10 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
   constructor(private jsPsych: JsPsych) {}
 
   trial(display_element: HTMLElement, trial: TrialType<Info>) {
-    // Setup variables.
+    // Setup variables
     const distanceFromScreen = trial.distance;
 
-    // Setup distance-related variables.
+    // Setup distance-related variables
     let viewRadius = Math.ceil(Math.abs(distanceFromScreen * Math.tan(8)));
     let dotRadius = Math.ceil(Math.abs(distanceFromScreen * Math.tan(0.12)));
 
@@ -137,7 +129,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     trial.data.trialNumber = 0;
     const previousTrialCollection = this.jsPsych.data.get().values();
     previousTrialCollection.forEach((storedTrial) => {
-      if (storedTrial.trial_type === "dot-game") {
+      if (storedTrial.trial_type === "rdk-task") {
         trial.data.trialNumber = storedTrial.trialNumber + 1;
       }
     });
@@ -147,7 +139,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       trial.data.score = 0;
       previousTrialCollection.forEach((storedTrial) => {
         if (
-          storedTrial.trial_type === "dot-game" &&
+          storedTrial.trial_type === "rdk-task" &&
           storedTrial.name === "main"
         ) {
           trial.data.score = storedTrial.score;
@@ -164,9 +156,8 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const nextStimulus = () => {
       if (stimuli.length === 0) {
         // End the trial if there are no more stimuli to display
-        trial.data.trialEndTime = performance.now();
-        trial.data.trialTotalTime =
-          trial.data.trialEndTime - trial.data.trialStartTime;
+        trial.data.trialEnd = performance.now();
+        trial.data.trialDuration = trial.data.trialEnd - trial.data.trialStart;
 
         endTrial();
         return;
@@ -177,14 +168,13 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
       // Configure stimulus-specific parameters
       if (currentStimulus.getParameters().name === "decision") {
-        // Reference stimulus
-        trial.data.referenceStartTime = performance.now();
+        // Decision stimulus
+        trial.data.decisionStart = performance.now();
 
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
       } else if (currentStimulus.getParameters().name === "motion") {
-        trial.data.stimulusDuration =
-          currentStimulus.getParameters().timing.run;
+        trial.data.motionDuration = currentStimulus.getParameters().timing.run;
 
         // Hide the mouse cursor
         graphics.cursorVisibility(false);
@@ -354,20 +344,18 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
       if (currentStimulus.getParameters().name === "decision") {
         // Handle 'decision' stimuli
-        selection =
-          currentStimulus.getParameters().keybindings[keycode].choice;
+        selection = currentStimulus.getParameters().keybindings[keycode].choice;
         currentStimulus.removeKeybindings();
 
-        // Calculate and store reference data
-        trial.data.referenceEndTime = performance.now();
-        trial.data.referenceTotalTime =
-          trial.data.referenceEndTime - trial.data.referenceStartTime;
-
-        // Normalize selection data
+        // Calculate and store selection data
+        trial.data.decisionEnd = performance.now();
+        trial.data.decisionDuration = trial.data.decisionEnd - trial.data.decisionStart;
         trial.data.selection = selection;
 
-        // Normalize correct data (get the direction of the selection and compare to the deviation)
-        trial.data.correct = selection.split("_")[1] === trial.data.deviation[0] ? 1 : 0;
+        // Normalize correct data
+        // NOTE: Format of selection is `<confidence>_<direction>`, split by `_`
+        // then compare to first letter of `dotDirection` (`left` or `right`)
+        trial.data.correct = selection.split("_")[1] === trial.data.dotDirection[0] ? 1 : 0;
 
         // Increment score if correct
         if (trial.data.correct === 1 && trial.name === "main") {
@@ -389,7 +377,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       // Determine how many trials have elapsed
       if (previousTrialData[0] !== undefined) {
         // One trial must have elapsed, retrieve the most recent coherence
-        trial.data.coherence = previousTrialData[1].coherence;
+        trial.data.activeCoherence = previousTrialData[1].activeCoherence;
 
         // Check previous two calibration trials
         if (
@@ -399,18 +387,18 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
           // If both of the two previous trials are correct, check if the
           // coherence value was adjusted
           if (
-            previousTrialData[0].coherence === previousTrialData[1].coherence
+            previousTrialData[0].activeCoherence === previousTrialData[1].activeCoherence
           ) {
             // If the coherence value hasn't been adjusted, decrease it.
-            trial.data.coherence = parseFloat(
-              (previousTrialData[1].coherence - 0.01).toFixed(3)
+            trial.data.activeCoherence = parseFloat(
+              (previousTrialData[1].activeCoherence - 0.01).toFixed(3)
             );
           }
         } else if (previousTrialData[1].correct === 0) {
           // Else increase coherence value if the previous trial was
           // incorrect
-          trial.data.coherence = parseFloat(
-            (previousTrialData[1].coherence + 0.01).toFixed(3)
+          trial.data.activeCoherence = parseFloat(
+            (previousTrialData[1].activeCoherence + 0.01).toFixed(3)
           );
         }
       }
@@ -449,7 +437,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         let kMedian = this.jsPsych.data
           .get()
           .last(21)
-          .select("coherence")
+          .select("activeCoherence")
           .median();
 
         // Adjust coherence to constrain it within [0.12, 0.50]
@@ -469,11 +457,11 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       }
 
       // Pick either high or low coherence
-      trial.data.coherence =
+      trial.data.activeCoherence =
         trial.data.coherences[
           Math.floor(Math.random() * trial.data.coherences.length)
         ];
-      trial.coherence = trial.data.coherence;
+      trial.activeCoherence = trial.data.activeCoherence;
     }
 
     // Setup the properties of each stimulus used in the trial.
@@ -509,7 +497,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       selected: false,
       timing: {
         pre: 0,
-        run: trial.stimulusDuration,
+        run: trial.motionDuration,
         post: 0,
       },
       target: display_element,
@@ -597,7 +585,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     );
 
     let currentStimulus = null;
-    trial.data.trialStartTime = performance.now();
+    trial.data.trialStart = performance.now();
 
     // Make the keyup handler globally accessible
     window.decisionKeyUpHandler = decisionKeyUpHandler;
