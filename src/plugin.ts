@@ -239,6 +239,12 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const onKeyDown = (event: KeyboardEvent) => {
       event.preventDefault();
       const keycode = event.key.toLowerCase();
+      
+      // Edge case: Holding a button prior to input being accepted
+      if (!(keycode in inputState) && Object.keys(inputState).length === 0 && event.repeat) {
+        // Block holding keys across trials
+        return;
+      }
 
       // Check if key has been pressed, add if the only key being pressed
       if (!(keycode in inputState) && Object.keys(inputState).length === 0) {
@@ -278,16 +284,22 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       currentStimulus.clearEventListeners();
 
       if (currentStimulus.getParameters().stimulusName === "decision") {
-        // Map keycodes to decision responses
-        const inputMap = {
-          "d": "vc_l",
-          "f": "sc_l",
-          "j": "sc_r",
-          "k": "vc_r",
-        };
-
-        // Handle 'decision' stimuli
-        selection = inputMap[keycode];
+        // Map keycode to selection string to store in data
+        switch (keycode) {
+          case trial.buttonMap["1"]:
+            selection = "vc_l";
+            break;
+          case trial.buttonMap["2"]:
+            selection = "sc_l";
+            break;
+          case trial.buttonMap["3"]:
+            selection = "sc_r";
+            break;
+          case trial.buttonMap["4"]:
+            selection = "vc_r";
+            break;
+        }
+        consola.info("Selected:", selection);
 
         // Calculate and store selection data
         data.decisionEnd = performance.now();
@@ -455,7 +467,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       isInteractive: false,
       stimulusTiming: {
         pre: 0,
-        run: -1, // Wait indefinitely until all keys are released
+        run: 250,
         post: 0,
       },
       two: two,
