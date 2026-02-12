@@ -79,7 +79,7 @@ const info = {
       default: false,
       pretty_name: "Show feedback post-decision using fixation cross color"
     },
-    keyLayout: {
+    buttonMap: {
       type: ParameterType.COMPLEX,
       default: undefined,
       pretty_name: "Mapping of keyboard or other inputs to decision responses"
@@ -118,7 +118,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     
     // Setup variables
     const distanceFromScreen = trial.viewDistance;
-    const keyLayout = trial.keyLayout;
     let selection = "";
 
     // Setup distance-related variables
@@ -195,20 +194,20 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         currentStimulus = stimuli.shift();
 
         // Configure stimulus-specific parameters
-        if (currentStimulus.getParameters().name === "decision") {
+        if (currentStimulus.getParameters().stimulusName === "decision") {
           // Decision stimulus
           data.decisionStart = performance.now();
           graphics.cursorVisibility(false);
-        } else if (currentStimulus.getParameters().name === "motion") {
-          data.motionDuration = currentStimulus.getParameters().timing.run;
+        } else if (currentStimulus.getParameters().stimulusName === "motion") {
+          data.motionDuration = currentStimulus.getParameters().stimulusTiming.run;
           graphics.cursorVisibility(false);
-        } else if (currentStimulus.getParameters().name === "initial") {
+        } else if (currentStimulus.getParameters().stimulusName === "initial") {
           graphics.cursorVisibility(false);
-        } else if (currentStimulus.getParameters().name === "post-decision") {
+        } else if (currentStimulus.getParameters().stimulusName === "post-decision") {
           // Set up keyup handler to wait for all keys to be released
-          postDecisionKeyUpHandler = createPostDecisionKeyUpHandler();
-          window.postDecisionKeyUpHandler = postDecisionKeyUpHandler;
-          document.addEventListener("keyup", postDecisionKeyUpHandler);
+          // postDecisionKeyUpHandler = createPostDecisionKeyUpHandler();
+          // window.postDecisionKeyUpHandler = postDecisionKeyUpHandler;
+          // document.addEventListener("keyup", postDecisionKeyUpHandler);
         } else {
           graphics.cursorVisibility(true);
         }
@@ -218,157 +217,77 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       }
     };
 
-    // Add variables for key hold functionality
-    let keyHoldTimer: number | null = null;
-    let currentKey: string | null = null;
-    let postDecisionKeyUpHandler: ((event: KeyboardEvent) => void) | null = null;
+    // NOTE: Variable used to store active keypresses alongside the timestamp
+    // at which they were first held down
+    const inputState: { [key: string]: number } = {};
+
+    /**
+     * Utility function to evaluate if a specific key has been held for
+     * a required duration
+     * @param {string} keycode Lowercase `keycode` of an input
+     */
+    const hasSelected: (keycode: string) => boolean = (keycode: string) => {
+      if (keycode in inputState) {
+        return performance.now() - inputState[keycode] >= 1000;
+      }
+      return false;
+    };
 
     /**
      * An event handler for keydown during decision input
      */
-    const decisionKeyDownHandler = (event: KeyboardEvent) => {
-      const keycode = event.key.toLowerCase(); // Convert to lowercase for consistent comparison
-
-      // Filter out invalid keycodes
-      if (!Object.keys(currentStimulus.getParameters().keybindings).includes(keycode)) {
-        return;
-      }
-
-      // Prevent default to avoid key repeat
+    const onKeyDown = (event: KeyboardEvent) => {
       event.preventDefault();
+      const keycode = event.key.toLowerCase();
 
-      // If already holding a key, ignore (prevents multiple simultaneous key holds)
-      if (currentKey !== null) {
+      // Check if key has been pressed, add if the only key being pressed
+      if (!(keycode in inputState) && Object.keys(inputState).length === 0) {
+        inputState[keycode] = performance.now();
+      } else if (Object.keys(inputState).length > 1) {
+        // Block holding multiple keys simultaneously
         return;
       }
 
-      currentKey = keycode;
-
-      // Find the corresponding button element
-      const buttonMapping = {
-        [keyLayout["1"]]: "vc_l",
-        [keyLayout["2"]]: "sc_l",
-        [keyLayout["3"]]: "sc_r",
-        [keyLayout["4"]]: "vc_r"
-      };
-
-      const buttonId = buttonMapping[keycode];
-      if (buttonId) {
-        const buttonElement = document.querySelector(`[data-button-id="${buttonId}"]`) as HTMLDivElement;
-        if (buttonElement) {
-          // Start the progress bar animation
-          graphics.startProgress(buttonElement);
+      if (keycode in inputState) {
+        if (hasSelected(trial.buttonMap["1"]) || hasSelected(trial.buttonMap["2"]) || hasSelected(trial.buttonMap["3"]) || hasSelected(trial.buttonMap["4"])) {
+          consola.info(`\"${keycode}\" held for 1000ms`);
+          handleSelection(keycode);
         }
       }
-
-      keyHoldTimer = window.setTimeout(() => {
-        if (currentKey === keycode) {
-          // After 1 second, process the decision
-          decisionHandler(event);
-          resetKeyHold();
-        }
-      }, 1000);
     };
 
     /**
      * An event handler for keyup during decision input
      */
-    const decisionKeyUpHandler = (event: KeyboardEvent) => {
-      if (currentKey === event.key.toLowerCase()) {
-        resetKeyHold();
+    const onKeyUp = (event: KeyboardEvent) => {
+      event.preventDefault();
+      const keycode = event.key.toLowerCase(); // Convert to lowercase for consistent comparison
+
+      if (keycode in inputState) {
+        // Remove key from input state
+        delete inputState[keycode];
       }
-    };
-
-    const resetKeyHold = () => {
-      // Clear the timer
-      if (keyHoldTimer) {
-        clearTimeout(keyHoldTimer);
-        keyHoldTimer = null;
-      }
-
-      // Reset progress bar if there's a current key
-      if (currentKey) {
-        const buttonMapping = {
-          [keyLayout["1"]]: "vc_l",
-          [keyLayout["2"]]: "sc_l",
-          [keyLayout["3"]]: "sc_r",
-          [keyLayout["4"]]: "vc_r"
-        };
-
-        const buttonId = buttonMapping[currentKey];
-        if (buttonId) {
-          const buttonElement = document.querySelector(`[data-button-id="${buttonId}"]`) as HTMLDivElement;
-          if (buttonElement) {
-            // Stop and reset the progress bar
-            graphics.stopProgress(buttonElement);
-          }
-        }
-      }
-
-      currentKey = null;
-    };
-
-    /**
-     * Handler for post-decision keyup events
-     * Finishes the post-decision stimulus when all keys are released
-     */
-    const createPostDecisionKeyUpHandler = () => {
-      const postDecisionStartTime = performance.now();
-
-      return (event: KeyboardEvent) => {
-        // Check if this is one of our decision keys
-        const keycode = event.key.toLowerCase();
-        const decisionKeys = [keyLayout["1"], keyLayout["2"], keyLayout["3"], keyLayout["4"]];
-
-        if (decisionKeys.includes(keycode)) {
-          // Check if any decision keys are still being held
-          setTimeout(() => {
-            if (currentStimulus && currentStimulus.getParameters().name === "post-decision") {
-              const elapsedTime = performance.now() - postDecisionStartTime;
-              // Minimum display time: 250ms base + 1000ms if feedback is enabled
-              const minDisplayTime = trial.showFeedback === true ? 1250 : 250;
-
-              if (elapsedTime < minDisplayTime) {
-                // Wait for the remaining time before finishing
-                setTimeout(() => {
-                  if (currentStimulus && currentStimulus.getParameters().name === "post-decision") {
-                    Runner.post(currentStimulus);
-                  }
-                }, minDisplayTime - elapsedTime);
-              } else {
-                // Already waited long enough, finish immediately
-                Runner.post(currentStimulus);
-              }
-            }
-          }, 50);
-        }
-      };
     };
 
     /**
      * An event handler for decision made during a trial
-     * @param {KeyboardEvent} event the particular event or keypress
+     * @param {string} keycode the particular event or keypress
      */
-    const decisionHandler = (event: KeyboardEvent) => {
-      // Record the keycode to process the event
-      const keycode = event.key.toLowerCase();
+    const handleSelection = (keycode: string) => {
+      // Clear all input handlers
+      currentStimulus.clearEventListeners();
 
-      // Filter out invalid keycodes
-      if (!Object.keys(currentStimulus.getParameters().keybindings).includes(
-        keycode
-      )) {
-        console.warn(
-          `Invalid key "${keycode}" for stimulus type "${
-            currentStimulus.getParameters().name
-          }"`
-        );
-        return;
-      }
+      if (currentStimulus.getParameters().stimulusName === "decision") {
+        // Map keycodes to decision responses
+        const inputMap = {
+          "d": "vc_l",
+          "f": "sc_l",
+          "j": "sc_r",
+          "k": "vc_r",
+        };
 
-      if (currentStimulus.getParameters().name === "decision") {
         // Handle 'decision' stimuli
-        selection = currentStimulus.getParameters().keybindings[keycode].choice;
-        currentStimulus.removeKeybindings();
+        selection = inputMap[keycode];
 
         // Calculate and store selection data
         data.decisionEnd = performance.now();
@@ -472,41 +391,43 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     // Setup the properties of each stimulus used in the trial
     // Initial display of the fixation cross
     const initial: IStimulus = {
-      name: "initial",
-      components: ["outline", "fixation"],
-      two: two,
-      graphics: graphics,
-      interactive: false,
-      timing: {
+      stimulusName: "initial",
+      stimulusComponents: ["outline", "fixation"],
+      isInteractive: false,
+      stimulusTiming: {
         pre: 0,
         run: 1000,
         post: 0,
       },
-      eventHandler: decisionHandler,
-      postTrialHandler: nextStimulus,
+      two: two,
+      graphics: graphics,
+      onKeyUp: () => {},
+      onKeyDown: () => {},
+      onStimulusEnd: nextStimulus,
     };
 
     // Display of the dots in motion
     const motion: IStimulus = {
-      name: "motion",
-      components: ["outline", "fixation", "dots"],
-      two: two,
-      graphics: graphics,
-      interactive: false,
-      timing: {
+      stimulusName: "motion",
+      stimulusComponents: ["outline", "fixation", "dots"],
+      isInteractive: false,
+      stimulusTiming: {
         pre: 0,
         run: trial.motionDuration,
         post: 0,
       },
-      eventHandler: decisionHandler,
-      postTrialHandler: nextStimulus,
+      two: two,
+      graphics: graphics,
+      onKeyUp: () => {},
+      onKeyDown: () => {},
+      onStimulusEnd: nextStimulus,
     };
 
     // Display of the reference angle and the coloured arcs for
     // user selection
     const decision: IStimulus = {
-      name: "decision",
-      components: [
+      stimulusName: "decision",
+      stimulusComponents: [
         "outline",
         "fixation",
         "left",
@@ -514,50 +435,32 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         "left_arc",
         "right_arc",
       ],
-      two: two,
-      graphics: graphics,
-      interactive: true,
-      timing: {
+      isInteractive: true,
+      stimulusTiming: {
         pre: 0,
         run: -1,
         post: 0,
       },
-      keybindings: {
-        [keyLayout["1"]]: {
-          choice: "vc_l",
-          handler: decisionKeyDownHandler,
-        },
-        [keyLayout["2"]]: {
-          choice: "sc_l",
-          handler: decisionKeyDownHandler,
-        },
-        [keyLayout["3"]]: {
-          choice: "sc_r",
-          handler: decisionKeyDownHandler,
-        },
-        [keyLayout["4"]]: {
-          choice: "vc_r",
-          handler: decisionKeyDownHandler,
-        },
-      },
-      eventHandler: decisionKeyDownHandler,
-      postTrialHandler: nextStimulus,
+      two: two,
+      graphics: graphics,
+      onKeyUp: onKeyUp,
+      onKeyDown: onKeyDown,
+      onStimulusEnd: nextStimulus,
     };
 
     // Brief display of the fixation cross.
     const postDecision: IStimulus = {
-      name: "post-decision",
-      components: ["outline", "fixation"],
-      two: two,
-      graphics: graphics,
-      interactive: false,
-      timing: {
+      stimulusName: "post-decision",
+      stimulusComponents: ["outline", "fixation"],
+      isInteractive: false,
+      stimulusTiming: {
         pre: 0,
         run: -1, // Wait indefinitely until all keys are released
         post: 0,
       },
-      eventHandler: decisionHandler,
-      postTrialHandler: nextStimulus,
+      two: two,
+      graphics: graphics,
+      onStimulusEnd: nextStimulus,
     };
 
     // Construct a list of the stimuli.
@@ -571,9 +474,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
     let currentStimulus: Stimulus = null;
     data.trialStart = performance.now();
-
-    // Make the keyup handler globally accessible
-    window.decisionKeyUpHandler = decisionKeyUpHandler;
 
     consola.start("Running Trial:", `"${trial.trialType}",`, `Trial index: ${data.trialNumber}`)
     if (trial.trialType === "main") {

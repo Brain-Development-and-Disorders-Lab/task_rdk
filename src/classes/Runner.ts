@@ -21,7 +21,7 @@ export class Runner {
     stimulus.setTimer(
       window.setTimeout(() => {
         Runner.run(stimulus);
-      }, stimulus.getParameters().timing.pre)
+      }, stimulus.getParameters().stimulusTiming.pre)
     );
   }
 
@@ -30,14 +30,14 @@ export class Runner {
    * @param {Stimulus} stimulus stimulus to display
    */
   static run(stimulus: Stimulus): void {
-    stimulus.createKeybindings();
+    stimulus.setupEventListeners();
     Stimulus.run(stimulus.getParameters());
     window.clearTimeout(stimulus.getTimer());
-    if (stimulus.getParameters().timing.run >= 0) {
+    if (stimulus.getParameters().stimulusTiming.run >= 0) {
       stimulus.setTimer(
         window.setTimeout(() => {
           Runner.post(stimulus);
-        }, stimulus.getParameters().timing.run)
+        }, stimulus.getParameters().stimulusTiming.run)
       );
     }
   }
@@ -47,12 +47,12 @@ export class Runner {
    * @param {Stimulus} stimulus stimulus to display
    */
   static post(stimulus: Stimulus): void {
-    stimulus.removeKeybindings();
+    stimulus.clearEventListeners();
     window.clearTimeout(stimulus.getTimer());
     stimulus.setTimer(
       window.setTimeout(() => {
         Runner.finish(stimulus);
-      }, stimulus.getParameters().timing.post)
+      }, stimulus.getParameters().stimulusTiming.post)
     );
   }
 
@@ -63,6 +63,6 @@ export class Runner {
   static finish(stimulus: Stimulus): void {
     stimulus.getParameters().graphics.reset();
     window.clearTimeout(stimulus.getTimer());
-    stimulus.getPostTrialHandler()();
+    stimulus.getOnStimulusEnd()();
   }
 }

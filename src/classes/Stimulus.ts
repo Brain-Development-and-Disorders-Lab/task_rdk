@@ -13,11 +13,13 @@ import { IStimulus } from "../../types";
  * Stimulus abstraction
  */
 export class Stimulus {
-  private parameters: IStimulus;
-  private name: string;
-  private interactive: boolean;
-  private keybindings: any;
-  private postTrialHandler: any;
+  // Configuration and readonly variables
+  private readonly parameters: IStimulus;
+  private readonly stimulusName: string;
+  private readonly isInteractive: boolean;
+  private readonly onStimulusEnd: any;
+
+  // Stimulus timer, used by `Runner` class
   private timer: number;
 
   /**
@@ -29,10 +31,9 @@ export class Stimulus {
     this.parameters = parameters;
 
     // Unpack parameters
-    this.name = parameters.name;
-    this.interactive = parameters.interactive;
-    this.keybindings = parameters.keybindings;
-    this.postTrialHandler = parameters.postTrialHandler;
+    this.stimulusName = parameters.stimulusName;
+    this.isInteractive = parameters.isInteractive;
+    this.onStimulusEnd = parameters.onStimulusEnd;
 
     // Timer
     this.timer = null;
@@ -49,23 +50,14 @@ export class Stimulus {
   /**
    * Setup the keybindings for the stimulus
    */
-  createKeybindings(): void {
-    // Check if the stimulus can be interacted with
-    if (this.interactive) {
-      // Bind keydown events
-      for (const binding in this.keybindings) {
-        if (this.keybindings[binding]) {
-          document.addEventListener("keydown", this.keybindings[binding].handler);
-        }
+  setupEventListeners(): void {
+    if (this.isInteractive) {
+      // Bind keyboard events if specified
+      if (this.parameters.onKeyDown) {
+        document.addEventListener("keydown", this.parameters.onKeyDown);
       }
-
-      // Also bind keyup events for decision stimulus
-      if (this.name === "decision") {
-        document.addEventListener("keyup", (event: KeyboardEvent) => {
-          if (window.decisionKeyUpHandler) {
-            window.decisionKeyUpHandler(event);
-          }
-        });
+      if (this.parameters.onKeyUp) {
+        document.addEventListener("keyup", this.parameters.onKeyUp);
       }
     }
   }
@@ -73,27 +65,18 @@ export class Stimulus {
   /**
    * Remove keybindings for the stimulus
    */
-  removeKeybindings(): void {
-    // Unbind keydown events
-    for (const binding in this.keybindings) {
-      if (this.keybindings[binding]) {
-        document.removeEventListener(
-          "keydown",
-          this.keybindings[binding].handler
-        );
-      }
+  clearEventListeners(): void {
+    // Unbind keyboard events if specified
+    if (this.parameters.onKeyDown) {
+      document.removeEventListener("keydown", this.parameters.onKeyDown);
     }
+    if (this.parameters.onKeyUp) {
+      document.removeEventListener("keyup", this.parameters.onKeyUp);
+    }
+  }
 
-    // Also remove keyup events for decision stimulus
-    if (this.name === "decision") {
-      document.removeEventListener("keyup", window.decisionKeyUpHandler);
-    }
-
-    // Remove post-decision keyup handler if it exists
-    if (this.name === "post-decision" && window.postDecisionKeyUpHandler) {
-      document.removeEventListener("keyup", window.postDecisionKeyUpHandler);
-      window.postDecisionKeyUpHandler = undefined;
-    }
+  getStimulusName(): string {
+    return this.stimulusName;
   }
 
   /**
@@ -124,10 +107,10 @@ export class Stimulus {
 
   /**
    * Get the handler called after each trial
-   * @return {any}
+   * @return {() => void}
    */
-  getPostTrialHandler(): any {
-    return this.postTrialHandler;
+  getOnStimulusEnd(): any {
+    return this.onStimulusEnd;
   }
 
   /**
@@ -139,8 +122,8 @@ export class Stimulus {
     const two = parameters.two;
     const graphics = parameters.graphics;
 
-    for (let c = 0; c < parameters.components.length; c++) {
-      const component = parameters.components[c];
+    for (let c = 0; c < parameters.stimulusComponents.length; c++) {
+      const component = parameters.stimulusComponents[c];
       if (component === "outline") {
         graphics.addOutline();
       } else if (component === "fixation") {

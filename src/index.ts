@@ -7,29 +7,24 @@
  * @link   https://github.com/Brain-Development-and-Disorders-Lab/task_rdk/blob/main/src/index.ts
  * @author Henry Burgess <henry.burgess@wustl.edu>
  */
-// Utility libraries
-import _ from "lodash";
-
 // Import jsPsych to ensure it is bundled when compiled
 import { initJsPsych } from "jspsych";
 import InstructionsPlugin from "@jspsych/plugin-instructions";
 import FullscreenPlugin from "@jspsych/plugin-fullscreen";
 import SurveyHtmlFormPlugin from "@jspsych/plugin-survey-html-form";
-
-// Graphics component
-import { Graphics } from "./classes/Graphics";
-
-// Attention check plugin
-// November 26, 2023: Removed for testing new MRI controllers
+// NOTE: Removed for testing new MRI controllers on November 26, 2023
 // import jsPsychAttentionCheck from "jspsych-attention-check";
-
-// Neurocog extension
+import DotGamePlugin from "./plugin";
 import NeurocogExtension from "neurocog";
 
-// Import the plugin before adding it to the timeline
-import DotGamePlugin from "./plugin";
+// Graphics class, used to generate stimuli
+import { Graphics } from "./classes/Graphics";
+
+// Custom types
+import { IButtonMap } from "../types";
 
 // Additional functions and variables
+import _ from "lodash";
 import { scaling } from "./functions";
 
 /**
@@ -56,25 +51,28 @@ const jsPsych = initJsPsych({
 // Configure variable alias for Neurocog extension
 const Neurocog = jsPsych.extensions.Neurocog;
 
-// Input configurations, mapping device inputs to task actions
-const InputConfigurations = {
-  desktop: {
-    name: "desktop",
+/**
+ * Define the input configuration, change this to suit the context
+ * using the `IButtonMap` type. Buttons "1" through "4" are required,
+ * and "trigger" is optional except for MRI contexts.
+ * Example format for MRI contexts:
+ * 
+ * ```typescript
+ * const buttonMap: IButtonMap = {
+ *   1: "1",
+ *   2: "2",
+ *   3: "3",
+ *   4: "4",
+ *   trigger: "5",
+ * };
+ * ```
+ */
+const buttonMap: IButtonMap = {
     1: "d",
     2: "f",
     3: "j",
     4: "k",
-    showButtons: false,
-  },
-  spectrometer: {
-    name: "spectrometer",
-    1: "1",
-    2: "2",
-    3: "3",
-    4: "4",
     trigger: "5",
-    showButtons: false,
-  },
 };
 
 // Experimental parameters, defining the number of trials and other experiment behavior
@@ -83,9 +81,9 @@ export const Manipulations = {
   numPracticeTrials: Neurocog.getManipulation("numPracticeTrials", 8),
   numCalibrationOneTrials: Neurocog.getManipulation("numCalibrationOneTrials", 60),
   numMainTrials: Neurocog.getManipulation("numMainTrials", 100),
-  invertColors: __TARGET__ === "spectrometer",
+  invertColors: _.isEqual(__TARGET__, "spectrometer"),
   requireID: Neurocog.getManipulation("requireID", false),
-  enableFullscreen: __TARGET__ === "spectrometer",
+  enableFullscreen: _.isEqual(__TARGET__, "spectrometer"),
   showInstructions: Neurocog.getManipulation("showInstructions", false),
 };
 
@@ -98,8 +96,6 @@ if (Manipulations.invertColors) {
  * Create the experiment timeline
  */
 const timeline = [];
-
-const keyLayout = InputConfigurations[__TARGET__];
 
 // Tutorial trial properties
 const tutorialDuration = [1, 5];
@@ -132,19 +128,16 @@ let instructionContinueText = `<div id="instructions-navigation">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
         <p style="font-weight: bold; font-size: large;">\< Back</p>
-        ${__TARGET__ === "spectrometer" ? Graphics.getEmbeddedControllerButton(1) : Graphics.getEmbeddedKeyboardButton("F")}
+        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getEmbeddedControllerButton(1) : Graphics.getEmbeddedKeyboardButton("F")}
       </div>
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
-        ${__TARGET__ === "spectrometer" ? Graphics.getEmbeddedControllerButton(4) : Graphics.getEmbeddedKeyboardButton("J")}
+        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getEmbeddedControllerButton(4) : Graphics.getEmbeddedKeyboardButton("J")}
         <p style="font-weight: bold; font-size: large;">Next \></p>
       </div>
     </div>
   </div>`;
 
-if (
-  _.isEqual(Manipulations.showInstructions, true) &&
-  !_.isEqual(keyLayout.name, "spectrometer")
-) {
+if (_.isEqual(Manipulations.showInstructions, true) && !_.isEqual(__TARGET__, "spectrometer")) {
   // Display video
   timeline.push({
     type: InstructionsPlugin,
@@ -155,11 +148,11 @@ if (
       <p><i>This video is best viewed in fullscreen mode.</i></p>` +
         instructionContinueText,
     ],
-    allow_keys: !keyLayout.showButtons,
-    key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
-    key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
+    allow_keys: false,
+    key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
+    key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
     show_page_number: true,
-    show_clickable_nav: keyLayout.showButtons,
+    show_clickable_nav: false,
   });
 }
 
@@ -176,11 +169,11 @@ const tutorialGames = [
 timeline.push({
   type: InstructionsPlugin,
   pages: tutorialGames,
-  allow_keys: !keyLayout.showButtons,
-  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
-  key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
+  allow_keys: true,
+  key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
+  key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
   show_page_number: true,
-  show_clickable_nav: keyLayout.showButtons,
+  show_clickable_nav: false,
 });
 
 for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
@@ -207,7 +200,7 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
     coherences: [k, k],
       motionDuration: d,
     showFeedback: false,
-    keyLayout: keyLayout,
+    buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
   };
 
@@ -231,15 +224,15 @@ const practice = [
 timeline.push({
   type: InstructionsPlugin,
   pages: practice,
-  allow_keys: !keyLayout.showButtons,
-  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
-  key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
+  allow_keys: true,
+  key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
+  key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
   show_page_number: true,
-  show_clickable_nav: keyLayout.showButtons,
+  show_clickable_nav: false,
 });
 
 // Attention-check question
-// November 26, 2023: Removed for testing new MRI controllers
+// NOTE: Removed for testing new MRI controllers on November 26, 2023
 
 for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
   let a = Math.random() > 0.5 ? 0 : Math.PI;
@@ -258,7 +251,7 @@ for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
     coherences: [k, k],
       motionDuration: 1500,
     showFeedback: true,
-    keyLayout: keyLayout,
+    buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
   };
 
@@ -298,7 +291,7 @@ if (Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials > 0) {
 // -------------------- Spectrometer --------------------
 // If inside the spectrometer, wait until the signal key is pressed.
 // Else, use the standard pre-game screen.
-if (_.isEqual(keyLayout.name, "spectrometer")) {
+if (_.isEqual(__TARGET__, "spectrometer")) {
   const spectrometer = [
     `<h1>RDK Task</h1>` +
       `<h2>Please Wait...</h2>` +
@@ -311,19 +304,19 @@ if (_.isEqual(keyLayout.name, "spectrometer")) {
   timeline.push({
     type: InstructionsPlugin,
     pages: spectrometer,
-    allow_keys: !keyLayout.showButtons,
-    key_forward: keyLayout.trigger,
-    show_clickable_nav: keyLayout.showButtons,
+    allow_keys: true,
+    key_forward: buttonMap["trigger"],
+    show_clickable_nav: false,
   });
 } else {
   timeline.push({
     type: InstructionsPlugin,
     pages: main,
-    allow_keys: !keyLayout.showButtons,
-    key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
-    key_backward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["1"] : keyLayout["2"],
+    allow_keys: true,
+    key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
+    key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
     show_page_number: true,
-    show_clickable_nav: keyLayout.showButtons,
+    show_clickable_nav: false,
   });
 }
 
@@ -345,7 +338,7 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
     coherences: [k, k],
       motionDuration: 1500,
     showFeedback: false,
-    keyLayout: keyLayout,
+    buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
   };
 
@@ -373,7 +366,7 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
     coherences: [k, k],
       motionDuration: 1500,
     showFeedback: false,
-    keyLayout: keyLayout,
+    buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
   };
 
@@ -392,7 +385,7 @@ timeline.push({
   allow_backward: false,
   button_label_next: "Finish",
   show_clickable_nav: false,
-  key_forward: _.isEqual(keyLayout.name, "spectrometer") ? keyLayout["4"] : keyLayout["3"],
+  key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
 });
 
 jsPsych.run(timeline);
