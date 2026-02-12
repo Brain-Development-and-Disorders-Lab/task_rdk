@@ -36,7 +36,6 @@ export class Graphics {
   private viewHeight: number;
   private renderLayer: any;
   private elements: any[];
-  
 
   /**
    * Graphics constructor
@@ -277,7 +276,6 @@ export class Graphics {
       rightContainer.remove();
     }
   }
-  
 
   /**
    * Adds an element to the list of renderered element
@@ -325,7 +323,7 @@ export class Graphics {
       }
     }
   }
-  
+
   /**
    * Create a circle
    * @param {number} x x-coordinate of the circle center
@@ -396,11 +394,7 @@ export class Graphics {
    */
   private createDot(dot: Dot, update: boolean, fill = "black"): Circle {
     const coordinates = translate(dot.getX(), dot.getY(), this.viewWidth, this.viewHeight);
-    const circle = this.two.makeCircle(
-      coordinates[0],
-      coordinates[1],
-      this.dotRadius
-    );
+    const circle = this.two.makeCircle(coordinates[0], coordinates[1], this.dotRadius);
     circle.fill = getInvertedColor(fill);
     dot.setDot(circle);
     this.renderLayer.add(circle);
@@ -545,7 +539,7 @@ export class Graphics {
    * @param {HTMLDivElement} buttonElement the button element to animate
    */
   startProgress(buttonElement: HTMLDivElement): void {
-    const progressBar = buttonElement.querySelector('.progress-bar') as HTMLElement;
+    const progressBar = buttonElement.querySelector(".progress-bar") as HTMLElement;
     if (progressBar) {
       progressBar.style.width = "100%";
     }
@@ -556,7 +550,7 @@ export class Graphics {
    * @param {HTMLDivElement} buttonElement the button element to reset
    */
   stopProgress(buttonElement: HTMLDivElement): void {
-    const progressBar = buttonElement.querySelector('.progress-bar') as HTMLElement;
+    const progressBar = buttonElement.querySelector(".progress-bar") as HTMLElement;
     if (progressBar) {
       progressBar.style.width = "0%";
     }
@@ -609,9 +603,9 @@ export class Graphics {
       leftVeryConfidentButtonContainer.append(leftVeryConfidentButton);
       const leftVeryConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        leftVeryConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedControllerButton(1);
+        leftVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("1", true);
       } else {
-        leftVeryConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedKeyboardButton("D");
+        leftVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("D");
       }
       leftVeryConfidentButtonContainer.append(leftVeryConfidentButtonLabelContainer);
       leftButtonContainer.append(leftVeryConfidentButtonContainer);
@@ -628,9 +622,9 @@ export class Graphics {
       leftSomewhatConfidentButtonContainer.append(leftSomewhatConfidentButton);
       const leftSomewhatConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        leftSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedControllerButton(2);
+        leftSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("2", true);
       } else {
-        leftSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedKeyboardButton("F");
+        leftSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("F");
       }
       leftSomewhatConfidentButtonContainer.append(leftSomewhatConfidentButtonLabelContainer);
       leftButtonContainer.append(leftSomewhatConfidentButtonContainer);
@@ -679,9 +673,9 @@ export class Graphics {
       rightSomewhatConfidentButtonContainer.append(rightSomewhatConfidentButton);
       const rightSomewhatConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        rightSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedControllerButton(3);
+        rightSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("3", true);
       } else {
-        rightSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedKeyboardButton("J");
+        rightSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("J");
       }
       rightSomewhatConfidentButtonContainer.append(rightSomewhatConfidentButtonLabelContainer);
       rightButtonContainer.append(rightSomewhatConfidentButtonContainer);
@@ -698,9 +692,9 @@ export class Graphics {
       rightVeryConfidentButtonContainer.append(rightVeryConfidentButton);
       const rightVeryConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedControllerButton(4);
+        rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("4");
       } else {
-        rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getEmbeddedKeyboardButton("K");
+        rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("K");
       }
       rightVeryConfidentButtonContainer.append(rightVeryConfidentButtonLabelContainer);
       rightButtonContainer.append(rightVeryConfidentButtonContainer);
@@ -716,59 +710,57 @@ export class Graphics {
   /**
    * Generate and and return a HTML string depicting the controller layout with the
    * specified button index highlighted.
-   * @param buttonIndex index of the controller button (1-4)
+   * @param {String} keycode Keycode of the input to be represented
+   * @param {Boolean} isController Optional parameter to specify if the SVG should represent a controller
    * @return {string} the HTML string for the controller button representation
    */
-  static getEmbeddedControllerButton(buttonIndex: number): string {
-    // Validate button index (1-4)
-    const validIndex = Math.max(1, Math.min(4, buttonIndex));
+  static getInputIcon(keycode: string, isController = false): string {
+    if (isController) {
+      // Constrain button index (1-4)
+      const numericKeycode = parseInt(keycode);
+      const buttonIndex = Math.max(1, Math.min(4, numericKeycode));
 
-    // Create SVG with 4 circles representing the controller buttons
-    const svg = `
-      <svg width="90" height="45" style="display: inline-block; vertical-align: middle;">
-        <rect x="2" y="2" width="86" height="41"
-              fill="none" stroke="black" stroke-width="2"
-              rx="4" ry="4"/>
-        ${[1, 2, 3, 4].map((index) => {
-          const centerX = 18 * index;
-          const centerY = 22.5;
-          const radius = 6;
-          const isHighlighted = index === validIndex;
+      // Create SVG with 4 circles representing the controller buttons
+      const svg = `
+        <svg width="90" height="45" style="display: inline-block; vertical-align: middle;">
+          <rect x="2" y="2" width="86" height="41"
+                fill="none" stroke="black" stroke-width="2"
+                rx="4" ry="4"/>
+          ${[1, 2, 3, 4]
+            .map((index) => {
+              const centerX = 18 * index;
+              const centerY = 22.5;
+              const radius = 6;
+              const isHighlighted = index === buttonIndex;
 
-          return `
-            <circle cx="${centerX}" cy="${centerY}" r="${radius}"
-                    fill="${isHighlighted ? 'red' : 'none'}"
-                    stroke="${getInvertedColor('black')}" stroke-width="1"/>
-          `;
-        }).join('')}
-      </svg>
-    `;
+              return `
+              <circle cx="${centerX}" cy="${centerY}" r="${radius}"
+                      fill="${isHighlighted ? "red" : "none"}"
+                      stroke="${getInvertedColor("black")}" stroke-width="1"/>
+            `;
+            })
+            .join("")}
+        </svg>
+      `;
 
-    return svg;
-  }
+      return svg;
+    } else {
+      // Create SVG with a rounded square containing the keycode
+      const svg = `
+        <svg width="60" height="60" style="display: inline-block; vertical-align: middle;">
+          <rect x="2" y="2" width="56" height="56"
+                fill="none" stroke="black" stroke-width="2"
+                rx="5" ry="5"/>
+          <text x="30" y="38" text-anchor="middle"
+                font-family="Arial, sans-serif"
+                font-size="20"
+                font-weight="bold"
+                fill="black">${keycode}</text>
+        </svg>
+      `;
 
-  /**
-   * Generate and return a HTML string depicting a keyboard key with the
-   * specified key text in the middle.
-   * @param key the key text to display (e.g., "D", "F", "J", "K")
-   * @return {string} the HTML string for the keyboard key representation
-   */
-  static getEmbeddedKeyboardButton(key: string): string {
-    // Create SVG with a rounded square containing the key text
-    const svg = `
-      <svg width="60" height="60" style="display: inline-block; vertical-align: middle;">
-        <rect x="2" y="2" width="56" height="56"
-              fill="none" stroke="black" stroke-width="2"
-              rx="5" ry="5"/>
-        <text x="30" y="38" text-anchor="middle"
-              font-family="Arial, sans-serif"
-              font-size="20"
-              font-weight="bold"
-              fill="black">${key}</text>
-      </svg>
-    `;
-
-    return svg;
+      return svg;
+    }
   }
 
   /**

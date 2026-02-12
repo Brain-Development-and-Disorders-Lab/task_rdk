@@ -56,33 +56,33 @@ const info = {
     dotDirection: {
       type: ParameterType.STRING,
       default: undefined,
-      pretty_name: "Direction of coherent dot movement, either \"left\" or \"right\"",
+      pretty_name: 'Direction of coherent dot movement, either "left" or "right"',
     },
     activeCoherence: {
       type: ParameterType.FLOAT,
       default: undefined,
-      pretty_name: "Proportion of coherent dots shown to participant during dot motion"
+      pretty_name: "Proportion of coherent dots shown to participant during dot motion",
     },
     coherences: {
       type: ParameterType.COMPLEX,
       default: undefined,
       readonly: false,
-      pretty_name: "Pair of coherence values (low and high) used in main trials"
+      pretty_name: "Pair of coherence values (low and high) used in main trials",
     },
     motionDuration: {
       type: ParameterType.INT,
       default: undefined,
-      pretty_name: "Duration of motion presented to participants (ms)"
+      pretty_name: "Duration of motion presented to participants (ms)",
     },
     showFeedback: {
       type: ParameterType.BOOL,
       default: false,
-      pretty_name: "Show feedback post-decision using fixation cross color"
+      pretty_name: "Show feedback post-decision using fixation cross color",
     },
     buttonMap: {
       type: ParameterType.COMPLEX,
       default: undefined,
-      pretty_name: "Mapping of keyboard or other inputs to decision responses"
+      pretty_name: "Mapping of keyboard or other inputs to decision responses",
     },
   },
 };
@@ -115,7 +115,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       activeCoherence: trial.activeCoherence,
       coherences: trial.coherences,
     };
-    
+
     // Setup variables
     const distanceFromScreen = trial.viewDistance;
     let selection = "";
@@ -234,7 +234,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const onKeyDown = (event: KeyboardEvent) => {
       event.preventDefault();
       const keycode = event.key.toLowerCase();
-      
+
       // Edge case: Holding a button prior to input being accepted
       if (!(keycode in inputState) && Object.keys(inputState).length === 0 && event.repeat) {
         // Block holding keys across trials
@@ -250,7 +250,12 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       }
 
       if (keycode in inputState) {
-        if (hasSelected(trial.buttonMap["1"]) || hasSelected(trial.buttonMap["2"]) || hasSelected(trial.buttonMap["3"]) || hasSelected(trial.buttonMap["4"])) {
+        if (
+          hasSelected(trial.buttonMap["1"]) ||
+          hasSelected(trial.buttonMap["2"]) ||
+          hasSelected(trial.buttonMap["3"]) ||
+          hasSelected(trial.buttonMap["4"])
+        ) {
           consola.info(`\"${keycode}\" held for 1000ms`);
           handleSelection(keycode);
         }
@@ -429,14 +434,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     // user selection
     const decision: IStimulus = {
       stimulusName: "decision",
-      stimulusComponents: [
-        "outline",
-        "fixation",
-        "left",
-        "right",
-        "left_arc",
-        "right_arc",
-      ],
+      stimulusComponents: ["outline", "fixation", "left", "right", "left_arc", "right_arc"],
       isInteractive: true,
       stimulusTiming: {
         pre: 0,
@@ -467,17 +465,12 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
     // Construct a list of the stimuli.
     const stimuli: Stimulus[] = [];
-    stimuli.push(
-      new Stimulus(initial),
-      new Stimulus(motion),
-      new Stimulus(decision),
-      new Stimulus(postDecision)
-    );
+    stimuli.push(new Stimulus(initial), new Stimulus(motion), new Stimulus(decision), new Stimulus(postDecision));
 
     let currentStimulus: Stimulus = null;
     data.trialStart = performance.now();
 
-    consola.start("Running Trial:", `"${trial.trialType}",`, `Trial index: ${data.trialNumber}`)
+    consola.start("Running Trial:", `"${trial.trialType}",`, `Trial index: ${data.trialNumber}`);
     if (trial.trialType === "main") {
       consola.info("Coherences:", data.coherences);
     }

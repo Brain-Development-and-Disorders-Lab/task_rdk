@@ -30,7 +30,7 @@ export type IButtonMap = {
   "2": string;
   "3": string;
   "4": string; // Typically the right-most input
-  "trigger"?: string; // Optional "trigger" input used in MRI contexts
+  trigger?: string; // Optional "trigger" input used in MRI contexts
 };
 
 // Graphics parameters

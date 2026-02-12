@@ -10,11 +10,7 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier-eslint",
-  ],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier-eslint"],
   rules: {
     "max-len": ["warn", { code: 120 }],
   },

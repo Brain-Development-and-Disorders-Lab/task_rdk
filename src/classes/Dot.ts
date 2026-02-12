@@ -126,7 +126,7 @@ export class Dot {
     this.y = y;
 
     // Perform coordinate translate for renderer, only if dot is within the view
-    const coordinates = translate( this.x, this.y, this.viewWidth, this.viewHeight);
+    const coordinates = translate(this.x, this.y, this.viewWidth, this.viewHeight);
     if (renderable(coordinates[0], coordinates[1], this.viewWidth, this.viewHeight)) {
       this.dot.translation.x = coordinates[0];
       this.dot.translation.y = coordinates[1];

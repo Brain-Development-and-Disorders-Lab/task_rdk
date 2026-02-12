@@ -6,12 +6,7 @@
     "target": "es5",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "types": [
-      "jest",
-      "puppeteer",
-      "jest-environment-puppeteer",
-      "expect-puppeteer"
-    ]
+    "types": ["jest", "puppeteer", "jest-environment-puppeteer", "expect-puppeteer"]
   },
   "include": ["src/", "types/"]
 }

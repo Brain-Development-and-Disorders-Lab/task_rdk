@@ -128,10 +128,10 @@ let instructionContinueText = `<div id="instructions-navigation">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
         <p style="font-weight: bold; font-size: large;">\< Back</p>
-        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getEmbeddedControllerButton(1) : Graphics.getEmbeddedKeyboardButton("F")}
+        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getInputIcon("1", true) : Graphics.getInputIcon("F")}
       </div>
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
-        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getEmbeddedControllerButton(4) : Graphics.getEmbeddedKeyboardButton("J")}
+        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getInputIcon("4", true) : Graphics.getInputIcon("J")}
         <p style="font-weight: bold; font-size: large;">Next \></p>
       </div>
     </div>
@@ -145,8 +145,7 @@ if (_.isEqual(Manipulations.showInstructions, true) && !_.isEqual(__TARGET__, "s
       `<h1>RDK Task</h1>
       <h2>Instructions - Video</h2>
       <iframe src="https://wustl.box.com/embed/v/rdk-instructions-video" class="video-container" frameborder="0" allowfullscreen webkitallowfullscreen msallowfullscreen></iframe>
-      <p><i>This video is best viewed in fullscreen mode.</i></p>` +
-        instructionContinueText,
+      <p><i>This video is best viewed in fullscreen mode.</i></p>` + instructionContinueText,
     ],
     allow_keys: false,
     key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
@@ -177,7 +176,7 @@ timeline.push({
 });
 
 for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
-  let d = ((Math.random() * (tutorialDuration[1] - tutorialDuration[0]) + tutorialDuration[0]) * 1000);
+  let d = (Math.random() * (tutorialDuration[1] - tutorialDuration[0]) + tutorialDuration[0]) * 1000;
   d = parseFloat(d.toFixed(2));
   const k = Math.random() > 0.5 ? tutorialCoherences[0] : tutorialCoherences[1];
   let a = Math.random() > 0.5 ? 0 : Math.PI;
@@ -321,7 +320,7 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
 
   const trial = {
     type: DotGamePlugin,
-    trialType: (t === 0 || t === 1) ? "calibration-constant" : "calibration",
+    trialType: t === 0 || t === 1 ? "calibration-constant" : "calibration",
     trialNumber: t,
     viewDistance: 50 * scaling(),
     dotAngle: a,

@@ -40,7 +40,7 @@ export const getInvertedColor = (defaultColor: string): string => {
       return defaultColor;
   }
 };
-  
+
 /**
  * Takes coordinates of form x [-150, 150], y [-150, 150] and
  * translates them to x [0, 300], y [0, 300]

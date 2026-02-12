@@ -149,13 +149,15 @@ export class Stimulus {
       }
     }
 
-    two.bind("update", (frameCount: number) => {
-      for (let d = 0; d < graphics.getElements().length; d++) {
-        const element = graphics.getElements()[d];
-        if (element.step) {
-          element.step(frameCount);
+    two
+      .bind("update", (frameCount: number) => {
+        for (let d = 0; d < graphics.getElements().length; d++) {
+          const element = graphics.getElements()[d];
+          if (element.step) {
+            element.step(frameCount);
+          }
         }
-      }
-    }).play();
+      })
+      .play();
   }
 }
