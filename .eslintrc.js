@@ -15,4 +15,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "prettier-eslint",
   ],
+  rules: {
+    "max-len": ["warn", { code: 120 }],
+  },
 };

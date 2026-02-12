@@ -177,13 +177,8 @@ timeline.push({
 });
 
 for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
-  const d = parseFloat(
-    (
-      (Math.random() * (tutorialDuration[1] - tutorialDuration[0]) +
-        tutorialDuration[0]) *
-      1000
-    ).toFixed(2)
-  );
+  let d = ((Math.random() * (tutorialDuration[1] - tutorialDuration[0]) + tutorialDuration[0]) * 1000);
+  d = parseFloat(d.toFixed(2));
   const k = Math.random() > 0.5 ? tutorialCoherences[0] : tutorialCoherences[1];
   let a = Math.random() > 0.5 ? 0 : Math.PI;
   a = parseFloat(a.toFixed(3));
@@ -267,9 +262,7 @@ if (Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials > 0) {
       `<p>That concludes all the practice games.</p>` +
       `<p>Take a short break now.</p>` +
       `<p>When you are ready to continue, you will play ` +
-      `${
-        Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials
-      } ` +
+      `${Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials} ` +
       `games.</p>` +
       `<br>` +
       `<p><b>Good luck!</b></p>` +

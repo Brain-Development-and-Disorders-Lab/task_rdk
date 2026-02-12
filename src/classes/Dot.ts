@@ -98,10 +98,7 @@ export class Dot {
       }
 
       // Check if the new coordinates are within region.
-      if (
-        !visible(x, y, this.apertureRadius + this.dotRadius * 2) &&
-        this.shown === true
-      ) {
+      if (!visible(x, y, this.apertureRadius + this.dotRadius * 2) && this.shown === true) {
         x = x - 2 * this.apertureRadius * Math.cos(this.dotAngle);
         y = y - 2 * this.apertureRadius * Math.sin(this.dotAngle);
         this.shown = false;
@@ -129,20 +126,8 @@ export class Dot {
     this.y = y;
 
     // Perform coordinate translate for renderer, only if dot is within the view
-    const coordinates = translate(
-      this.x,
-      this.y,
-      this.viewWidth,
-      this.viewHeight
-    );
-    if (
-      renderable(
-        coordinates[0],
-        coordinates[1],
-        this.viewWidth,
-        this.viewHeight
-      )
-    ) {
+    const coordinates = translate( this.x, this.y, this.viewWidth, this.viewHeight);
+    if (renderable(coordinates[0], coordinates[1], this.viewWidth, this.viewHeight)) {
       this.dot.translation.x = coordinates[0];
       this.dot.translation.y = coordinates[1];
     }

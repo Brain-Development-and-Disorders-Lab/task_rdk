@@ -203,11 +203,6 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
           graphics.cursorVisibility(false);
         } else if (currentStimulus.getParameters().stimulusName === "initial") {
           graphics.cursorVisibility(false);
-        } else if (currentStimulus.getParameters().stimulusName === "post-decision") {
-          // Set up keyup handler to wait for all keys to be released
-          // postDecisionKeyUpHandler = createPostDecisionKeyUpHandler();
-          // window.postDecisionKeyUpHandler = postDecisionKeyUpHandler;
-          // document.addEventListener("keyup", postDecisionKeyUpHandler);
         } else {
           graphics.cursorVisibility(true);
         }
@@ -375,11 +370,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       // Calculate the median coherence to use in the coming trials
       if (previousTrial.trialType !== "main" && data.trialNumber === 0) {
         // If this is the first, compute the median of the last 20 trials
-        let kMedian = this.jsPsych.data
-          .get()
-          .last(21)
-          .select("activeCoherence")
-          .median();
+        let kMedian = this.jsPsych.data.get().last(21).select("activeCoherence").median();
 
         // Adjust coherence to constrain it within [0.12, 0.50]
         if (kMedian > 0.5) {
@@ -391,8 +382,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         // Generate the list of coherences
         data.coherences = [kMedian * 0.5, kMedian * 2.0];
       } else {
-        // Else re-use the coherence from previous main calibration
-        // trials
+        // Else re-use the coherence from previous main calibration trials
         data.coherences = priorTrialPair[1].coherences;
       }
 

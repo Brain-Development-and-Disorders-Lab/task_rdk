@@ -78,39 +78,21 @@ export class Graphics {
    * @param {boolean} visible the status of cursor visibility
    */
   cursorVisibility(visible: boolean = true): void {
-    document.getElementById("jspsych-content").style.cursor = visible
-      ? "auto"
-      : "none";
+    document.getElementById("jspsych-content").style.cursor = visible ? "auto" : "none";
   }
 
   /**
    * Setup outlines
    */
   addOutline(): void {
-    const viewCircle = this.createCircle(
-      0,
-      0,
-      this.apertureRadius,
-      false
-    );
-    const dotLayer = this.createRectangle(
-      0,
-      0,
-      this.viewWidth,
-      this.viewHeight,
-      false
-    );
+    const viewCircle = this.createCircle(0, 0, this.apertureRadius, false);
+    const dotLayer = this.createRectangle(0, 0, this.viewWidth, this.viewHeight, false);
     viewCircle.fill = getInvertedColor("white");
     dotLayer.fill = getInvertedColor("white");
     this.renderLayer = this.two.makeGroup(dotLayer);
     this.renderLayer.mask = viewCircle;
 
-    const viewCircleOutline = this.createCircle(
-      0,
-      0,
-      this.apertureRadius,
-      false
-    );
+    const viewCircleOutline = this.createCircle(0, 0, this.apertureRadius, false);
     viewCircleOutline.noFill();
     viewCircleOutline.stroke = getInvertedColor("black");
     viewCircleOutline.linewidth = 5;
@@ -120,27 +102,15 @@ export class Graphics {
    * Create a fixation cross
    */
   addFixation(): void {
-    const fixationDiameter = Math.ceil(
-      Math.abs(this.distanceFromScreen * Math.tan(0.4))
-    );
-    if (
-      this.trial.showFeedback === true &&
-      this.trial.data.selection !== ""
-    ) {
+    const fixationDiameter = Math.ceil(Math.abs(this.distanceFromScreen * Math.tan(0.4)));
+    if (this.trial.showFeedback === true && this.trial.data.selection !== "") {
       if (this.trial.data.correct === 1) {
         this.createFixation(0, 0, fixationDiameter, false, getInvertedColor("green"));
       } else {
         this.createFixation(0, 0, fixationDiameter, false, getInvertedColor("red"));
       }
     } else {
-      const fixationCircle = this.createCircle(
-        0,
-        0,
-        fixationDiameter * 0.8,
-        true,
-        "white",
-        "white"
-      );
+      const fixationCircle = this.createCircle(0, 0, fixationDiameter * 0.8, true, "white", "white");
       this.createFixation(0, 0, fixationDiameter, false, "black");
     }
   }
@@ -258,12 +228,8 @@ export class Graphics {
     for (let i = -dotRowCount / 2; i < dotRowCount / 2; i++) {
       for (let j = -dotRowCount / 2; j < dotRowCount / 2; j++) {
         const delta = Math.random();
-        const x =
-          (i * this.viewWidth) / dotRowCount +
-          (delta * this.viewWidth) / dotRowCount;
-        const y =
-          (j * this.viewHeight) / dotRowCount +
-          (delta * this.viewHeight) / dotRowCount;
+        const x = (i * this.viewWidth) / dotRowCount + (delta * this.viewWidth) / dotRowCount;
+        const y = (j * this.viewHeight) / dotRowCount + (delta * this.viewHeight) / dotRowCount;
 
         if (delta > this.trial.activeCoherence) {
           // Non-dynamic dot that is just moving in random paths
@@ -370,14 +336,7 @@ export class Graphics {
    * @param {string} stroke the colour of the stroke
    * @return {Circle} a Two.js circle object
    */
-  private createCircle(
-    x: number,
-    y: number,
-    r: number,
-    update: boolean,
-    fill: string = "black",
-    stroke: string = "black"
-  ): Circle {
+  private createCircle(x: number, y: number, r: number, update: boolean, fill = "black", stroke = "black"): Circle {
     const coordinates = translate(x, y, this.viewWidth, this.viewHeight);
     const circle = this.two.makeCircle(coordinates[0], coordinates[1], r);
     circle.fill = getInvertedColor(fill);
@@ -396,21 +355,9 @@ export class Graphics {
    * @param {string} fill the colour of the rectangle
    * @return {Rectangle} a Two.js rectangle object
    */
-  private createRectangle(
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    update: boolean,
-    fill: string = "black"
-  ): Rectangle {
+  private createRectangle(x: number, y: number, w: number, h: number, update: boolean, fill = "black"): Rectangle {
     const coordinates = translate(x, y, w, h);
-    const rectangle = this.two.makeRectangle(
-      coordinates[0],
-      coordinates[1],
-      w,
-      h
-    );
+    const rectangle = this.two.makeRectangle(coordinates[0], coordinates[1], w, h);
     rectangle.fill = getInvertedColor(fill);
     if (update) this.addElement(rectangle);
     return rectangle;
@@ -425,20 +372,10 @@ export class Graphics {
    * @param {string} fill the colour of the fixation cross
    * @return {Array} array containing two Two.Rectangle objects
    */
-  private createFixation(x: number, y: number, d: number, update: boolean, fill: string = "black"): Rectangle[] {
+  private createFixation(x: number, y: number, d: number, update: boolean, fill = "black"): Rectangle[] {
     const coordinates = translate(x, y, this.viewWidth, this.viewHeight);
-    const rectangleHorizontal = this.two.makeRectangle(
-      coordinates[0],
-      coordinates[1],
-      d,
-      d / 4
-    );
-    const rectangleVertical = this.two.makeRectangle(
-      coordinates[0],
-      coordinates[1],
-      d / 4,
-      d
-    );
+    const rectangleHorizontal = this.two.makeRectangle(coordinates[0], coordinates[1], d, d / 4);
+    const rectangleVertical = this.two.makeRectangle(coordinates[0], coordinates[1], d / 4, d);
     rectangleHorizontal.fill = getInvertedColor(fill);
     rectangleVertical.fill = getInvertedColor(fill);
     rectangleHorizontal.noStroke();
@@ -457,13 +394,8 @@ export class Graphics {
    * @param {string} fill the colour of the Dot
    * @return {Circle} Two.Circle instance
    */
-  private createDot(dot: Dot, update: boolean, fill: string = "black"): Circle {
-    const coordinates = translate(
-      dot.getX(),
-      dot.getY(),
-      this.viewWidth,
-      this.viewHeight
-    );
+  private createDot(dot: Dot, update: boolean, fill = "black"): Circle {
+    const coordinates = translate(dot.getX(), dot.getY(), this.viewWidth, this.viewHeight);
     const circle = this.two.makeCircle(
       coordinates[0],
       coordinates[1],
@@ -483,7 +415,7 @@ export class Graphics {
    * @param {string} fill the colour of the arc
    * @return {ArcSegment} arc object
    */
-  private createArc(startAngle: number, endAngle: number, fill: string = "red"): ArcSegment {
+  private createArc(startAngle: number, endAngle: number, fill = "red"): ArcSegment {
     const coordinates = translate(0, 0, this.viewWidth, this.viewHeight);
     const arc = this.two.makeArcSegment(
       coordinates[0],
@@ -507,8 +439,7 @@ export class Graphics {
   private addImage(imageType: string): void {
     if (imageType === "left") {
       // Access the graphics container
-      const graphicsCanvasDiv =
-        document.getElementsByClassName("graphics-container")[0];
+      const graphicsCanvasDiv = document.getElementsByClassName("graphics-container")[0];
 
       // Create the left image container and the left image
       const leftImage = document.createElement("img");
@@ -525,8 +456,7 @@ export class Graphics {
       graphicsCanvasDiv.prepend(leftImage);
     } else if (imageType === "right") {
       // Access the graphics container
-      const graphicsCanvasDiv =
-        document.getElementsByClassName("graphics-container")[0];
+      const graphicsCanvasDiv = document.getElementsByClassName("graphics-container")[0];
 
       // Create the right image container and the right image
       const rightImage = document.createElement("img");
@@ -639,8 +569,7 @@ export class Graphics {
   private addLabel(labelType: string): void {
     if (labelType === "left") {
       // Access the graphics container
-      const graphicsCanvasDiv =
-        document.getElementsByClassName("graphics-container")[0];
+      const graphicsCanvasDiv = document.getElementsByClassName("graphics-container")[0];
 
       // Create the left container
       const leftContainer = document.createElement("div");
@@ -710,8 +639,7 @@ export class Graphics {
       graphicsCanvasDiv.prepend(leftContainer);
     } else if (labelType === "right") {
       // Access the graphics container
-      const graphicsCanvasDiv =
-        document.getElementsByClassName("graphics-container")[0];
+      const graphicsCanvasDiv = document.getElementsByClassName("graphics-container")[0];
 
       // Create the right container
       const rightContainer = document.createElement("div");
@@ -853,27 +781,10 @@ export class Graphics {
    * @param {string} fill the colour of the line
    * @return {Two.Line} line object
    */
-  private createLine(
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number,
-    width: number,
-    fill: string = "black"
-  ): any {
-    const startCoordinates = translate(
-      x1,
-      y1,
-      this.viewWidth,
-      this.viewHeight
-    );
+  private createLine(x1: number, y1: number, x2: number, y2: number, width: number, fill = "black"): any {
+    const startCoordinates = translate(x1, y1, this.viewWidth, this.viewHeight);
     const endCoordinates = translate(x2, y2, this.viewWidth, this.viewHeight);
-    const line = this.two.makeLine(
-      startCoordinates[0],
-      startCoordinates[1],
-      endCoordinates[0],
-      endCoordinates[1]
-    );
+    const line = this.two.makeLine(startCoordinates[0], startCoordinates[1], endCoordinates[0], endCoordinates[1]);
     line.stroke = getInvertedColor(fill);
     line.linewidth = width;
     this.two.add(line);
