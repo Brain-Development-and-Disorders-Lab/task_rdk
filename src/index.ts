@@ -163,7 +163,7 @@ if (
   });
 }
 
-// -------------------- Tutorial games --------------------
+// -------------------- Tutorial trials --------------------
 const tutorialGames = [
   `<h1>RDK Task</h1>` +
     `<h2>Practice Games</h2>` +
@@ -184,7 +184,6 @@ timeline.push({
 });
 
 for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
-  const trialName = "tutorial";
   const d = parseFloat(
     (
       (Math.random() * (tutorialDuration[1] - tutorialDuration[0]) +
@@ -198,7 +197,7 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
 
   const trial = {
     type: DotGamePlugin,
-    name: trialName,
+    trialType: "tutorial",
     trialNumber: t,
     viewDistance: 50 * scaling(),
     dotAngle: a,
@@ -215,7 +214,7 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
   timeline.push(trial);
 }
 
-// -------------------- Practice games --------------------
+// -------------------- Practice trials --------------------
 const practice = [
   `<h1>RDK Task</h1>` +
     `<h2>Practice Games</h2>` +
@@ -243,14 +242,13 @@ timeline.push({
 // November 26, 2023: Removed for testing new MRI controllers
 
 for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
-  const trialName = "practice";
   let a = Math.random() > 0.5 ? 0 : Math.PI;
   a = parseFloat(a.toFixed(3));
   const k = Math.random() > 0.5 ? practiceCoherences[0] : practiceCoherences[1];
 
   const trial = {
     type: DotGamePlugin,
-    name: trialName,
+    trialType: "practice",
     trialNumber: t,
     viewDistance: 50 * scaling(),
     dotAngle: a,
@@ -267,7 +265,7 @@ for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
   timeline.push(trial);
 }
 
-// -------------------- Calibration games --------------------
+// -------------------- Calibration trials --------------------
 const main = [];
 
 if (Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials > 0) {
@@ -329,18 +327,15 @@ if (_.isEqual(keyLayout.name, "spectrometer")) {
   });
 }
 
-// -------------------- Phase one calibration games --------------------
+// -------------------- Phase one calibration trials --------------------
 for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
-  let trialName = "calibration";
-  if (t === 0 || t === 1) trialName = "calibration-constant";
-
   const k = 0.2;
   let a = Math.random() > 0.5 ? 0 : Math.PI;
   a = parseFloat(a.toFixed(3));
 
   const trial = {
     type: DotGamePlugin,
-    name: trialName,
+    trialType: (t === 0 || t === 1) ? "calibration-constant" : "calibration",
     trialNumber: t,
     viewDistance: 50 * scaling(),
     dotAngle: a,
@@ -360,16 +355,15 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
 // Attention-check question
 // November 26, 2023: Removed for testing new MRI controllers
 
-// -------------------- Main games --------------------
+// -------------------- Main trials --------------------
 for (let t = 0; t < Manipulations.numMainTrials; t++) {
-  const trialName = "main";
   const k = 0.2;
   let a = Math.random() > 0.5 ? 0 : Math.PI;
   a = parseFloat(a.toFixed(3));
 
   const trial = {
     type: DotGamePlugin,
-    name: trialName,
+    trialType: "main",
     trialNumber: t,
     viewDistance: 50 * scaling(),
     dotAngle: a,

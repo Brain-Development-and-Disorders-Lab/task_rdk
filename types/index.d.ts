@@ -14,7 +14,7 @@ export type SelectionOptions = "vc_l" | "sc_l" | "sc_r" | "vc_r";
 
 // Data frame
 export type IData = {
-  trialName: string;
+  trialType: string;
   trialNumber: number;
   score: number;
   trialStart: number;
