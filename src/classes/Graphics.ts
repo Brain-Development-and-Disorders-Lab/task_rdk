@@ -14,7 +14,7 @@ import { Dot } from "./Dot";
 import _ from "lodash";
 
 // Type definitions
-import { GraphicsParameters, DotParameters } from "../../types";
+import { GraphicsParameters, DotParameters, SelectionOptions } from "../../types";
 
 // Import manipulations
 import { Manipulations } from "../index";
@@ -427,6 +427,26 @@ export class Graphics {
   }
 
   /**
+   * Create a line
+   * @param {number} x1 starting x-coordinate
+   * @param {number} y1 starting y-coordinate
+   * @param {number} x2 ending x-coordinate
+   * @param {number} y2 ending y-coordinate
+   * @param {number} width width of the line
+   * @param {string} fill the colour of the line
+   * @return {Two.Line} line object
+   */
+  private createLine(x1: number, y1: number, x2: number, y2: number, width: number, fill = "black"): any {
+    const startCoordinates = translate(x1, y1, this.viewWidth, this.viewHeight);
+    const endCoordinates = translate(x2, y2, this.viewWidth, this.viewHeight);
+    const line = this.two.makeLine(startCoordinates[0], startCoordinates[1], endCoordinates[0], endCoordinates[1]);
+    line.stroke = getInvertedColor(fill);
+    line.linewidth = width;
+    this.two.add(line);
+    return line;
+  }
+
+  /**
    * Add an image onto the target
    * @param {string} imageType the type of image to add
    */
@@ -517,7 +537,6 @@ export class Graphics {
     progressBar.style.width = "0%";
     progressBar.style.height = "100%";
     progressBar.style.backgroundColor = colorscheme[variant].fill;
-    progressBar.style.transition = "width 1s linear";
     progressBar.className = "progress-bar";
     buttonContainer.appendChild(progressBar);
 
@@ -535,26 +554,19 @@ export class Graphics {
   }
 
   /**
-   * Start progress animation for a button
-   * @param {HTMLDivElement} buttonElement the button element to animate
+   * Set the progress displayed on a selection button
+   * @param {string} selection Selected option, in `<confidence>_<direction>` format
+   * @param {number} progress Percentage expressed between 0 and 100
    */
-  startProgress(buttonElement: HTMLDivElement): void {
-    const progressBar = buttonElement.querySelector(".progress-bar") as HTMLElement;
-    if (progressBar) {
-      progressBar.style.width = "100%";
+  setButtonProgress(selection: SelectionOptions, progress: number): void {
+    const buttonElement = document.querySelector(`[data-button-id="${selection}"]`);
+    if (buttonElement) {
+      const progressBar = buttonElement.querySelector(".progress-bar") as HTMLElement;
+      if (progressBar) {
+        progressBar.style.width = `${progress.toString()}%`;
+      }
     }
-  }
-
-  /**
-   * Stop progress animation for a button
-   * @param {HTMLDivElement} buttonElement the button element to reset
-   */
-  stopProgress(buttonElement: HTMLDivElement): void {
-    const progressBar = buttonElement.querySelector(".progress-bar") as HTMLElement;
-    if (progressBar) {
-      progressBar.style.width = "0%";
-    }
-  }
+  };
 
   /**
    * Add a label onto the target
@@ -761,25 +773,5 @@ export class Graphics {
 
       return svg;
     }
-  }
-
-  /**
-   * Create a line
-   * @param {number} x1 starting x-coordinate
-   * @param {number} y1 starting y-coordinate
-   * @param {number} x2 ending x-coordinate
-   * @param {number} y2 ending y-coordinate
-   * @param {number} width width of the line
-   * @param {string} fill the colour of the line
-   * @return {Two.Line} line object
-   */
-  private createLine(x1: number, y1: number, x2: number, y2: number, width: number, fill = "black"): any {
-    const startCoordinates = translate(x1, y1, this.viewWidth, this.viewHeight);
-    const endCoordinates = translate(x2, y2, this.viewWidth, this.viewHeight);
-    const line = this.two.makeLine(startCoordinates[0], startCoordinates[1], endCoordinates[0], endCoordinates[1]);
-    line.stroke = getInvertedColor(fill);
-    line.linewidth = width;
-    this.two.add(line);
-    return line;
   }
 }

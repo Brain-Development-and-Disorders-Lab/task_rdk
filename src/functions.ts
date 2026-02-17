@@ -8,6 +8,28 @@
 // Import experiment Manipulations
 import { Manipulations } from ".";
 
+// Custom types
+import { SelectionOptions } from "../types";
+
+/**
+ * Translate a keycode into one of the specified `SelectionOptions`
+ * @param keycode Currently pressed keycode
+ * @param buttonMap The specified inputs set out for that trial
+ * @return {SelectionOptions}
+ */
+export const getSelectionFromInput = (keycode: string, buttonMap: any): SelectionOptions => {
+  switch (keycode) {
+    case buttonMap["1"]:
+      return "vc_l";
+    case buttonMap["2"]:
+      return "sc_l";
+    case buttonMap["3"]:
+      return "sc_r";
+    case buttonMap["4"]:
+      return "vc_r";
+  };
+};
+
 /**
  * Determine the scaling factor to apply to the graphics.
  * @return {number}

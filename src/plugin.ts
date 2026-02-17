@@ -23,7 +23,11 @@ import { Runner } from "./classes/Runner";
 import { GraphicsParameters, IData, IStimulus, SelectionOptions } from "../types";
 
 // Additional functions
-import { scaling } from "./functions";
+import { getSelectionFromInput, scaling } from "./functions";
+
+// Fixed input variables
+const INPUT_POLL_INTERVAL = 10; // 10 ms
+const INPUT_HOLD_DURATION = 1000; // 1000 ms
 
 const info = {
   name: "rdk-task",
@@ -119,6 +123,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     // Setup variables
     const distanceFromScreen = trial.viewDistance;
     let selection = "";
+    let keypressTimer: NodeJS.Timer;
 
     // Setup distance-related variables
     let viewRadius = Math.ceil(Math.abs(distanceFromScreen * Math.tan(8)));
@@ -217,12 +222,13 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const inputState: { [key: string]: number } = {};
 
     /**
-     * Utility function to evaluate if a specific key has been held for
-     * a required duration
+     * Utility function to evaluate if a valid key has been held for
+     * a required duration, keys specified as part of the `buttonMap` trial 
+     * parameter
      * @param {string} keycode Lowercase `keycode` of an input
      */
     const hasSelected: (keycode: string) => boolean = (keycode: string) => {
-      if (keycode in inputState) {
+      if (keycode in inputState && Object.values(trial.buttonMap).includes(keycode)) {
         return performance.now() - inputState[keycode] >= 1000;
       }
       return false;
@@ -234,6 +240,11 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const onKeyDown = (event: KeyboardEvent) => {
       event.preventDefault();
       const keycode = event.key.toLowerCase();
+      
+      // Block unknown inputs
+      if (!Object.values(trial.buttonMap).includes(keycode)) {
+        return;
+      }
 
       // Edge case: Holding a button prior to input being accepted
       if (!(keycode in inputState) && Object.keys(inputState).length === 0 && event.repeat) {
@@ -244,21 +255,10 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       // Check if key has been pressed, add if the only key being pressed
       if (!(keycode in inputState) && Object.keys(inputState).length === 0) {
         inputState[keycode] = performance.now();
+        setupKeyInterval(keycode);
       } else if (Object.keys(inputState).length > 1) {
         // Block holding multiple keys simultaneously
         return;
-      }
-
-      if (keycode in inputState) {
-        if (
-          hasSelected(trial.buttonMap["1"]) ||
-          hasSelected(trial.buttonMap["2"]) ||
-          hasSelected(trial.buttonMap["3"]) ||
-          hasSelected(trial.buttonMap["4"])
-        ) {
-          consola.info(`\"${keycode}\" held for 1000ms`);
-          handleSelection(keycode);
-        }
       }
     };
 
@@ -272,7 +272,26 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       if (keycode in inputState) {
         // Remove key from input state
         delete inputState[keycode];
+        
+        // Reset visual progress
+        graphics.setButtonProgress(getSelectionFromInput(keycode, trial.buttonMap), 0);
       }
+    };
+    
+    /**
+     * Create the polling interval using `setInterval` to monitor specific keypresses, updating
+     * button progress, and calling `handleSelection` if held for required duration
+     * @param {string} keycode Keycode associated with the valid input key being pressed
+     */
+    const setupKeyInterval = (keycode: string) => {
+      keypressTimer = setInterval(() => {
+        if (hasSelected(keycode)) {
+          handleSelection(keycode);
+        } else {
+          const progressPercentage = ((performance.now() - inputState[keycode]) / INPUT_HOLD_DURATION) * 100;
+          graphics.setButtonProgress(getSelectionFromInput(keycode, trial.buttonMap), progressPercentage);
+        }
+      }, INPUT_POLL_INTERVAL);
     };
 
     /**
@@ -280,25 +299,15 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
      * @param {string} keycode the particular event or keypress
      */
     const handleSelection = (keycode: string) => {
-      // Clear all input handlers
+      // Teardown input timer
+      clearInterval(keypressTimer);
+
+      // Clear all other input handlers
       currentStimulus.clearEventListeners();
 
       if (currentStimulus.getParameters().stimulusName === "decision") {
         // Map keycode to selection string to store in data
-        switch (keycode) {
-          case trial.buttonMap["1"]:
-            selection = "vc_l";
-            break;
-          case trial.buttonMap["2"]:
-            selection = "sc_l";
-            break;
-          case trial.buttonMap["3"]:
-            selection = "sc_r";
-            break;
-          case trial.buttonMap["4"]:
-            selection = "vc_r";
-            break;
-        }
+        selection = getSelectionFromInput(keycode, trial.buttonMap);
         consola.info("Selected:", selection);
 
         // Calculate and store selection data
