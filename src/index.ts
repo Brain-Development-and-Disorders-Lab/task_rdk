@@ -56,7 +56,7 @@ const Neurocog = jsPsych.extensions.Neurocog;
  * using the `IButtonMap` type. Buttons "1" through "4" are required,
  * and "trigger" is optional except for MRI contexts.
  * Example format for MRI contexts:
- * 
+ *
  * ```typescript
  * const buttonMap: IButtonMap = {
  *   1: "1",
@@ -67,13 +67,23 @@ const Neurocog = jsPsych.extensions.Neurocog;
  * };
  * ```
  */
-const buttonMap: IButtonMap = {
-    1: "d",
-    2: "f",
-    3: "j",
-    4: "k",
-    trigger: "5",
+const buttonMapDesktop: IButtonMap = {
+  1: "d",
+  2: "f",
+  3: "j",
+  4: "k",
+  trigger: "",
 };
+const buttonMapSpectrometer: IButtonMap = {
+  1: "1",
+  2: "2",
+  3: "3",
+  4: "4",
+  trigger: "5",
+};
+
+// Set input configuration based on delivery target
+const buttonMap = _.isEqual(__TARGET__, "spectrometer") ? buttonMapSpectrometer : buttonMapDesktop;
 
 // Experimental parameters, defining the number of trials and other experiment behavior
 export const Manipulations = {
@@ -190,9 +200,9 @@ for (let t = 0; t < Manipulations.numTutorialTrials; t++) {
     dotAngle: a,
     dotVelocity: 2.0,
     dotDirection: a === 0 ? "right" : "left",
-      activeCoherence: k,
+    activeCoherence: k,
     coherences: [k, k],
-      motionDuration: d,
+    motionDuration: d,
     showFeedback: false,
     buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
@@ -241,9 +251,9 @@ for (let t = 0; t < Manipulations.numPracticeTrials; t++) {
     dotAngle: a,
     dotVelocity: 2.0,
     dotDirection: a === 0 ? "right" : "left",
-      activeCoherence: k,
+    activeCoherence: k,
     coherences: [k, k],
-      motionDuration: 1500,
+    motionDuration: 1500,
     showFeedback: true,
     buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
@@ -326,9 +336,9 @@ for (let t = 0; t < Manipulations.numCalibrationOneTrials; t++) {
     dotAngle: a,
     dotVelocity: 2.0,
     dotDirection: a === 0 ? "right" : "left",
-      activeCoherence: k,
+    activeCoherence: k,
     coherences: [k, k],
-      motionDuration: 1500,
+    motionDuration: 1500,
     showFeedback: false,
     buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
@@ -354,9 +364,9 @@ for (let t = 0; t < Manipulations.numMainTrials; t++) {
     dotAngle: a,
     dotVelocity: 2.0,
     dotDirection: a === 0 ? "right" : "left",
-      activeCoherence: k,
+    activeCoherence: k,
     coherences: [k, k],
-      motionDuration: 1500,
+    motionDuration: 1500,
     showFeedback: false,
     buttonMap: buttonMap,
     extensions: [{ type: NeurocogExtension }],
