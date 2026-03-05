@@ -277,21 +277,21 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
         graphics.setButtonProgress(getSelectionFromInput(keycode, trial.buttonMap), 0);
       }
     };
-    
+
     /**
      * Create the polling interval using `setInterval` to monitor specific keypresses, updating
      * button progress, and calling `handleSelection` if held for required duration
      * @param {string} keycode Keycode associated with the valid input key being pressed
      */
     const setupKeyInterval = (keycode: string) => {
-      keypressTimer = setInterval(() => {
+      keypressTimer = setInterval((graphics: Graphics) => {
         if (hasSelected(keycode)) {
           handleSelection(keycode);
         } else {
           const progressPercentage = ((performance.now() - inputState[keycode]) / INPUT_HOLD_DURATION) * 100;
           graphics.setButtonProgress(getSelectionFromInput(keycode, trial.buttonMap), progressPercentage);
         }
-      }, INPUT_POLL_INTERVAL);
+      }, INPUT_POLL_INTERVAL, graphics); // Note: Pass `Graphics` instance so function has access
     };
 
     /**

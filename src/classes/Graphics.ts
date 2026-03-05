@@ -704,7 +704,7 @@ export class Graphics {
       rightVeryConfidentButtonContainer.append(rightVeryConfidentButton);
       const rightVeryConfidentButtonLabelContainer = document.createElement("div");
       if (__TARGET__ === "spectrometer") {
-        rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("4");
+        rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("4", true);
       } else {
         rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("K");
       }
