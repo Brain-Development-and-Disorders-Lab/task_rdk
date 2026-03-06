@@ -29,6 +29,7 @@ export class Graphics {
   private jsPsych: JsPsych;
   private trial: any;
   private two: Two;
+  private isSpectrometer: boolean;
   private distanceFromScreen: number;
   private apertureRadius: number;
   private dotRadius: number;
@@ -46,6 +47,7 @@ export class Graphics {
     this.jsPsych = jsPsych;
     this.trial = trial;
     this.two = parameters.two;
+    this.isSpectrometer = _.isEqual(__TARGET__, "spectrometer");
     this.distanceFromScreen = parameters.distanceFromScreen;
     this.apertureRadius = parameters.apertureRadius;
     this.dotRadius = parameters.dotRadius;
@@ -450,7 +452,7 @@ export class Graphics {
 
       // Create the left image container and the left image
       const leftImage = document.createElement("img");
-      if (__TARGET__ === "desktop") {
+      if (!this.isSpectrometer) {
         leftImage.src = this.jsPsych.extensions.Neurocog.getStimulus("F.png");
       } else {
         leftImage.src = this.jsPsych.extensions.Neurocog.getStimulus("2.png");
@@ -467,7 +469,7 @@ export class Graphics {
 
       // Create the right image container and the right image
       const rightImage = document.createElement("img");
-      if (__TARGET__ === "desktop") {
+      if (!this.isSpectrometer) {
         rightImage.src = this.jsPsych.extensions.Neurocog.getStimulus("J.png");
       } else {
         rightImage.src = this.jsPsych.extensions.Neurocog.getStimulus("3.png");
@@ -607,7 +609,7 @@ export class Graphics {
       leftVeryConfidentButton.setAttribute("data-button-id", "vc_l");
       leftVeryConfidentButtonContainer.append(leftVeryConfidentButton);
       const leftVeryConfidentButtonLabelContainer = document.createElement("div");
-      if (__TARGET__ === "spectrometer") {
+      if (this.isSpectrometer) {
         leftVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("1", true);
       } else {
         leftVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("D");
@@ -626,7 +628,7 @@ export class Graphics {
       leftSomewhatConfidentButton.setAttribute("data-button-id", "sc_l");
       leftSomewhatConfidentButtonContainer.append(leftSomewhatConfidentButton);
       const leftSomewhatConfidentButtonLabelContainer = document.createElement("div");
-      if (__TARGET__ === "spectrometer") {
+      if (this.isSpectrometer) {
         leftSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("2", true);
       } else {
         leftSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("F");
@@ -677,7 +679,7 @@ export class Graphics {
       rightSomewhatConfidentButton.setAttribute("data-button-id", "sc_r");
       rightSomewhatConfidentButtonContainer.append(rightSomewhatConfidentButton);
       const rightSomewhatConfidentButtonLabelContainer = document.createElement("div");
-      if (__TARGET__ === "spectrometer") {
+      if (this.isSpectrometer) {
         rightSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("3", true);
       } else {
         rightSomewhatConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("J");
@@ -696,7 +698,7 @@ export class Graphics {
       rightVeryConfidentButton.setAttribute("data-button-id", "vc_r");
       rightVeryConfidentButtonContainer.append(rightVeryConfidentButton);
       const rightVeryConfidentButtonLabelContainer = document.createElement("div");
-      if (__TARGET__ === "spectrometer") {
+      if (this.isSpectrometer) {
         rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("4", true);
       } else {
         rightVeryConfidentButtonLabelContainer.innerHTML = Graphics.getInputIcon("K");

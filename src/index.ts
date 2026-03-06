@@ -48,8 +48,9 @@ const jsPsych = initJsPsych({
   ],
 });
 
-// Configure variable alias for Neurocog extension
+// Configure variable aliases for Neurocog extension and delivery target
 const Neurocog = jsPsych.extensions.Neurocog;
+const isSpectrometer = _.isEqual(__TARGET__, "spectrometer");
 
 /**
  * Define the input configuration, change this to suit the context
@@ -83,7 +84,7 @@ const buttonMapSpectrometer: IButtonMap = {
 };
 
 // Set input configuration based on delivery target
-const buttonMap = _.isEqual(__TARGET__, "spectrometer") ? buttonMapSpectrometer : buttonMapDesktop;
+const buttonMap = isSpectrometer ? buttonMapSpectrometer : buttonMapDesktop;
 
 // Experimental parameters, defining the number of trials and other experiment behavior
 export const Manipulations = {
@@ -91,9 +92,9 @@ export const Manipulations = {
   numPracticeTrials: Neurocog.getManipulation("numPracticeTrials", 8),
   numCalibrationOneTrials: Neurocog.getManipulation("numCalibrationOneTrials", 60),
   numMainTrials: Neurocog.getManipulation("numMainTrials", 100),
-  invertColors: _.isEqual(__TARGET__, "spectrometer"),
+  invertColors: isSpectrometer,
   requireID: Neurocog.getManipulation("requireID", false),
-  enableFullscreen: _.isEqual(__TARGET__, "spectrometer"),
+  enableFullscreen: isSpectrometer,
   showInstructions: Neurocog.getManipulation("showInstructions", false),
 };
 
@@ -138,16 +139,16 @@ let instructionContinueText = `<div id="instructions-navigation">
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
         <p style="font-weight: bold; font-size: large;">\< Back</p>
-        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getInputIcon("1", true) : Graphics.getInputIcon("F")}
+        ${isSpectrometer ? Graphics.getInputIcon("1", true) : Graphics.getInputIcon("F")}
       </div>
       <div style="display: flex; flex-direction: row; gap: 10px; align-items: center;">
-        ${_.isEqual(__TARGET__, "spectrometer") ? Graphics.getInputIcon("4", true) : Graphics.getInputIcon("J")}
+        ${isSpectrometer ? Graphics.getInputIcon("4", true) : Graphics.getInputIcon("J")}
         <p style="font-weight: bold; font-size: large;">Next \></p>
       </div>
     </div>
   </div>`;
 
-if (_.isEqual(Manipulations.showInstructions, true) && !_.isEqual(__TARGET__, "spectrometer")) {
+if (_.isEqual(Manipulations.showInstructions, true) && !isSpectrometer) {
   // Display video
   timeline.push({
     type: InstructionsPlugin,
@@ -158,8 +159,8 @@ if (_.isEqual(Manipulations.showInstructions, true) && !_.isEqual(__TARGET__, "s
       <p><i>This video is best viewed in fullscreen mode.</i></p>` + instructionContinueText,
     ],
     allow_keys: false,
-    key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
-    key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
+    key_forward: isSpectrometer ? buttonMap["4"] : buttonMap["3"],
+    key_backward: isSpectrometer ? buttonMap["1"] : buttonMap["2"],
     show_page_number: true,
     show_clickable_nav: false,
   });
@@ -179,8 +180,8 @@ timeline.push({
   type: InstructionsPlugin,
   pages: tutorialGames,
   allow_keys: true,
-  key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
-  key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
+  key_forward: isSpectrometer ? buttonMap["4"] : buttonMap["3"],
+  key_backward: isSpectrometer ? buttonMap["1"] : buttonMap["2"],
   show_page_number: true,
   show_clickable_nav: false,
 });
@@ -229,8 +230,8 @@ timeline.push({
   type: InstructionsPlugin,
   pages: practice,
   allow_keys: true,
-  key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
-  key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
+  key_forward: isSpectrometer ? buttonMap["4"] : buttonMap["3"],
+  key_backward: isSpectrometer ? buttonMap["1"] : buttonMap["2"],
   show_page_number: true,
   show_clickable_nav: false,
 });
@@ -293,7 +294,7 @@ if (Manipulations.numCalibrationOneTrials + Manipulations.numMainTrials > 0) {
 // -------------------- Spectrometer --------------------
 // If inside the spectrometer, wait until the signal key is pressed.
 // Else, use the standard pre-game screen.
-if (_.isEqual(__TARGET__, "spectrometer")) {
+if (isSpectrometer) {
   const spectrometer = [
     `<h1>RDK Task</h1>` +
       `<h2>Please Wait...</h2>` +
@@ -315,8 +316,8 @@ if (_.isEqual(__TARGET__, "spectrometer")) {
     type: InstructionsPlugin,
     pages: main,
     allow_keys: true,
-    key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
-    key_backward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["1"] : buttonMap["2"],
+    key_forward: isSpectrometer ? buttonMap["4"] : buttonMap["3"],
+    key_backward: isSpectrometer ? buttonMap["1"] : buttonMap["2"],
     show_page_number: true,
     show_clickable_nav: false,
   });
@@ -387,7 +388,7 @@ timeline.push({
   allow_backward: false,
   button_label_next: "Finish",
   show_clickable_nav: false,
-  key_forward: _.isEqual(__TARGET__, "spectrometer") ? buttonMap["4"] : buttonMap["3"],
+  key_forward: isSpectrometer ? buttonMap["4"] : buttonMap["3"],
 });
 
 jsPsych.run(timeline);
