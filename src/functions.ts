@@ -27,7 +27,7 @@ export const getSelectionFromInput = (keycode: string, buttonMap: any): Selectio
       return "sc_r";
     case buttonMap["4"]:
       return "vc_r";
-  };
+  }
 };
 
 /**

@@ -559,7 +559,7 @@ export class Graphics {
         progressBar.style.width = `${progress.toString()}%`;
       }
     }
-  };
+  }
 
   /**
    * Add a label onto the target

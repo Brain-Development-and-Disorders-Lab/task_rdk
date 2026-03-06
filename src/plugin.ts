@@ -228,7 +228,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
 
     /**
      * Utility function to evaluate if a valid key has been held for
-     * a required duration, keys specified as part of the `buttonMap` trial 
+     * a required duration, keys specified as part of the `buttonMap` trial
      * parameter
      * @param {string} keycode Lowercase `keycode` of an input
      */
@@ -245,7 +245,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
     const onKeyDown = (event: KeyboardEvent) => {
       event.preventDefault();
       const keycode = event.key.toLowerCase();
-      
+
       // Block unknown inputs
       if (!Object.values(trial.buttonMap).includes(keycode)) {
         return;
@@ -277,7 +277,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       if (keycode in inputState) {
         // Remove key from input state
         delete inputState[keycode];
-        
+
         // Reset visual progress
         graphics.setButtonProgress(getSelectionFromInput(keycode, trial.buttonMap), 0);
       }
@@ -289,14 +289,18 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
      * @param {string} keycode Keycode associated with the valid input key being pressed
      */
     const setupKeyInterval = (keycode: string) => {
-      keypressTimer = setInterval((graphics: Graphics) => {
-        if (hasSelected(keycode)) {
-          handleSelection(keycode);
-        } else {
-          const progressPercentage = ((performance.now() - inputState[keycode]) / INPUT_HOLD_DURATION) * 100;
-          graphics.setButtonProgress(getSelectionFromInput(keycode, trial.buttonMap), progressPercentage);
-        }
-      }, INPUT_POLL_INTERVAL, graphics); // Note: Pass `Graphics` instance so function has access
+      keypressTimer = setInterval(
+        (graphics: Graphics) => {
+          if (hasSelected(keycode)) {
+            handleSelection(keycode);
+          } else {
+            const progressPercentage = ((performance.now() - inputState[keycode]) / INPUT_HOLD_DURATION) * 100;
+            graphics.setButtonProgress(getSelectionFromInput(keycode, trial.buttonMap), progressPercentage);
+          }
+        },
+        INPUT_POLL_INTERVAL,
+        graphics
+      ); // Note: Pass `Graphics` instance so function has access
     };
 
     /**
@@ -461,7 +465,7 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       onKeyDown: onKeyDown,
       onStimulusEnd: nextStimulus,
     };
-    
+
     // Feedback cross displayed when `showFeedback` is true
     const feedback: IStimulus = {
       stimulusName: "feedback",
