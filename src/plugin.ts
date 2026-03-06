@@ -214,7 +214,8 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
           currentStimulus.getParameters().stimulusComponents.push(feedbackStimulusComponent);
           graphics.cursorVisibility(false);
         } else {
-          graphics.cursorVisibility(true);
+          // Default, cursor should be hidden
+          graphics.cursorVisibility(false);
         }
 
         // Start the stimulus

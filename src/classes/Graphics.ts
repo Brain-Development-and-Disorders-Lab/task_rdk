@@ -79,7 +79,7 @@ export class Graphics {
    * @param {boolean} visible the status of cursor visibility
    */
   cursorVisibility(visible: boolean = true): void {
-    document.getElementById("jspsych-content").style.cursor = visible ? "auto" : "none";
+    document.body.style.cursor = visible ? "auto" : "none";
   }
 
   /**
