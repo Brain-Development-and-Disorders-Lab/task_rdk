@@ -367,8 +367,8 @@ export class Graphics {
     const coordinates = translate(x, y, this.viewWidth, this.viewHeight);
     const rectangleHorizontal = this.two.makeRectangle(coordinates[0], coordinates[1], d, d / 4);
     const rectangleVertical = this.two.makeRectangle(coordinates[0], coordinates[1], d / 4, d);
-    rectangleHorizontal.fill = getInvertedColor(fill);
-    rectangleVertical.fill = getInvertedColor(fill);
+    rectangleHorizontal.fill = fill;
+    rectangleVertical.fill = fill;
     rectangleHorizontal.noStroke();
     rectangleVertical.noStroke();
     if (update) {
