@@ -128,6 +128,10 @@ export class Stimulus {
         graphics.addOutline();
       } else if (component === "fixation") {
         graphics.addFixation();
+      } else if (component === "feedback_correct") {
+        graphics.addFixation("green");
+      } else if (component === "feedback_incorrect") {
+        graphics.addFixation("red");
       } else if (component === "dots") {
         graphics.addDots();
       } else if (component === "ccw_arc") {

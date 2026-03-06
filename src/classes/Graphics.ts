@@ -99,19 +99,12 @@ export class Graphics {
 
   /**
    * Create a fixation cross
+   * @param {string} variant specify the fill of the fixation cross
    */
-  addFixation(): void {
+  addFixation(variant: "black" | "green" | "red" = "black"): void {
     const fixationDiameter = Math.ceil(Math.abs(this.distanceFromScreen * Math.tan(0.4)));
-    if (this.trial.showFeedback === true && this.trial.data.selection !== "") {
-      if (this.trial.data.correct === 1) {
-        this.createFixation(0, 0, fixationDiameter, false, getInvertedColor("green"));
-      } else {
-        this.createFixation(0, 0, fixationDiameter, false, getInvertedColor("red"));
-      }
-    } else {
-      const fixationCircle = this.createCircle(0, 0, fixationDiameter * 0.8, true, "white", "white");
-      this.createFixation(0, 0, fixationDiameter, false, "black");
-    }
+    this.createCircle(0, 0, fixationDiameter * 0.8, true, "white", "white");
+    this.createFixation(0, 0, fixationDiameter, false, getInvertedColor(variant));
   }
 
   /**

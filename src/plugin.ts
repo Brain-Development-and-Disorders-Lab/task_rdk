@@ -208,6 +208,11 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
           graphics.cursorVisibility(false);
         } else if (currentStimulus.getParameters().stimulusName === "initial") {
           graphics.cursorVisibility(false);
+        } else if (currentStimulus.getParameters().stimulusName === "feedback") {
+          // Append colored fixation cross for `feedback` stimuli
+          const feedbackStimulusComponent = data.correct === 0 ? "feedback_incorrect" : "feedback_correct";
+          currentStimulus.getParameters().stimulusComponents.push(feedbackStimulusComponent);
+          graphics.cursorVisibility(false);
         } else {
           graphics.cursorVisibility(true);
         }
@@ -456,9 +461,24 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       onKeyDown: onKeyDown,
       onStimulusEnd: nextStimulus,
     };
+    
+    // Feedback cross displayed when `showFeedback` is true
+    const feedback: IStimulus = {
+      stimulusName: "feedback",
+      stimulusComponents: ["outline"],
+      isInteractive: false,
+      stimulusTiming: {
+        pre: 0,
+        run: 1000,
+        post: 0,
+      },
+      two: two,
+      graphics: graphics,
+      onStimulusEnd: nextStimulus,
+    };
 
     // Brief display of the fixation cross.
-    const postDecision: IStimulus = {
+    const post: IStimulus = {
       stimulusName: "post-decision",
       stimulusComponents: ["outline", "fixation"],
       isInteractive: false,
@@ -472,9 +492,14 @@ class DotGamePlugin implements JsPsychPlugin<Info> {
       onStimulusEnd: nextStimulus,
     };
 
-    // Construct a list of the stimuli.
-    const stimuli: Stimulus[] = [];
-    stimuli.push(new Stimulus(initial), new Stimulus(motion), new Stimulus(decision), new Stimulus(postDecision));
+    // Construct a list of the stimuli, optionally adding `feedback` if required
+    const stimuli: Stimulus[] = [
+      new Stimulus(initial),
+      new Stimulus(motion),
+      new Stimulus(decision),
+      ...(trial.showFeedback ? [new Stimulus(feedback)] : []),
+      new Stimulus(post),
+    ];
 
     let currentStimulus: Stimulus = null;
     data.trialStart = performance.now();
