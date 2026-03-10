@@ -5,6 +5,9 @@
  * @author Henry Burgess <henry.burgess@wustl.edu>
  */
 
+// Utility libraries
+import _ from "lodash";
+
 // Import experiment Manipulations
 import { Manipulations } from ".";
 
@@ -35,6 +38,12 @@ export const getSelectionFromInput = (keycode: string, buttonMap: any): Selectio
  * @return {number}
  */
 export const scaling = (): number => {
+  if (_.isEqual(__TARGET__, "spectrometer")) {
+    // Note: Adjust scaling for display screen at 175cm from participant
+    return 0.8102649;
+  }
+  
+  // Adjustments for desktop contexts
   if (window !== undefined) {
     return (window.outerHeight / window.innerHeight) * 0.8;
   } else {
