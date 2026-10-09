@@ -78,8 +78,8 @@ export class Graphics {
       this.renderer.getHeight(),
       false
     );
-    viewCircle.fill = Renderer.getInvertedColor("white");
-    dotLayer.fill = Renderer.getInvertedColor("white");
+    viewCircle.fill = "#e8e8e8";
+    dotLayer.fill = "#e8e8e8";
     this.renderer.setRenderLayer(this.renderer.getTarget().makeGroup(dotLayer));
     this.renderer.getRenderLayer().mask = viewCircle;
 
@@ -116,8 +116,8 @@ export class Graphics {
         0,
         fixationDiameter * 0.8,
         true,
-        "white",
-        "white"
+        "#e8e8e8",
+        "#e8e8e8",
       );
       this.renderer.createFixation(0, 0, fixationDiameter, false, "black");
     }
@@ -129,7 +129,7 @@ export class Graphics {
   addClockwiseArc(): void {
     const startAngle = 2 * Math.PI - this.trial.dotDirection;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, Renderer.getInvertedColor("white"));
+    this.renderer.createArc(startAngle, endAngle + Math.PI / 128, "#e8e8e8");
     this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#d78000"));
   }
 
@@ -149,7 +149,7 @@ export class Graphics {
     const reference = 2 * Math.PI - this.trial.dotDirection;
     const startAngle = reference - Math.PI / 4;
     const endAngle = startAngle + Math.PI / 4;
-    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, Renderer.getInvertedColor("white"));
+    this.renderer.createArc(startAngle - Math.PI / 128, endAngle, "#e8e8e8");
     this.renderer.createArc(startAngle, endAngle, Renderer.getInvertedColor("#3ea3a3"));
   }
 

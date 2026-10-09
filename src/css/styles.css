@@ -7,6 +7,8 @@ Author: Henry Burgess <henry.burgess@wustl.edu>
 */
 body {
   font-size: 1.4rem !important;
+  /* Background color to reduce overall contrast */
+  background-color: #e8e8e8; 
 }
 
 .graphics-container {
