@@ -397,7 +397,7 @@ export class Renderer {
     const svg = `
       <svg width="60" height="60" style="display: inline-block; vertical-align: middle;">
         <rect x="2" y="2" width="56" height="56"
-              fill="none" stroke="black" stroke-width="2"
+              fill="white" stroke="black" stroke-width="2"
               rx="5" ry="5"/>
         <text x="30" y="38" text-anchor="middle"
               font-family="Arial, sans-serif"
