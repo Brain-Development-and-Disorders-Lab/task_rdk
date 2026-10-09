@@ -87,21 +87,21 @@ const InputConfigurations = {
 export const Manipulations = {
   numTutorialTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numTutorialTrials",
-    8
+    4
   ),
   numPracticeTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numPracticeTrials",
-    8
+    4
   ),
   numCalibrationOneTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numCalibrationOneTrials",
-    60
+    120
   ),
   numMainTrials: jsPsych.extensions.Neurocog.getManipulation(
     "numMainTrials",
-    100
+    200
   ),
-  invertColors: __TARGET__ === "spectrometer",
+  invertColors: false, // Set to `false` to reduce contrast but not invert for MRI
   requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
   enableFullscreen: __TARGET__ === "spectrometer",
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
