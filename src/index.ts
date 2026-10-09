@@ -102,7 +102,7 @@ export const Manipulations = {
     200
   ),
   invertColors: false, // Set to `false` to reduce contrast but not invert for MRI
-  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", false),
+  requireID: jsPsych.extensions.Neurocog.getManipulation("requireID", __TARGET__ === "spectrometer"),
   enableFullscreen: __TARGET__ === "spectrometer",
   showInstructions: jsPsych.extensions.Neurocog.getManipulation(
     "showInstructions",
